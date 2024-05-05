@@ -138,19 +138,6 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Resource not found"
-        409:
-          description: "Conflict"
-          schema:
-            type: "object"
-            properties:
-              success:
-                type: "boolean"
-                example: false
-                description: "Indicates if the operation was not successful"
-              message:
-                type: "string"
-                description: "Error information message"
-                example: "Conflict occurred while updating patient"
   /api/patients/{patient_id}:
     get:
       summary: "Get Patient by id"
@@ -217,6 +204,198 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Resource not found"
+  /api/doctors:
+    get:
+      summary: "Get all Doctors"
+      description: "Retrieve a list of all doctors."
+      tags:
+        - "Doctors"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Doctor"
+                description: "List of doctor records"
+              number_of_records:
+                type: "integer"
+                description: "Total number of doctor records"
+              pagination:
+                type: "object"
+                properties:
+                  total_pages:
+                    type: "integer"
+                    description: "Total number of pages"
+                  total_records:
+                    type: "integer"
+                    description: "Total number of doctor records"
+                  current_page:
+                    type: "string"
+                    description: "URL for the current page"
+                  next_page:
+                    type: "string"
+                    description: "URL for the next page, if available"
+                  previous_page:
+                    type: "string"
+                    description: "URL for the previous page, if available"
+    post:
+      summary: "Create new Doctor"
+      description: "Create a new doctor record."
+      tags:
+        - "Doctors"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Doctor object to be created"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                description: "Doctor's first name"
+              surname:
+                type: "string"
+                description: "Doctor's last name"
+              email:
+                type: "string"
+                description: "Doctor's email address"
+              pesel:
+                type: "string"
+                pattern: '^[0-9]{11}$'
+                description: "PESEL number (Polish identification number)"
+              pwz:
+                type: "string"
+                pattern: '^[1-9]\d{6}$'
+                description: "PWZ number (the number assigned to a doctor's licence to practise)"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                $ref: "#/definitions/Doctor"
+                description: "Created doctor"
+        409:
+          description: "Conflict"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Conflict occurred while creating doctor"
+    put:
+      summary: "Update Doctor"
+      description: "Update an existing doctor record."
+      tags:
+        - "Doctors"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Updated doctor object"
+          required: true
+          schema:
+            $ref: "#/definitions/Doctor"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Doctor"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+  /api/doctors/{doctor_id}:
+    get:
+      summary: "Get Doctor by id"
+      description: "Retrieve a doctor record by id."
+      tags:
+        - "Doctors"
+      parameters:
+        - name: "doctor_id"
+          in: "path"
+          description: "Id of the doctor to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Doctor"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+    delete:
+      summary: "Delete Doctor"
+      description: "Delete a doctor record by Id."
+      tags:
+        - "Doctors"
+      parameters:
+        - name: "doctor_id"
+          in: "path"
+          description: "Id of the doctor to delete"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              message:
+                type: "string"
+                description: "Confirmation message"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
 definitions:
   Patient:
     type: "object"
@@ -244,20 +423,20 @@ definitions:
         description: "Unique identifier for the patient"
       name:
         type: "string"
-        description: "Patient's first name"
+        description: "Doctor's first name"
       surname:
         type: "string"
-        description: "Patient's last name"
+        description: "Doctor's last name"
       email:
         type: "string"
-        description: "Patient's email address"
+        description: "Doctor's email address"
       pesel:
         type: "string"
         pattern: '^[0-9]{11}$'
         description: "PESEL number (Polish identification number)"
       pwz:
         type: "string"
-        pattern: '^[0-9]{7}$'
+        pattern: '^[1-9]\d{6}$'
         description: "PWZ number (the number assigned to a doctor's licence to practise)"
 securityDefinitions:
   BasicAuth:
