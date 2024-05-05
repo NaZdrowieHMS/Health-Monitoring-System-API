@@ -19,8 +19,13 @@ class ErrorResponse:
 
 @error_blueprint.app_errorhandler(400)
 def bad_request_error(error):
-    message = error.data.get('message', {}).get('json', {})
-    return ErrorResponse(message, 400).to_response()
+    messages = error.data.get('messages', {}).get('json', {})
+    return ErrorResponse(messages, 400).to_response()
+
+
+@error_blueprint.app_errorhandler(409)
+def conflict_error(error):
+    return ErrorResponse(error.description, 409).to_response()
 
 
 @error_blueprint.app_errorhandler(404)

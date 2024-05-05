@@ -34,17 +34,20 @@ git clone https://github.com/NaZdrowieHMS/Health-Monitoring-System-API.git
 ```
 cd Health-Monitoring-System-API
 ```
-3. Ensure you have an AGH VPN connection
 
-4. Open Docker Desktop application
+3. Fill .env file with correct credentials
 
-5. Build Docker image with the following command:
+4. Ensure you have an AGH VPN connection
+
+5. Open Docker Desktop application
+
+6. Build Docker image with the following command:
 
 ```
 docker build -t health-monitoring-system-api-image .
 ```
 
-6. A docker image was created. Build the container with:
+7. A docker image was created. Build the container with:
 
 ```
 docker run -p 5000:5000 health-monitoring-system-api-image
@@ -69,13 +72,15 @@ git clone https://github.com/NaZdrowieHMS/Health-Monitoring-System-API.git
 ```
 cd Health-Monitoring-System-API
 ```
-3. Install the required dependencies by running the following command:
+3. Fill .env file with correct credentials
+
+4. Install the required dependencies by running the following command:
 ```
 pip install -r requirements.txt
 ```
-4. Ensure you have an AGH VPN connection
+5. Ensure you have an AGH VPN connection
 
-5. Run the following command to start the backend server:
+6. Run the following command to start the backend server:
 ```
 python -m flask run
 ```
@@ -84,3 +89,13 @@ The api will be available at http://localhost:5000/api
 
 ### Swagger documentation
 Once the server is running, you can access the endpoints using the provided Swagger documentation here: http://localhost:5000/api/docs/
+
+### Testing
+Run the following command to test the backend server:
+```
+ python -m pytest
+```
+or if you want to disable warnings related to legacy methods:
+```
+python -m pytest --disable-warnings
+```

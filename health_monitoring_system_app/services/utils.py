@@ -3,11 +3,13 @@ from flask_sqlalchemy.model import DefaultMeta
 from flask_sqlalchemy.query import Query
 from typing import Tuple
 
-from config import Config
 
 NON_FILTER_PARAMS = {'sort', 'page', 'per_page'}
 PARAMS_SPLITTER = ','
 REVERSE_SORTING_MARK = '-'
+
+DEFAULT_PAGE = 1
+DEFAULT_PER_PAGE = 5
 
 
 def apply_sort(model: DefaultMeta, query_to_sort: Query) -> Query:
@@ -30,16 +32,16 @@ def apply_filter(model: DefaultMeta, query_to_filter: Query) -> Query:
         if param not in NON_FILTER_PARAMS:
             column_attr = getattr(model, param, None)
             if column_attr is not None:
-                validated_value = model.additional_validation(param, value)
-                if validated_value is not None:
-                    value = validated_value
+                value = model.param_validation(param, value)
+                if value is None:
+                    continue
                 query_to_filter = query_to_filter.filter(column_attr == value)
     return query_to_filter
 
 
 def apply_pagination(query_to_paginate: Query, function_name: str) -> Tuple[list, dict]:
-    page = request.args.get('page', Config.DEFAULT_PAGE, type=int)
-    per_page = request.args.get('per_page', Config.DEFAULT_PER_PAGE, type=int)
+    page = request.args.get('page', DEFAULT_PAGE, type=int)
+    per_page = request.args.get('per_page', DEFAULT_PER_PAGE, type=int)
     params = {key: value for key, value in request.args.items() if key != 'page'}
     pagination_object = query_to_paginate.paginate(page=page, per_page=per_page, error_out=False)
     pagination = {

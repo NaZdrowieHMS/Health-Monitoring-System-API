@@ -1,12 +1,12 @@
-from flask import Flask, jsonify
+from flask import Flask
 from health_monitoring_system_app.repositories import db
 
-from config import Config
+from config import config
 
 
-def create_app(config_class=Config):
+def create_app(config_name='development'):
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(config[config_name])
     db.init_app(app)
 
     from health_monitoring_system_app.errors import error_blueprint
