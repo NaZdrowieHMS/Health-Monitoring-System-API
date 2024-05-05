@@ -3,7 +3,7 @@ from webargs.flaskparser import use_args
 
 from health_monitoring_system_app.errors.validators import validate_json_content_type
 from health_monitoring_system_app.models.patient import patient_schema, patient_with_required_id_schema
-from health_monitoring_system_app.services.patient_service import PatientsService
+from health_monitoring_system_app.services.patients_service import PatientsService
 
 patients_blueprint = Blueprint('patients_view', __name__, url_prefix='/api')
 
