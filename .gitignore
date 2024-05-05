@@ -60,7 +60,7 @@ target/
 .python-version
 
 # dotenv
-#.env
+.env
 
 # virtualenv
 venv/
