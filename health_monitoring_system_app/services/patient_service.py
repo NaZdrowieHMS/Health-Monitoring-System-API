@@ -1,4 +1,5 @@
-from health_monitoring_system_app.models.patient import Patient, PatientSchema, patient_schema
+from flask import abort
+from health_monitoring_system_app.models.patient import Patient, PatientSchema, patient_schema, patient_with_required_id_schema
 from health_monitoring_system_app.services.utils import apply_sort, apply_filter, apply_pagination
 from health_monitoring_system_app.repositories.database_repository import DatabaseRepository
 
@@ -15,6 +16,8 @@ class PatientsService:
 
     @staticmethod
     def create_patient(args: dict):
+        if Patient.query.filter(Patient.pesel == args['pesel']).first():
+            abort(409, f'Patient with pesel {args['pesel']} already exists')
         new_patient = Patient(**args)
         DatabaseRepository.create_model(new_patient)
         return patient_schema.dump(new_patient)
@@ -38,5 +41,5 @@ class PatientsService:
         patient.email = args['email']
         patient.pesel = args['pesel']
         DatabaseRepository.save_changes()
-        return patient_schema.dump(patient)
+        return patient_with_required_id_schema.dump(patient)
 

@@ -5,7 +5,7 @@ info:
     This API provides endpoints to manage patients, doctors and their data in the Health Monitoring and Diagnosis System.
   version: "1.0.0"
 paths:
-  "/api":
+  "/":
     get:
       description: "Returns message showing app is up"
       tags:
@@ -68,11 +68,6 @@ paths:
           description: "Patient object to be created"
           required: true
           schema:
-            $ref: "#/definitions/Patient"
-      responses:
-        201:
-          description: "Successful operation"
-          schema:
             type: "object"
             properties:
               name:
@@ -88,6 +83,31 @@ paths:
                 type: "string"
                 pattern: '^[0-9]{11}$'
                 description: "PESEL number (Polish identification number)"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                 type: "boolean"
+                 description: "Indicates if the operation was successful"
+              data:
+                  $ref: "#/definitions/Patient"
+                  description: "Created patient"
+        409:
+          description: "Conflict"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Conflict occurred while creating patient"
     put:
       summary: "Update Patient"
       description: "Update an existing patient record."
@@ -105,6 +125,32 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/Patient"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        409:
+          description: "Conflict"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Conflict occurred while updating patient"
   /api/patients/{patient_id}:
     get:
       summary: "Get Patient by id"
@@ -122,6 +168,19 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/Patient"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
     delete:
       summary: "Delete Patient"
       description: "Delete a patient record by Id."
@@ -145,6 +204,19 @@ paths:
               message:
                 type: "string"
                 description: "Confirmation message"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
 definitions:
   Patient:
     type: "object"
