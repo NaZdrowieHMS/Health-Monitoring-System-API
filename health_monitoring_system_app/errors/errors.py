@@ -1,4 +1,6 @@
 from flask import Response, jsonify
+from sqlalchemy.exc import OperationalError
+
 from health_monitoring_system_app.repositories import db
 from health_monitoring_system_app.errors import error_blueprint
 
@@ -42,3 +44,9 @@ def unsupported_media_type_error(error):
 def internal_server_error(error):
     db.session.rollback()
     return ErrorResponse(error.description, 500).to_response()
+
+
+@error_blueprint.app_errorhandler(OperationalError)
+def handle_operational_error(error):
+    db.session.rollback()
+    return ErrorResponse(f"Database connection error. Check VPN!", 500).to_response()
