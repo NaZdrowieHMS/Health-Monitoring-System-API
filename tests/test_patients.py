@@ -1,3 +1,6 @@
+from tests.utils import test_patient, test_doctor
+
+
 def test_get_patients_no_records(client):
     response = client.get('/api/patients')
     assert response.status_code == 200
@@ -11,14 +14,7 @@ def test_get_patients_no_records(client):
 
 
 def test_get_patient_by_id(client):
-    payload = {
-        "name": "Anna",
-        "surname": "Test",
-        "email": "atest@gmail.com",
-        "pesel": "36155552041"
-    }
-    response = client.post('/api/patients', json=payload)
-    patient_id = response.get_json()['data']['id']
+    patient_id = test_patient(client)
 
     response = client.get(f'/api/patients/{patient_id}')
     assert response.status_code == 200
@@ -74,16 +70,7 @@ def test_create_patient_error(client):
 
 
 def test_update_patient(client):
-    post_response = client.post('/api/patients', json={
-        "name": "Anna",
-        "surname": "Test",
-        "email": "atest@gmail.com",
-        "pesel": "36155552041"
-    })
-    patient_id = post_response.get_json()['data']['id']
-
-    print(post_response)
-    print(patient_id)
+    patient_id = test_patient(client)
 
     updated_payload = {
         "id": patient_id,
@@ -121,14 +108,7 @@ def test_update_patient_error(client):
 
 
 def test_delete_patient_by_id(client):
-    payload = {
-        "name": "Anna",
-        "surname": "Test",
-        "email": "atest@gmail.com",
-        "pesel": "36155552041"
-    }
-    response = client.post('/api/patients', json=payload)
-    patient_id = response.get_json()['data']['id']
+    patient_id = test_patient(client)
 
     response = client.delete(f'/api/patients/{patient_id}')
     assert response.status_code == 200
@@ -145,3 +125,4 @@ def test_delete_patient_by_id_error(client):
     response_data = response.get_json()
     assert response_data['success'] is False
     assert response_data['message'] == 'Patient with id 999 not found.'
+

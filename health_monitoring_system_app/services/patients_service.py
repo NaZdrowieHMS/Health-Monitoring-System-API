@@ -1,4 +1,7 @@
 from flask import abort
+from sqlalchemy import desc
+
+from health_monitoring_system_app.models.ai_prediction import AIPrediction, AIPredictionSchema
 from health_monitoring_system_app.models.patient import Patient, PatientSchema, patient_schema, patient_with_required_id_schema
 from health_monitoring_system_app.services.utils import apply_sort, apply_filter, apply_pagination
 from health_monitoring_system_app.repositories.database_repository import DatabaseRepository
@@ -43,3 +46,24 @@ class PatientsService:
         DatabaseRepository.save_changes()
         return patient_with_required_id_schema.dump(patient)
 
+    @staticmethod
+    def get_patient_predictions(patient_id: int):
+        Patient.query.get_or_404(patient_id, description=f"Patient with id {patient_id} not found.")
+        query = AIPrediction.query.filter(AIPrediction.patient_id == patient_id)
+        query = query.order_by(desc(AIPrediction.created_date))
+        items, pagination = apply_pagination(query, f'patients_view.get_patient_predictions', "patient_id", patient_id)
+        predictions = AIPredictionSchema(many=True).dump(items)
+        return predictions, pagination
+
+    @staticmethod
+    def get_latest_patient_prediction(patient_id: int):
+        Patient.query.get_or_404(patient_id, description=f"Patient with id {patient_id} not found.")
+        query = AIPrediction.query.filter(AIPrediction.patient_id == patient_id)
+        query = query.order_by(desc(AIPrediction.created_date))
+        query = query.limit(1)
+        prediction = query.first()
+        if prediction:
+            prediction_data = AIPredictionSchema().dump(prediction)
+            return prediction_data
+        else:
+            abort(404, f'Patient with id {patient_id} has not predictions yet.')

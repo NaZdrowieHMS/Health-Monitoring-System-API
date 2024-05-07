@@ -1,8 +1,8 @@
 from flask_sqlalchemy.model import DefaultMeta
+from marshmallow import Schema, fields, validates, validate
 from werkzeug.routing import ValidationError
 
 from health_monitoring_system_app.models import db
-from marshmallow import Schema, fields, validate, validates
 
 
 class Patient(db.Model, metaclass=DefaultMeta):
