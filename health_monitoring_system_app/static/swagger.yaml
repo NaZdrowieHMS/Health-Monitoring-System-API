@@ -41,22 +41,12 @@ paths:
                 description: "Total number of patient records"
               pagination:
                 type: "object"
-                properties:
-                  total_pages:
-                    type: "integer"
-                    description: "Total number of pages"
-                  total_records:
-                    type: "integer"
-                    description: "Total number of patient records"
-                  current_page:
-                    type: "string"
-                    description: "URL for the current page"
-                  next_page:
-                    type: "string"
-                    description: "URL for the next page, if available"
-                  previous_page:
-                    type: "string"
-                    description: "URL for the previous page, if available"
+                $ref: "#/definitions/Pagination"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
     post:
       summary: "Create new Patient"
       description: "Create a new patient record."
@@ -108,6 +98,11 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Conflict occurred while creating patient"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
     put:
       summary: "Update Patient"
       description: "Update an existing patient record."
@@ -138,6 +133,11 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
   /api/patients/{patient_id}:
     get:
       summary: "Get Patient by id"
@@ -168,6 +168,11 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
     delete:
       summary: "Delete Patient"
       description: "Delete a patient record by Id."
@@ -204,6 +209,81 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+  /api/patients/{patient_id}/predictions:
+    get:
+      summary: "Get Patient predictions by patient id"
+      description: "Retrieve patient precord records by id."
+      tags:
+        - "Patients"
+      parameters:
+        - name: "patient_id"
+          in: "path"
+          description: "Id of the patient to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/AIPrediction"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+  /api/patients/{patient_id}/predictions/latest:
+    get:
+      summary: "Get latest Patient prediction by patient id"
+      description: "Retrieve latest patient prediction record by id."
+      tags:
+        - "Patients"
+      parameters:
+        - name: "patient_id"
+          in: "path"
+          description: "Id of the patient to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/AIPrediction"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
   /api/doctors:
     get:
       summary: "Get all Doctors"
@@ -229,22 +309,12 @@ paths:
                 description: "Total number of doctor records"
               pagination:
                 type: "object"
-                properties:
-                  total_pages:
-                    type: "integer"
-                    description: "Total number of pages"
-                  total_records:
-                    type: "integer"
-                    description: "Total number of doctor records"
-                  current_page:
-                    type: "string"
-                    description: "URL for the current page"
-                  next_page:
-                    type: "string"
-                    description: "URL for the next page, if available"
-                  previous_page:
-                    type: "string"
-                    description: "URL for the previous page, if available"
+                $ref: "#/definitions/Pagination"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
     post:
       summary: "Create new Doctor"
       description: "Create a new doctor record."
@@ -300,6 +370,11 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Conflict occurred while creating doctor"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
     put:
       summary: "Update Doctor"
       description: "Update an existing doctor record."
@@ -330,6 +405,11 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
   /api/doctors/{doctor_id}:
     get:
       summary: "Get Doctor by id"
@@ -360,6 +440,11 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
     delete:
       summary: "Delete Doctor"
       description: "Delete a doctor record by Id."
@@ -396,6 +481,160 @@ paths:
                 type: "string"
                 description: "Error information message"
                 example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+  /api/predictions:
+    get:
+      summary: "Get all AI Predictions"
+      description: "Retrieve a list of all ai predictions."
+      tags:
+        - "AI Predictions"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/AIPrediction"
+                description: "List of ai prediction records"
+              number_of_records:
+                type: "integer"
+                description: "Total number of ai prediction records"
+              pagination:
+                type: "object"
+                $ref: "#/definitions/Pagination"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+    post:
+      summary: "Create a new prediction"
+      description: "Create a new ai prediction record."
+      tags:
+        - "AI Predictions"
+      parameters:
+        - in: body
+          name: body
+          description: Prediction Resource object
+          required: true
+          schema:
+            $ref: '#/definitions/AIPredictionResource'
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                $ref: "#/definitions/AIPrediction"
+                description: "Created ai prediction"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Related resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+  /api/predictions/{prediction_id}:
+    get:
+      summary: "Get AI Prediction by id"
+      description: "Retrieve an ai prediction record by id."
+      tags:
+        - "AI Predictions"
+      parameters:
+        - name: "prediction_id"
+          in: "path"
+          description: "Id of the ai prediction to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/AIPrediction"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+    delete:
+      summary: "Delete AI Prediction"
+      description: "Delete an ai prediction record by Id."
+      tags:
+        - "AI Predictions"
+      parameters:
+        - name: "prediction_id"
+          in: "path"
+          description: "Id of the ai prediction to delete"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              message:
+                type: "string"
+                description: "Confirmation message"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
 definitions:
   Patient:
     type: "object"
@@ -438,6 +677,73 @@ definitions:
         type: "string"
         pattern: '^[1-9]\d{6}$'
         description: "PWZ number (the number assigned to a doctor's licence to practise)"
+  AIPredictionResource:
+    properties:
+      doctor_id:
+        type: "integer"
+        description: "Unique identifier for the doctor associated with the prediction"
+      patient_id:
+        type: "integer"
+        description: "Unique identifier for the patient associated with the prediction"
+      results_ids:
+        type: "array"
+        items:
+          type: "integer"
+          description: "List of test result ids used for prediction"
+  AIPrediction:
+    properties:
+      id:
+        type: "integer"
+        description: "Unique identifier for the AI prediction"
+      doctor_id:
+        type: "integer"
+        description: "Unique identifier for the doctor associated with the prediction"
+      patient_id:
+        type: "integer"
+        description: "Unique identifier for the patient associated with the prediction"
+      content:
+        type: "object"
+        properties:
+          type:
+            type: "string"
+            description: "Type of data stored in data field as Base64 type"
+          data:
+            type: "Base64 "
+            description: "Data stored in Base64 type"
+      created_date:
+        type: "string"
+        format: "date-time"
+        description: "Date and time when the prediction was created"
+        pattern: 'YYYY-MM-DD HH:MM:SS'
+  Pagination:
+   type: "object"
+   properties:
+     total_pages:
+       type: "integer"
+       description: "Total number of pages"
+     total_records:
+       type: "integer"
+       description: "Total number of doctor records"
+     current_page:
+       type: "string"
+       description: "URL for the current page"
+     next_page:
+       type: "string"
+       description: "URL for the next page, if available"
+     previous_page:
+       type: "string"
+       description: "URL for the previous page, if available"
+  InternalServerError:
+    type: "object"
+    properties:
+      success:
+        type: "boolean"
+        example: false
+        description: "Indicates if the operation was not successful"
+      message:
+        type: "string"
+        description: "Error information message"
+        example: "Database connection error. Check VPN!"
 securityDefinitions:
   BasicAuth:
     type: basic

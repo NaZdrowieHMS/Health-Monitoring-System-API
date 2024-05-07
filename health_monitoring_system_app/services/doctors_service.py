@@ -12,8 +12,8 @@ class DoctorsService:
         query = apply_sort(Doctor, query)
         query = apply_filter(Doctor, query)
         items, pagination = apply_pagination(query, 'doctors_view.get_doctors')
-        patients = DoctorSchema(many=True).dump(items)
-        return patients, pagination
+        doctors = DoctorSchema(many=True).dump(items)
+        return doctors, pagination
 
     @staticmethod
     def create_doctor(args: dict):

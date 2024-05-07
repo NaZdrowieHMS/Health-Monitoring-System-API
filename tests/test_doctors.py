@@ -1,3 +1,6 @@
+from tests.utils import test_doctor
+
+
 def test_get_doctors_no_records(client):
     response = client.get('/api/doctors')
     assert response.status_code == 200
@@ -11,16 +14,7 @@ def test_get_doctors_no_records(client):
 
 
 def test_get_doctor_by_id(client):
-    payload = {
-        "name": "John",
-        "surname": "Doe",
-        "email": "johndoe@example.com",
-        "pesel": "12345678901",
-        "pwz": "1234567"
-    }
-    response = client.post('/api/doctors', json=payload)
-    doctor_id = response.get_json()['data']['id']
-
+    doctor_id = test_doctor(client)
     response = client.get(f'/api/doctors/{doctor_id}')
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
@@ -126,16 +120,7 @@ def test_update_doctor_error(client):
 
 
 def test_delete_doctor_by_id(client):
-    payload = {
-        "name": "John",
-        "surname": "Doe",
-        "email": "johndoe@example.com",
-        "pesel": "12345678901",
-        "pwz": "1234567"
-    }
-    response = client.post('/api/doctors', json=payload)
-    doctor_id = response.get_json()['data']['id']
-
+    doctor_id = test_doctor(client)
     response = client.delete(f'/api/doctors/{doctor_id}')
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'

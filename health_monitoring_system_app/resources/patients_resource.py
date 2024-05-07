@@ -53,3 +53,19 @@ def delete_patient_by_id(patient_id: int):
     return jsonify({
         'success': True,
         'message': f'Patient with id {patient_id} deleted.'}), 200
+
+
+@patients_blueprint.route('/patients/<int:patient_id>/predictions', methods=['GET'])
+def get_patient_predictions(patient_id: int):
+    predictions = PatientsService.get_patient_predictions(patient_id)
+    return jsonify({
+        'success': True,
+        'data': predictions}), 200
+
+
+@patients_blueprint.route('/patients/<int:patient_id>/predictions/latest', methods=['GET'])
+def get_latest_patient_prediction(patient_id: int):
+    prediction = PatientsService.get_latest_patient_prediction(patient_id)
+    return jsonify({
+        'success': True,
+        'data': prediction}), 200
