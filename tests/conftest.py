@@ -1,7 +1,6 @@
 import pytest
 
 from health_monitoring_system_app import create_app, db
-from health_monitoring_system_app.models.patient import Patient
 
 
 @pytest.fixture
