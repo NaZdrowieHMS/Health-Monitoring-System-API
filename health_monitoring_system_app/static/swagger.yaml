@@ -214,6 +214,56 @@ paths:
           schema:
             type: "object"
             $ref: "#/definitions/InternalServerError"
+  /api/patients/{patient_id}/health:
+    get:
+      summary: "Get health comments for patient by id"
+      description: "Retrieve health comments for patient by id"
+      tags:
+        - "Patients"
+      parameters:
+        - name: "patient_id"
+          in: "path"
+          description: "Id of the patient to retrieve all health comments"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/HealthComment"
+                description: "List of health comment records"
+              number_of_records:
+                type: "integer"
+                description: "Total number of health comment records"
+              pagination:
+                type: "object"
+                $ref: "#/definitions/Pagination"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
   /api/patients/{patient_id}/predictions:
     get:
       summary: "Get Patient predictions by patient id"
@@ -230,7 +280,16 @@ paths:
         200:
           description: "Successful operation"
           schema:
-            $ref: "#/definitions/AIPrediction"
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/AIPrediction"
+                description: "List of ai prediction records sorted by modified date"
         404:
           description: "Not found"
           schema:
@@ -635,6 +694,199 @@ paths:
           schema:
             type: "object"
             $ref: "#/definitions/InternalServerError"
+  /api/health:
+    get:
+      summary: "Get all Health comments"
+      description: "Retrieve a list of all health comments."
+      tags:
+        - "Health"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/HealthComment"
+                description: "List of health comment records"
+              number_of_records:
+                type: "integer"
+                description: "Total number of health comment records"
+              pagination:
+                type: "object"
+                $ref: "#/definitions/Pagination"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+    post:
+      summary: "Create new Health comment"
+      description: "Create a new health comment record."
+      tags:
+        - "Health"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Health comment object to be created"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              doctor_id:
+                type: "integer"
+                description: "Unique identifier for the doctor associated with the comment"
+              patient_id:
+                type: "integer"
+                description: "Unique identifier for the patient associated with the comment"
+              content:
+                type: "string"
+                format: text
+                description: "Text content of the comment"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                $ref: "#/definitions/HealthComment"
+                description: "Created health comment"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+    put:
+      summary: "Update Health comment"
+      description: "Update an existing health comment record."
+      tags:
+        - "Health"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Health comment object to be created"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "integer"
+                description: "Unique identifier for the health comment"
+              doctor_id:
+                type: "integer"
+                description: "Unique identifier for the doctor associated with the comment"
+              content:
+                type: "string"
+                format: text
+                description: "Text content of the comment"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/HealthComment"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+  /api/health/{health_id}:
+    get:
+      summary: "Get Health comment by id"
+      description: "Retrieve a health comment record by id."
+      tags:
+        - "Health"
+      parameters:
+        - name: "health_id"
+          in: "path"
+          description: "Id of the health comment to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/HealthComment"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
+    delete:
+      summary: "Delete Health comment"
+      description: "Delete a health comment record by Id."
+      tags:
+        - "Health"
+      parameters:
+        - name: "health_id"
+          in: "path"
+          description: "Id of the health comment to delete"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              message:
+                type: "string"
+                description: "Confirmation message"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "object"
+            $ref: "#/definitions/InternalServerError"
 definitions:
   Patient:
     type: "object"
@@ -714,6 +966,31 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Date and time when the prediction was created"
+        pattern: 'YYYY-MM-DD HH:MM:SS'
+  HealthComment:
+    properties:
+      id:
+        type: "integer"
+        description: "Unique identifier for the health comment"
+      doctor_id:
+        type: "integer"
+        description: "Unique identifier for the doctor associated with the comment"
+      patient_id:
+        type: "integer"
+        description: "Unique identifier for the patient associated with the comment"
+      content:
+        type: "string"
+        format: text
+        description: "Text content of the comment"
+      created_date:
+        type: "string"
+        format: "date-time"
+        description: "Date and time when the comment was created"
+        pattern: 'YYYY-MM-DD HH:MM:SS'
+      modified_date:
+        type: "string"
+        format: "date-time"
+        description: "Date and time when the comment was modified"
         pattern: 'YYYY-MM-DD HH:MM:SS'
   Pagination:
    type: "object"

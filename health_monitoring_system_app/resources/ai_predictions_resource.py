@@ -3,7 +3,7 @@ from webargs.flaskparser import use_args
 
 from health_monitoring_system_app.errors.validators import validate_json_content_type
 from health_monitoring_system_app.models.ai_prediction import ai_prediction_resource_schema
-from health_monitoring_system_app.services.ai_prediction_service import AIPredictionService
+from health_monitoring_system_app.services.ai_predictions_service import AIPredictionService
 
 ai_prediction_blueprint = Blueprint('ai_prediction_view', __name__, url_prefix='/api')
 

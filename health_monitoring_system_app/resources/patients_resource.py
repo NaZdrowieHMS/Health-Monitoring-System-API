@@ -69,3 +69,11 @@ def get_latest_patient_prediction(patient_id: int):
     return jsonify({
         'success': True,
         'data': prediction}), 200
+
+
+@patients_blueprint.route('/patients/<int:patient_id>/health', methods=['GET'])
+def get_patient_health_comments(patient_id: int):
+    health_comments = PatientsService.get_patient_health_comments(patient_id)
+    return jsonify({
+        'success': True,
+        'data': health_comments}), 200

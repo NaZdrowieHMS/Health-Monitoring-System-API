@@ -21,6 +21,18 @@ def test_doctor(client):
     return response.get_json()['data']['id']
 
 
+def test_health_comment(client):
+    doctor_id = test_doctor(client)
+    patient_id = test_patient(client)
+    payload = {
+        "doctor_id": doctor_id,
+        "patient_id": patient_id,
+        "content": "This is a test health comment."
+    }
+    response = client.post('/api/health', json=payload)
+    return response.get_json()['data']['id']
+
+
 def test_prediction(client):
     doctor_id = test_doctor(client)
     patient_id = test_patient(client)
