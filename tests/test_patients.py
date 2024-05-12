@@ -1,4 +1,4 @@
-from tests.utils import test_patient, test_doctor
+from tests.utils import test_patient
 
 
 def test_get_patients_no_records(client):

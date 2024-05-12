@@ -57,10 +57,13 @@ def delete_patient_by_id(patient_id: int):
 
 @patients_blueprint.route('/patients/<int:patient_id>/predictions', methods=['GET'])
 def get_patient_predictions(patient_id: int):
-    predictions = PatientsService.get_patient_predictions(patient_id)
+    predictions, pagination = PatientsService.get_patient_predictions(patient_id)
     return jsonify({
         'success': True,
-        'data': predictions}), 200
+        'data': predictions,
+        'number_of_records': len(predictions),
+        'pagination': pagination
+    }), 200
 
 
 @patients_blueprint.route('/patients/<int:patient_id>/predictions/latest', methods=['GET'])
@@ -73,7 +76,21 @@ def get_latest_patient_prediction(patient_id: int):
 
 @patients_blueprint.route('/patients/<int:patient_id>/health', methods=['GET'])
 def get_patient_health_comments(patient_id: int):
-    health_comments = PatientsService.get_patient_health_comments(patient_id)
+    health_comments, pagination = PatientsService.get_patient_health_comments(patient_id)
     return jsonify({
         'success': True,
-        'data': health_comments}), 200
+        'data': health_comments,
+        'number_of_records': len(health_comments),
+        'pagination': pagination
+    }), 200
+
+
+@patients_blueprint.route('/patients/<int:patient_id>/referrals', methods=['GET'])
+def get_patient_referrals(patient_id: int):
+    referrals, pagination = PatientsService.get_patient_referrals(patient_id)
+    return jsonify({
+        'success': True,
+        'data': referrals,
+        'number_of_records': len(referrals),
+        'pagination': pagination
+    }), 200

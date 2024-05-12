@@ -1,4 +1,4 @@
-from tests.utils import test_patient, test_doctor, test_prediction
+from tests.utils import test_patient, test_doctor
 
 
 def test_get_predictions(client):
