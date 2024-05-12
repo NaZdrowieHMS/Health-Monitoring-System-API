@@ -40,7 +40,7 @@ def update_doctor(args: dict):
 
 
 @doctors_blueprint.route('/doctors/<int:doctor_id>', methods=['GET'])
-def get_patient_by_id(doctor_id: int):
+def get_doctor_by_id(doctor_id: int):
     doctor = DoctorsService.get_doctor_by_id(doctor_id)
     return jsonify({
         'success': True,
@@ -48,7 +48,7 @@ def get_patient_by_id(doctor_id: int):
 
 
 @doctors_blueprint.route('/doctors/<int:doctor_id>', methods=['DELETE'])
-def delete_patient_by_id(doctor_id: int):
+def delete_doctor_by_id(doctor_id: int):
     DoctorsService.delete_doctor_by_id(doctor_id)
     return jsonify({
         'success': True,

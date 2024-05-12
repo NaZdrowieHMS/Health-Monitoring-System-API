@@ -2,6 +2,11 @@ from health_monitoring_system_app.repositories import db
 
 
 class DatabaseRepository:
+
+    @staticmethod
+    def flush_changes():
+        db.session.flush()
+
     @staticmethod
     def save_changes():
         db.session.commit()
