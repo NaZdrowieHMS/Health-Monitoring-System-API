@@ -38,30 +38,6 @@ def apply_filter(model: DefaultMeta, query_to_filter: Query) -> Query:
     return query_to_filter
 
 
-# def apply_pagination(query_to_paginate: Query, function_name: str, path_param=None, path_value=None) -> Tuple[list, dict]:
-#     page = request.args.get('page', DEFAULT_PAGE, type=int)
-#     per_page = request.args.get('per_page', DEFAULT_PER_PAGE, type=int)
-#     params = {key: value for key, value in request.args.items() if key != 'page'}
-#     pagination_object = query_to_paginate.paginate(page=page, per_page=per_page, error_out=False)
-#     pagination = {
-#         'total_pages': pagination_object.pages,
-#         'total_records': pagination_object.total,
-#     }
-#     if path_param is not None:
-#         pagination['current_page'] = url_for(function_name, page=page, **{path_param: path_value}, **params)
-#         if pagination_object.has_next:
-#             pagination['next_page'] = url_for(function_name, page=page + 1, **{path_param: path_value}, **params)
-#         if pagination_object.has_prev:
-#             pagination['previous_page'] = url_for(function_name, page=page - 1, **{path_param: path_value}, **params)
-#     else:
-#         pagination['current_page'] = url_for(function_name, page=page, **params)
-#         if pagination_object.has_next:
-#             pagination['next_page'] = url_for(function_name, page=page + 1, **params)
-#         if pagination_object.has_prev:
-#             pagination['previous_page'] = url_for(function_name, page=page - 1, **params)
-#
-#     return pagination_object.items, pagination
-
 def apply_pagination(query_to_paginate: Query, function_name: str, path_param=None, path_value=None) -> Tuple[
     list, dict]:
     page = request.args.get('page', DEFAULT_PAGE, type=int)
@@ -71,6 +47,8 @@ def apply_pagination(query_to_paginate: Query, function_name: str, path_param=No
     pagination = {
         'total_pages': pagination_object.pages,
         'total_records': pagination_object.total,
+        'previous_page': None,
+        'next_page': None,
     }
 
     if path_param is not None:
