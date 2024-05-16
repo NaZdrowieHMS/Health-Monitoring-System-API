@@ -30,22 +30,32 @@ paths:
           type: "integer"
         - name: "per_page"
           in: "query"
-          description: "Number of items per page (default: 10)"
+          description: "Number of items per page (default: 5)"
           required: false
           type: "integer"
         - name: "sort"
           in: "query"
-          description: "Field to sort by (e.g., name, created_date)"
-          required: false
-          type: "string"
-        - name: "sort_order"
-          in: "query"
-          description: "Sort order (asc or desc)"
+          description: "Field to sort by (e.g., name, created_date). If you want to sort desc, you need to add '-' (minus sign) before."
           required: false
           type: "string"
         - name: "pesel"
           in: "query"
-          description: "Filter patients for example by pesel etc."
+          description: "Filter patients by pesel."
+          required: false
+          type: "number"
+        - name: "name"
+          in: "query"
+          description: "Filter patients by name."
+          required: false
+          type: "string"
+        - name: "surname"
+          in: "query"
+          description: "Filter patients by surname."
+          required: false
+          type: "string"
+        - name: "email"
+          in: "query"
+          description: "Filter patients by email."
           required: false
           type: "string"
       responses:
@@ -260,7 +270,27 @@ paths:
           in: "path"
           description: "Id of the patient to retrieve all health comments"
           required: true
+          type: "number"
+        - name: "page"
+          in: "query"
+          description: "Page number for pagination (default: 1)"
+          required: false
           type: "integer"
+        - name: "per_page"
+          in: "query"
+          description: "Number of items per page (default: 5)"
+          required: false
+          type: "integer"
+        - name: "sort"
+          in: "query"
+          description: "Field to sort by (e.g., modified_date, created_date). If you want to sort desc, you need to add '-' (minus sign) before."
+          required: false
+          type: "string"
+        - name: "doctor_id"
+          in: "query"
+          description: "Filter health comment by doctor_id."
+          required: false
+          type: "number"
       responses:
         200:
           description: "Successful operation"
@@ -310,6 +340,26 @@ paths:
           description: "Id of the patient to retrieve"
           required: true
           type: "integer"
+        - name: "page"
+          in: "query"
+          description: "Page number for pagination (default: 1)"
+          required: false
+          type: "integer"
+        - name: "per_page"
+          in: "query"
+          description: "Number of items per page (default: 5)"
+          required: false
+          type: "integer"
+        - name: "sort"
+          in: "query"
+          description: "Field to sort by (e.g., modified_date, created_date). If you want to sort desc, you need to add '-' (minus sign) before."
+          required: false
+          type: "string"
+        - name: "doctor_id"
+          in: "query"
+          description: "Filter ai prediction by doctor_id."
+          required: false
+          type: "number"
       responses:
         200:
           description: "Successful operation"
@@ -400,6 +450,36 @@ paths:
           description: "Id of the patient to retrieve"
           required: true
           type: "integer"
+        - name: "page"
+          in: "query"
+          description: "Page number for pagination (default: 1)"
+          required: false
+          type: "integer"
+        - name: "per_page"
+          in: "query"
+          description: "Number of items per page (default: 5)"
+          required: false
+          type: "integer"
+        - name: "sort"
+          in: "query"
+          description: "Field to sort by (e.g., number, created_date). If you want to sort desc, you need to add '-' (minus sign) before."
+          required: false
+          type: "string"
+        - name: "number"
+          in: "query"
+          description: "Filter referrals by number."
+          required: false
+          type: "number"
+        - name: "test_type"
+          in: "query"
+          description: "Filter referrals by test_type."
+          required: false
+          type: "string"
+        - name: "completed"
+          in: "query"
+          description: "Filter referrals by completed."
+          required: false
+          type: "boolean"
       responses:
         200:
           description: "Successful operation"
@@ -437,6 +517,47 @@ paths:
       description: "Retrieve a list of all doctors."
       tags:
         - "Doctors"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number for pagination (default: 1)"
+          required: false
+          type: "integer"
+        - name: "per_page"
+          in: "query"
+          description: "Number of items per page (default: 5)"
+          required: false
+          type: "integer"
+        - name: "sort"
+          in: "query"
+          description: "Field to sort by (e.g., name, created_date). If you want to sort desc, you need to add '-' (minus sign) before."
+          required: false
+          type: "string"
+        - name: "pesel"
+          in: "query"
+          description: "Filter doctors by pesel."
+          required: false
+          type: "string"
+        - name: "name"
+          in: "query"
+          description: "Filter doctors by name."
+          required: false
+          type: "string"
+        - name: "surname"
+          in: "query"
+          description: "Filter doctors by surname."
+          required: false
+          type: "string"
+        - name: "pwz"
+          in: "query"
+          description: "Filter doctors by pwz number."
+          required: false
+          type: "number"
+        - name: "email"
+          in: "query"
+          description: "Filter doctors by email."
+          required: false
+          type: "string"
       responses:
         200:
           description: "Successful operation"
@@ -648,6 +769,37 @@ paths:
       description: "Retrieve patient referral view records"
       tags:
         - "Referrals"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number for pagination (default: 1)"
+          required: false
+          type: "integer"
+        - name: "per_page"
+          in: "query"
+          description: "Number of items per page (default: 5)"
+          required: false
+          type: "integer"
+        - name: "sort"
+          in: "query"
+          description: "Field to sort by (e.g., number, created_date). If you want to sort desc, you need to add '-' (minus sign) before."
+          required: false
+          type: "string"
+        - name: "number"
+          in: "query"
+          description: "Filter referrals by number."
+          required: false
+          type: "number"
+        - name: "test_type"
+          in: "query"
+          description: "Filter referrals by test_type."
+          required: false
+          type: "string"
+        - name: "completed"
+          in: "query"
+          description: "Filter referrals by completed."
+          required: false
+          type: "boolean"
       responses:
         200:
           description: "Successful operation"
@@ -957,6 +1109,32 @@ paths:
       description: "Retrieve a list of all ai predictions."
       tags:
         - "AI Predictions"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number for pagination (default: 1)"
+          required: false
+          type: "integer"
+        - name: "per_page"
+          in: "query"
+          description: "Number of items per page (default: 5)"
+          required: false
+          type: "integer"
+        - name: "sort"
+          in: "query"
+          description: "Field to sort by (e.g., modified_date, created_date). If you want to sort desc, you need to add '-' (minus sign) before."
+          required: false
+          type: "string"
+        - name: "doctor_id"
+          in: "query"
+          description: "Filter ai prediction by doctor_id."
+          required: false
+          type: "number"
+        - name: "patient_id"
+          in: "query"
+          description: "Filter ai prediction by patient_id."
+          required: false
+          type: "number"
       responses:
         200:
           description: "Successful operation"
@@ -1109,6 +1287,32 @@ paths:
       description: "Retrieve a list of all health comments."
       tags:
         - "Health"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number for pagination (default: 1)"
+          required: false
+          type: "integer"
+        - name: "per_page"
+          in: "query"
+          description: "Number of items per page (default: 5)"
+          required: false
+          type: "integer"
+        - name: "sort"
+          in: "query"
+          description: "Field to sort by (e.g., modified_date, created_date). If you want to sort desc, you need to add '-' (minus sign) before."
+          required: false
+          type: "string"
+        - name: "doctor_id"
+          in: "query"
+          description: "Filter health comment by doctor_id."
+          required: false
+          type: "number"
+        - name: "patient_id"
+          in: "query"
+          description: "Filter health comment by patient_id."
+          required: false
+          type: "number"
       responses:
         200:
           description: "Successful operation"
