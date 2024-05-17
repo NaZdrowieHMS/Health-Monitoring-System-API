@@ -5,6 +5,7 @@ from health_monitoring_system_app.models.ai_prediction import AIPrediction, AIPr
 from health_monitoring_system_app.models.health_comment import HealthComment, HealthCommentSchema
 from health_monitoring_system_app.models.patient import Patient, PatientSchema, patient_schema, patient_with_required_id_schema
 from health_monitoring_system_app.models.referral import ReferralWithComment, ReferralWithCommentSchema
+from health_monitoring_system_app.models.result import Result, ResultSchema
 from health_monitoring_system_app.services.utils import apply_sort, apply_filter, apply_pagination
 from health_monitoring_system_app.repositories.database_repository import DatabaseRepository
 
@@ -35,6 +36,9 @@ class PatientsService:
     @staticmethod
     def delete_patient_by_id(patient_id: int):
         patient = Patient.query.get_or_404(patient_id, description=f"Patient with id {patient_id} not found.")
+        comments = HealthComment.query.filter_by(patient_id=patient_id).all()
+        for comment in comments:
+            DatabaseRepository.delete_model(comment)
         DatabaseRepository.delete_model(patient)
 
     @staticmethod
@@ -87,4 +91,13 @@ class PatientsService:
         items, pagination = apply_pagination(query, f'patients_view.get_patient_referrals', "patient_id", patient_id)
         referrals = ReferralWithCommentSchema(many=True).dump(items)
         return referrals, pagination
+
+    @staticmethod
+    def get_patient_results(patient_id: int):
+        Patient.query.get_or_404(patient_id, description=f"Patient with id {patient_id} not found.")
+        query = Result.query.filter(Result.patient_id == patient_id)
+        query = query.order_by(desc(Result.created_date))
+        items, pagination = apply_pagination(query, f'patients_view.get_patient_results', "patient_id", patient_id)
+        results = ResultSchema(many=True).dump(items)
+        return results, pagination
 

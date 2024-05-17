@@ -53,3 +53,14 @@ def delete_doctor_by_id(doctor_id: int):
     return jsonify({
         'success': True,
         'message': f'Doctor with id {doctor_id} deleted.'}), 200
+
+
+@doctors_blueprint.route('/doctors/<int:doctor_id>/unviewed-results', methods=['GET'])
+def get_doctor_unviewed_results_by_id(doctor_id: int):
+    results, pagination = DoctorsService.get_doctor_unviewed_results_by_id(doctor_id)
+    return jsonify({
+        'success': True,
+        'data': results,
+        'number_of_records': len(results),
+        'pagination': pagination
+    }), 200

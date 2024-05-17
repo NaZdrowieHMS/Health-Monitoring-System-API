@@ -94,3 +94,14 @@ def get_patient_referrals(patient_id: int):
         'number_of_records': len(referrals),
         'pagination': pagination
     }), 200
+
+
+@patients_blueprint.route('/patients/<int:patient_id>/results', methods=['GET'])
+def get_patient_results(patient_id: int):
+    results, pagination = PatientsService.get_patient_results(patient_id)
+    return jsonify({
+        'success': True,
+        'data': results,
+        'number_of_records': len(results),
+        'pagination': pagination
+    }), 200
