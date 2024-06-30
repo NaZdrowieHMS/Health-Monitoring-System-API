@@ -6,6 +6,7 @@ from werkzeug.routing import ValidationError
 
 from health_monitoring_system_app.models import db
 from health_monitoring_system_app.models.results_comment import ResultCommentSchema
+from health_monitoring_system_app.models.patient import PatientSchema
 
 
 class Result(db.Model, metaclass=DefaultMeta):
@@ -17,6 +18,8 @@ class Result(db.Model, metaclass=DefaultMeta):
     ai_selected = db.Column(db.Boolean, nullable=False)
     viewed = db.Column(db.Boolean, nullable=False)
     created_date = db.Column(db.TIMESTAMP, nullable=False)
+
+    patient = db.relationship('Patient', backref=db.backref('results', lazy=True))
 
     @staticmethod
     def param_validation(param: str, value: str):
@@ -53,6 +56,12 @@ class ResultWithCommentsSchema(ResultBaseSchema):
     comments = fields.List(fields.Nested(ResultCommentSchema(exclude=['result_id'])), required=True)
 
 
+class ResultWithPatientsSchema(ResultSchema):
+    patient = fields.Nested(PatientSchema)
+
+
 results_schema = ResultSchema()
 
 results_with_comments_schema = ResultWithCommentsSchema()
+
+results_with_patients_schema = ResultWithPatientsSchema()
