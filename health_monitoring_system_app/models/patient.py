@@ -25,7 +25,7 @@ class BasePatientSchema(Schema):
     surname = fields.String(required=True)
     email = fields.String(required=True)
     pesel = fields.String(required=True, validate=validate.Length(min=11, max=11))
-    last_update = fields.DateTime(required=False)
+    last_updated = fields.DateTime(required=False)
 
     @validates('pesel')
     def validate_pesel(self, value: str):
