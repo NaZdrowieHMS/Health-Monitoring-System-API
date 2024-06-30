@@ -1,5 +1,6 @@
 from flask import abort
 from sqlalchemy import desc
+from sqlalchemy.orm import joinedload
 
 from health_monitoring_system_app.models.ai_prediction import AIPrediction, AIPredictionSchema
 from health_monitoring_system_app.models.health_comment import HealthComment, HealthCommentSchema
@@ -78,7 +79,7 @@ class PatientsService:
     def get_patient_health_comments(patient_id: int):
         Patient.query.get_or_404(patient_id, description=f"Patient with id {patient_id} not found.")
         query = HealthComment.query.filter(HealthComment.patient_id == patient_id)
-        query = query.order_by(desc(HealthComment.modified_date))
+        query = query.order_by(desc(HealthComment.modified_date)).options(joinedload(HealthComment.doctor))
         items, pagination = apply_pagination(query, f'patients_view.get_patient_health_comments', "patient_id", patient_id)
         health_comments = HealthCommentSchema(many=True).dump(items)
         return health_comments, pagination

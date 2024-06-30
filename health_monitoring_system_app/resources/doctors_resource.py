@@ -64,3 +64,13 @@ def get_doctor_unviewed_results_by_id(doctor_id: int):
         'number_of_records': len(results),
         'pagination': pagination
     }), 200
+
+@doctors_blueprint.route('/doctors/<int:doctor_id>/all-patients', methods=['GET'])
+def get_doctor_patients_by_doctor_id(doctor_id: int):
+    results, pagination = DoctorsService.get_doctor_patients_by_doctor_id(doctor_id)
+    return jsonify({
+        'success': True,
+        'data': results,
+        'number_of_records': len(results),
+        'pagination': pagination
+    }), 200
