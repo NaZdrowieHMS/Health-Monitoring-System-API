@@ -1,5 +1,8 @@
 from flask import abort
 from sqlalchemy import asc
+from sqlalchemy.orm import joinedload
+
+import logging
 
 from health_monitoring_system_app.models.doctor import Doctor, DoctorSchema, doctor_schema, \
     doctor_with_required_id_schema
@@ -7,6 +10,10 @@ from health_monitoring_system_app.models.doctor_patient import DoctorPatient
 from health_monitoring_system_app.models.result import Result, ResultSchema
 from health_monitoring_system_app.services.utils import apply_sort, apply_filter, apply_pagination
 from health_monitoring_system_app.repositories.database_repository import DatabaseRepository
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class DoctorsService:
@@ -55,10 +62,10 @@ class DoctorsService:
     def get_doctor_unviewed_results_by_id(doctor_id: int):
         Doctor.query.get_or_404(doctor_id, description=f"Doctor with id {doctor_id} not found.")
         patient_ids = DoctorPatient.query.filter_by(doctor_id=doctor_id).with_entities(DoctorPatient.patient_id).all()
+        logger.debug(patient_ids)
         patient_ids = [patient_id[0] for patient_id in patient_ids]
 
-        query = Result.query.filter(Result.patient_id.in_(patient_ids), Result.viewed is False).all()
-        query = query.order_by(asc(Result.created_date))
+        query = Result.query.filter(Result.patient_id.in_(patient_ids), Result.viewed.is_(False)).order_by(asc(Result.created_date))
         items, pagination = apply_pagination(query, f'doctors_view.get_doctor_unviewed_results_by_id', "doctor_id", doctor_id)
         results = ResultSchema(many=True).dump(items)
         return results, pagination
