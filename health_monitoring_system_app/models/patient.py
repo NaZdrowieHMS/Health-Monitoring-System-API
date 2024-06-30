@@ -12,6 +12,7 @@ class Patient(db.Model, metaclass=DefaultMeta):
     surname = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(320), nullable=False)
     pesel = db.Column(db.String(11), nullable=False, unique=True)
+    last_updated = db.Column(db.TIMESTAMP, nullable=False)
 
     @staticmethod
     def param_validation(param: str, value: str):
@@ -24,6 +25,7 @@ class BasePatientSchema(Schema):
     surname = fields.String(required=True)
     email = fields.String(required=True)
     pesel = fields.String(required=True, validate=validate.Length(min=11, max=11))
+    last_update = fields.DateTime(required=False)
 
     @validates('pesel')
     def validate_pesel(self, value: str):
