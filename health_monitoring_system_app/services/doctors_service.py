@@ -1,5 +1,5 @@
 from flask import abort
-from sqlalchemy import asc
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import joinedload
 
 import logging
@@ -75,7 +75,7 @@ class DoctorsService:
     def get_doctor_patients_by_doctor_id(doctor_id: int):
         patient_ids = DoctorPatient.query.filter_by(doctor_id=doctor_id).with_entities(DoctorPatient.patient_id).all()
         patient_ids = [patient_id[0] for patient_id in patient_ids]
-        query = Patient.query.filter(Patient.id.in_(patient_ids))
+        query = Patient.query.filter(Patient.id.in_(patient_ids)).order_by(desc(Patient.last_updated))
         items, pagination = apply_pagination(query, 'patients_view.get_patients')
         patients = PatientSchema(many=True).dump(items)
         return patients, pagination
