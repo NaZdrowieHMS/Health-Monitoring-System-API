@@ -56,3 +56,4 @@ class AIPredictionService:
         )
         # DatabaseRepository.create_model(new_prediction_mock)
         return ai_prediction_schema.dump(new_prediction_mock)
+    

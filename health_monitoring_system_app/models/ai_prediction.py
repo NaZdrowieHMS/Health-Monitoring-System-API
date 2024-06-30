@@ -42,8 +42,13 @@ class AIPredictionSchema(Schema):
     def validate_content(self, value):
         if 'type' not in value or 'data' not in value:
             raise ValidationError('Content must have "type" and "data" keys')
+        
+class AIPredictionResourceSchemaTest(Schema):
+    image = fields.String(required=True)
 
 
 ai_prediction_resource_schema = AIPredictionResourceSchema()
 
 ai_prediction_schema = AIPredictionSchema()
+
+ai_prediction_schema_test = AIPredictionResourceSchemaTest()

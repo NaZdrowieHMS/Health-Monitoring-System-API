@@ -106,7 +106,7 @@ paths:
                 description: "Patient's email address"
               pesel:
                 type: "string"
-                pattern: '^[0-9]{11}$'
+                pattern: "^[0-9]{11}$"
                 description: "PESEL number (Polish identification number)"
       responses:
         201:
@@ -115,11 +115,11 @@ paths:
             type: "object"
             properties:
               success:
-                 type: "boolean"
-                 description: "Indicates if the operation was successful"
+                type: "boolean"
+                description: "Indicates if the operation was successful"
               data:
-                  $ref: "#/definitions/Patient"
-                  description: "Created patient"
+                $ref: "#/definitions/Patient"
+                description: "Created patient"
         409:
           description: "Conflict"
           schema:
@@ -156,11 +156,11 @@ paths:
             type: "object"
             properties:
               success:
-                 type: "boolean"
-                 description: "Indicates if the operation was successful"
+                type: "boolean"
+                description: "Indicates if the operation was successful"
               data:
-                  $ref: "#/definitions/Patient"
-                  description: "Updated patient"
+                $ref: "#/definitions/Patient"
+                description: "Updated patient"
         404:
           description: "Not found"
           schema:
@@ -197,10 +197,10 @@ paths:
             type: "object"
             properties:
               success:
-                 type: "boolean"
-                 description: "Indicates if the operation was successful"
+                type: "boolean"
+                description: "Indicates if the operation was successful"
               data:
-                  $ref: "#/definitions/Patient"
+                $ref: "#/definitions/Patient"
         404:
           description: "Not found"
           schema:
@@ -619,7 +619,7 @@ paths:
                 description: "Doctor's email address"
               pesel:
                 type: "string"
-                pattern: '^[0-9]{11}$'
+                pattern: "^[0-9]{11}$"
                 description: "PESEL number (Polish identification number)"
               pwz:
                 type: "string"
@@ -1035,11 +1035,11 @@ paths:
             type: "object"
             properties:
               success:
-                 type: "boolean"
-                 description: "Indicates if the operation was successful"
+                type: "boolean"
+                description: "Indicates if the operation was successful"
               data:
-                  $ref: "#/definitions/ReferralView"
-                  description: "Updated referral"
+                $ref: "#/definitions/ReferralView"
+                description: "Updated referral"
         404:
           description: "Not found"
           schema:
@@ -1076,10 +1076,10 @@ paths:
             type: "object"
             properties:
               success:
-                 type: "boolean"
-                 description: "Indicates if the operation was successful"
+                type: "boolean"
+                description: "Indicates if the operation was successful"
               data:
-                  $ref: "#/definitions/ReferralView"
+                $ref: "#/definitions/ReferralView"
         404:
           description: "Not found"
           schema:
@@ -1158,10 +1158,10 @@ paths:
             type: "object"
             properties:
               success:
-                 type: "boolean"
-                 description: "Indicates if the operation was successful"
+                type: "boolean"
+                description: "Indicates if the operation was successful"
               data:
-                  $ref: "#/definitions/ReferralComment"
+                $ref: "#/definitions/ReferralComment"
         404:
           description: "Not found"
           schema:
@@ -1686,7 +1686,7 @@ paths:
           description: Prediction Resource object
           required: true
           schema:
-            $ref: '#/definitions/AIPredictionResource'
+            $ref: "#/definitions/AIPredictionResource"
       responses:
         201:
           description: "Successful operation"
@@ -1780,6 +1780,51 @@ paths:
                 type: "string"
                 example: "Prediction with id 1 deleted."
                 description: "Confirmation message"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+                description: "Indicates if the operation was not successful"
+              message:
+                type: "string"
+                description: "Error information message"
+                example: "Resource not found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/InternalServerError"
+  /predictions/test:
+    post:
+      summary: "Get AI Test Prediction using image"
+      description: "Retrieve an ai prediction record using id."
+      tags:
+        - "AI Predictions"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Cokolwiek"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              image:
+                type: "string"
+                description: "Unique identifier for the doctor associated with the comment"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                description: "Indicates if the operation was successful"
+              data:
+                $ref: "#/definitions/AIPrediction"
         404:
           description: "Not found"
           schema:
@@ -2042,7 +2087,7 @@ definitions:
         description: "Patient's email address"
       pesel:
         type: "string"
-        pattern: '^[0-9]{11}$'
+        pattern: "^[0-9]{11}$"
         description: "PESEL number (Polish identification number)"
   Doctor:
     properties:
@@ -2060,7 +2105,7 @@ definitions:
         description: "Doctor's email address"
       pesel:
         type: "string"
-        pattern: '^[0-9]{11}$'
+        pattern: "^[0-9]{11}$"
         description: "PESEL number (Polish identification number)"
       pwz:
         type: "string"
@@ -2103,7 +2148,7 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Date and time when the prediction was created"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
   HealthComment:
     properties:
       id:
@@ -2123,12 +2168,12 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Date and time when the comment was created"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
       modified_date:
         type: "string"
         format: "date-time"
         description: "Date and time when the comment was modified"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
   ReferralView:
     properties:
       referral_id:
@@ -2155,12 +2200,12 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Date and time when the referral was created"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
       referral_modified_date:
         type: "string"
         format: "date-time"
         description: "Date and time when the referral was modified"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
       comment_id:
         type: "integer"
         description: "Unique identifier for the comment associated with the referral"
@@ -2184,12 +2229,12 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Date and time when the referral was created"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
       modified_date:
         type: "string"
         format: "date-time"
         description: "Date and time when the referral was modified"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
   Result:
     properties:
       id:
@@ -2222,7 +2267,7 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Date and time when the result was created"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
   ResultComment:
     properties:
       id:
@@ -2242,12 +2287,12 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Date and time when the comment was created"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
       modified_date:
         type: "string"
         format: "date-time"
         description: "Date and time when the comment was modified"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
   ResultWithComments:
     properties:
       id:
@@ -2280,7 +2325,7 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Date and time when the result was created"
-        pattern: 'YYYY-MM-DD HH:MM:SS'
+        pattern: "YYYY-MM-DD HH:MM:SS"
       comments:
         type: "array"
         items:
@@ -2299,33 +2344,33 @@ definitions:
               type: "string"
               format: "date-time"
               description: "Date and time when the comment was created"
-              pattern: 'YYYY-MM-DD HH:MM:SS'
+              pattern: "YYYY-MM-DD HH:MM:SS"
             modified_date:
               type: "string"
               format: "date-time"
               description: "Date and time when the comment was modified"
-              pattern: 'YYYY-MM-DD HH:MM:SS'
+              pattern: "YYYY-MM-DD HH:MM:SS"
         description: "List of result comments records"
   Pagination:
-   type: "object"
-   properties:
-     total_pages:
-       type: "integer"
-       description: "Total number of pages"
-     total_records:
-       type: "integer"
-       description: "Total number of doctor records"
-     current_page:
-       type: "string"
-       description: "URL for the current page"
-     next_page:
-       type: "string"
-       description: "URL for the next page, if available"
-       default: null
-     previous_page:
-       type: "string"
-       description: "URL for the previous page, if available"
-       default: null
+    type: "object"
+    properties:
+      total_pages:
+        type: "integer"
+        description: "Total number of pages"
+      total_records:
+        type: "integer"
+        description: "Total number of doctor records"
+      current_page:
+        type: "string"
+        description: "URL for the current page"
+      next_page:
+        type: "string"
+        description: "URL for the next page, if available"
+        default: null
+      previous_page:
+        type: "string"
+        description: "URL for the previous page, if available"
+        default: null
   InternalServerError:
     type: "object"
     properties:
