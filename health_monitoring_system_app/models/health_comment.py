@@ -4,6 +4,7 @@ from flask_sqlalchemy.model import DefaultMeta
 from marshmallow import Schema, fields
 
 from health_monitoring_system_app.models import db
+from health_monitoring_system_app.models.doctor import DoctorSchema
 
 
 class HealthComment(db.Model, metaclass=DefaultMeta):
@@ -14,6 +15,8 @@ class HealthComment(db.Model, metaclass=DefaultMeta):
     content = db.Column(db.TEXT, nullable=False)
     created_date = db.Column(db.TIMESTAMP, nullable=False)
     modified_date = db.Column(db.TIMESTAMP, nullable=False)
+
+    doctor = db.relationship('Doctor', backref=db.backref('results', lazy=True))
 
     @staticmethod
     def param_validation(param: str, value: str):
@@ -35,6 +38,7 @@ class BaseHealthCommentSchema(Schema):
 class HealthCommentSchema(BaseHealthCommentSchema):
     id = fields.Integer(dump_only=True)
     patient_id = fields.Integer(required=True)
+    doctor = fields.Nested(DoctorSchema)
 
 
 class HealthCommentWithRequiredIdSchema(BaseHealthCommentSchema):
