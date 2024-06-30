@@ -26,7 +26,7 @@ class HealthCommentService:
         Doctor.query.get_or_404(args['doctor_id'], description=f"Doctor with id {args['doctor_id']} not found.")
         Patient.query.get_or_404(args['patient_id'], description=f"Patient with id {args['patient_id']} not found.")
         args['created_date'] = datetime.now()
-        args['modified_date'] = datetime.now()
+        args['modified_date'] = args['created_date']
         new_health_comment = HealthComment(**args)
         DatabaseRepository.create_model(new_health_comment)
         return health_comment_schema.dump(new_health_comment)
