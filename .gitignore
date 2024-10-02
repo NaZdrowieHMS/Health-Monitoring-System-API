@@ -69,3 +69,7 @@ ENV/
 # idea
 .DS_Store
 .idea
+
+#dataset
+health_monitoring_system_app/ai_model/dataset/
+health_monitoring_system_app/ai_model/Dataset_BUSI_with_GT/
