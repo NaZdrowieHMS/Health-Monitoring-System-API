@@ -1,0 +1,44 @@
+# Build application using Maven
+FROM maven:3.9.5-eclipse-temurin-21 as build
+
+# Work directory in the container
+WORKDIR /app
+
+# Copy the Maven project files (pom.xml and source code)
+COPY pom.xml .
+COPY src ./src
+
+# Copy the AI model into the app's resource directory
+COPY src/main/resources/models/ai_model /app/src/main/resources/models/ai_model
+
+# Check if the model files are copied correctly (optional)
+RUN ls -la /app/src/main/resources/models/ai_model
+
+# Build the application and package it as a JAR file
+RUN mvn clean package -DskipTests
+
+# Create the final image with the JAR and the model
+FROM eclipse-temurin:21-jre
+
+# Set work directory as /app
+WORKDIR /app
+
+# Copy the JAR file from the build stage
+COPY --from=build /app/target/HealthMonitoringSystemApplication-0.0.1-SNAPSHOT.jar app.jar
+
+# Copy the AI model from the build stage
+COPY --from=build /app/src/main/resources/models/ai_model /app/models/ai_model
+
+# Diagnostic step to ensure that the model is correctly copied (optional)
+RUN ls -R /app
+
+# Set Java environment variable
+ENV JAVA_OPTS=""
+# Disable oneDNN operations in TensorFlow for consistent results
+ENV TF_ENABLE_ONEDNN_OPTS=0
+
+# Run the application
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+
+# Expose the application port
+EXPOSE 8080
