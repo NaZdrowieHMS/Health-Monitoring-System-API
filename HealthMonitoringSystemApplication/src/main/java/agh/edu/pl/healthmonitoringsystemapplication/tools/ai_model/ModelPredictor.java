@@ -1,4 +1,5 @@
 package agh.edu.pl.healthmonitoringsystemapplication.tools.ai_model;
+import agh.edu.pl.healthmonitoringsystemapplication.exceptions.InvalidTensorShapeException;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.ModelLoadingException;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.PredictionException;
 import org.tensorflow.SavedModelBundle;
@@ -9,12 +10,15 @@ import org.tensorflow.types.TFloat32;
 
 public class ModelPredictor {
 
+    private static final String INPUT_TENSOR_NAME = "serve_input_layer";
+    private static final String OUTPUT_TENSOR_NAME = "StatefulPartitionedCall";
+
     public float[] predict(Tensor inputTensor) {
         try (SavedModelBundle model = ModelLoader.loadModel()) {
             try (Session session = model.session()) {
                 Tensor output = session.runner()
-                        .feed("serve_input_layer", inputTensor)  // input tensor name
-                        .fetch("StatefulPartitionedCall")       // output tensor name
+                        .feed(INPUT_TENSOR_NAME, inputTensor)
+                        .fetch(OUTPUT_TENSOR_NAME)
                         .run()
                         .get(0);
 
@@ -36,7 +40,7 @@ public class ModelPredictor {
                 }
                 return predictions;
             } else {
-                throw new IllegalArgumentException("Unexpected tensor shape: " + result.shape());
+                throw new InvalidTensorShapeException("Unexpected tensor shape: " + result.shape());
             }
         }
     }

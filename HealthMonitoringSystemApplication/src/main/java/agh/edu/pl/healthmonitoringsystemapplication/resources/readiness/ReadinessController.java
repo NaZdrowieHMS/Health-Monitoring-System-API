@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.resources.readiness;
 
 
-import agh.edu.pl.healthmonitoringsystemapplication.exceptions.ErrorResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.exceptions.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,9 +32,15 @@ public class ReadinessController {
             },
             tags = {"Readiness Check"}
     )
-    public ResponseEntity<?> readinessCheck() {
-        // Tu sprawdzenie połączenia z bazą
+    public ResponseEntity<String> readinessCheck(){
 
-        return ResponseEntity.ok("Ready");
+//        boolean isDatabaseConnected = checkDatabaseConnection();
+//        if (isDatabaseConnected) {
+            log.info("System is ready.");
+            return ResponseEntity.ok("Ready");
+//        } else {
+//            log.error("System is not ready: database connection failed.");
+//            return ResponseEntity.status(500).body(new ErrorResponse("Not ready"));
+//        }
     }
 }
