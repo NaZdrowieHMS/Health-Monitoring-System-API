@@ -8,6 +8,7 @@ import org.tensorflow.types.TFloat32;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+
 public class ImagePreprocessor {
 
     public Tensor preprocessImage(BufferedImage image) {

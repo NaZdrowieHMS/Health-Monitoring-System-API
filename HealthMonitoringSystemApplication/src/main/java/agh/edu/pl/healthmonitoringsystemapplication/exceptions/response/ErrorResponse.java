@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystemapplication.exceptions;
+package agh.edu.pl.healthmonitoringsystemapplication.exceptions.response;
 
 import lombok.Data;
 

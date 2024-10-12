@@ -1,13 +1,5 @@
 package agh.edu.pl.healthmonitoringsystemapplication.tools.ai_model;
 
-import org.junit.jupiter.api.Test;
-
-class ModelLoaderTest {
-
-    private static final String MODEL_PATH = "models/ai_model";
-
-    @Test
-    void shouldLoadModelSuccessfully()  {
-
-    }
+public class ModelLoaderTest {
+    // TODO: HMSS-136 https://nazdrowie.atlassian.net/browse/HMSS-138
 }

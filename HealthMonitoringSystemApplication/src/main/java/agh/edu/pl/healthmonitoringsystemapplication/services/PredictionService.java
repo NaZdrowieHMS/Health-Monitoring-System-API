@@ -1,6 +1,5 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
-import agh.edu.pl.healthmonitoringsystemapplication.exceptions.InvalidImageException;
 import agh.edu.pl.healthmonitoringsystemapplication.models.Prediction;
 import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.PredictionRequest;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.ai_model.ModelPredictor;
@@ -8,15 +7,15 @@ import agh.edu.pl.healthmonitoringsystemapplication.tools.image.ImageDecoder;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.image.ImagePreprocessor;
 import agh.edu.pl.healthmonitoringsystemapplication.validators.PredictionRequestValidator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.tensorflow.Tensor;
 
 import java.awt.image.BufferedImage;
 
-
-@Service
 @Slf4j
+@Service
 public class PredictionService {
 
     private final ImageDecoder imageDecoder;
@@ -26,6 +25,7 @@ public class PredictionService {
 
     private final String[] MODEL_CLASSES = {"benign", "malignant", "normal"};
 
+    @Autowired
     public PredictionService(ImageDecoder imageDecoder, ImagePreprocessor imagePreprocessor, ModelPredictor modelPredictor,
                              PredictionRequestValidator predictionRequestValidator) {
         this.imageDecoder = imageDecoder;
@@ -35,6 +35,7 @@ public class PredictionService {
     }
 
     public Prediction predict(PredictionRequest request) {
+        log.info("Received a test prediction request");
         predictionRequestValidator.validate(request);
 
         BufferedImage image = imageDecoder.decodeBase64Image(request.getImageBase64());

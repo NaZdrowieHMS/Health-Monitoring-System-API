@@ -5,7 +5,6 @@ import agh.edu.pl.healthmonitoringsystemapplication.exceptions.InvalidImageExcep
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Base64;
 
 public class ImageDecoder {
@@ -14,8 +13,8 @@ public class ImageDecoder {
         try {
             byte[] imageBytes = Base64.getDecoder().decode(base64Str.split(",")[1]); // Keep part after comma
             return ImageIO.read(new ByteArrayInputStream(imageBytes));
-        } catch (IOException e) {
-            throw new InvalidImageException("Failed to decode base64 image: " + e.getMessage());
+        } catch (Exception ex) {
+            throw new InvalidImageException("Failed to decode base64 image: " + ex.getMessage());
         }
     }
 }
