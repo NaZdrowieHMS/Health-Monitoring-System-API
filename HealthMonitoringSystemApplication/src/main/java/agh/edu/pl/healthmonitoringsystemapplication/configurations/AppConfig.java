@@ -1,6 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.configurations;
 
 import agh.edu.pl.healthmonitoringsystemapplication.database.SupabaseConnectionService;
+import agh.edu.pl.healthmonitoringsystemapplication.providers.DatabaseArgumentsProvider;
+import agh.edu.pl.healthmonitoringsystemapplication.services.DbConnectionService;
 import agh.edu.pl.healthmonitoringsystemapplication.services.PredictionService;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.ai_model.ModelPredictor;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.image.ImageDecoder;
@@ -10,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import java.sql.SQLException;
 
 @Configuration
 public class AppConfig {
@@ -42,17 +43,26 @@ public class AppConfig {
 
     @Bean
     @Scope("singleton")
-    public PredictionRequestValidator predictionRequestValidator() {
-        return new PredictionRequestValidator();
+    public SupabaseConnectionService supabaseConnectionService(DatabaseArgumentsProvider databaseArgumentsProvider) {
+        return new SupabaseConnectionService(databaseArgumentsProvider);
     }
 
     @Bean
     @Scope("singleton")
-    public SupabaseConnectionService connectionService() {
-        try {
-            return new SupabaseConnectionService();
-        } catch (SQLException e) {
-            throw new RuntimeException(e); // maybe resume server and try to reconnect until it connects
-        }
+    public DbConnectionService dbConnectionService(SupabaseConnectionService supabaseConnectionService) {
+        return new DbConnectionService(supabaseConnectionService);
+    }
+
+
+    @Bean
+    @Scope("singleton")
+    public DatabaseArgumentsProvider databaseArgumentsProvider(SecretsConfigProperties secretsConfigProperties) {
+        return new DatabaseArgumentsProvider(secretsConfigProperties);
+    }
+
+    @Bean
+    @Scope("singleton")
+    public PredictionRequestValidator predictionRequestValidator() {
+        return new PredictionRequestValidator();
     }
 }
