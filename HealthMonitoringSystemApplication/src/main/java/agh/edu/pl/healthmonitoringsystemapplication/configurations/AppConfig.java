@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.configurations;
 
+import agh.edu.pl.healthmonitoringsystemapplication.database.SupabaseConnectionService;
 import agh.edu.pl.healthmonitoringsystemapplication.services.PredictionService;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.ai_model.ModelPredictor;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.image.ImageDecoder;
@@ -8,6 +9,8 @@ import agh.edu.pl.healthmonitoringsystemapplication.validators.PredictionRequest
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+
+import java.sql.SQLException;
 
 @Configuration
 public class AppConfig {
@@ -41,5 +44,15 @@ public class AppConfig {
     @Scope("singleton")
     public PredictionRequestValidator predictionRequestValidator() {
         return new PredictionRequestValidator();
+    }
+
+    @Bean
+    @Scope("singleton")
+    public SupabaseConnectionService connectionService() {
+        try {
+            return new SupabaseConnectionService();
+        } catch (SQLException e) {
+            throw new RuntimeException(e); // maybe resume server and try to reconnect until it connects
+        }
     }
 }

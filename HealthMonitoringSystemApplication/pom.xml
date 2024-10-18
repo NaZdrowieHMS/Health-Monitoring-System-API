@@ -82,13 +82,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Msql connector -->
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
 		<!-- TensorFlow Java API -->
 		<dependency>
 			<groupId>org.tensorflow</groupId>
@@ -109,6 +102,13 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.15</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.2</version>
+			<scope>runtime</scope>
 		</dependency>
 
 	</dependencies>
