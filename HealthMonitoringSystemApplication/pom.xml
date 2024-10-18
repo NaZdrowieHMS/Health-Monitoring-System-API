@@ -110,6 +110,7 @@
 			<version>1.15</version>
 		</dependency>
 
+		<!-- PostgresSQL library-->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

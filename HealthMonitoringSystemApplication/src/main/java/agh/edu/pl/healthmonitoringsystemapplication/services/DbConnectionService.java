@@ -27,5 +27,7 @@ public class DbConnectionService {
             throw new DbConnectionException(String.format("Establish connection failed: %s", e.getMessage()));
         }
     }
-
+    public SupabaseConnectionService getDbConnection() {
+        return connectionService;
+    }
 }

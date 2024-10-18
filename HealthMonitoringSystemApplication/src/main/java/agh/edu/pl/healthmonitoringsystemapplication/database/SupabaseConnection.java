@@ -1,13 +1,10 @@
 package agh.edu.pl.healthmonitoringsystemapplication.database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class SupabaseConnection {
-    private Connection connection;
-    private SupabaseConnectionService pool;  // Reference to the connection pool
+    private final Connection connection;
+    private final SupabaseConnectionService pool;  // Reference to the connection pool
 
     // Constructor that initializes the connection and pool
     public SupabaseConnection(Connection connection, SupabaseConnectionService pool) {
@@ -17,11 +14,8 @@ public class SupabaseConnection {
 
     // Execute a query (for SELECT statements)
     public ResultSet executeQuery(String sql, Object... parameters) throws SQLException {
-        try (PreparedStatement statement = prepareStatement(sql, parameters)) {
-            return statement.executeQuery();  // Return the result of the query
-        } finally {
-            pool.returnConnection(this);  // Automatically return connection to the pool
-        }
+        PreparedStatement statement = prepareStatement(sql, parameters);
+        return statement.executeQuery();  // Return the result of the query
     }
 
 
@@ -50,6 +44,19 @@ public class SupabaseConnection {
     public void close() throws SQLException {
         if (connection != null && !connection.isClosed()) {
             connection.close();
+        }
+    }
+    // Method to close ResultSet and release connection back to the pool
+    public void closeResultSetAndReturnConnection(ResultSet resultSet, Statement statement) throws SQLException {
+        try {
+            if (resultSet != null) {
+                resultSet.close();  // Close the ResultSet
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();  // Close the statement
+            }
+            pool.returnConnection(this);  // Return connection to the pool
         }
     }
 }
