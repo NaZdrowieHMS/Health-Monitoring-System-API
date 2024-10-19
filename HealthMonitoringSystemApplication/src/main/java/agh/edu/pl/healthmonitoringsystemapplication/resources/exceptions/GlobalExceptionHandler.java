@@ -1,6 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.resources.exceptions;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.BadRequestException;
+import agh.edu.pl.healthmonitoringsystemapplication.exceptions.EntityNotFoundException;
+import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.InvalidImageException;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.ModelLoadingException;
@@ -49,6 +51,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidImageException.class)
     public ResponseEntity<ErrorResponse> handleInvalidImageException(InvalidImageException ex) {
         log.error("A InvalidImageException occurred: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.error("A EntityNotFoundException occurred: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(RequestValidationException.class)
+    public ResponseEntity<ErrorResponse> handleRequestValidationException(RequestValidationException ex) {
+        log.error("A RequestValidationException occurred: {}", ex.getMessage(), ex);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
