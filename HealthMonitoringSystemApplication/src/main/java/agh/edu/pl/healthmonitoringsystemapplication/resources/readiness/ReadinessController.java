@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ReadinessController {
 
-    private final DbConnectionService dbConnectionService;
+    private final ReadinessCheck readinessCheck;
 
-    public ReadinessController(DbConnectionService dbConnectionService) {
-        this.dbConnectionService = dbConnectionService;
+    public ReadinessController(ReadinessCheck readinessCheck) {
+        this.readinessCheck = readinessCheck;
     }
 
     @GetMapping(value = "/readiness")
@@ -41,14 +41,12 @@ public class ReadinessController {
             tags = {"Readiness Check"}
     )
     public ResponseEntity<ErrorResponse> readinessCheck(){
-        try {
-            dbConnectionService.isDbConnectionUsable();
-
+        if (readinessCheck.checkIfReady()){
             log.info("System is ready.");
             return ResponseEntity.ok(new ErrorResponse(HttpStatus.OK.value(),"Ready :)"));
-        } catch (Exception e) {
-            log.error(String.format("Database connection is not working. Exception: {%s}", e));
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
+        } else {
+            log.error(String.format("System is not ready. Database connection is not working."));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "System is not ready."));
         }
     }
 }
