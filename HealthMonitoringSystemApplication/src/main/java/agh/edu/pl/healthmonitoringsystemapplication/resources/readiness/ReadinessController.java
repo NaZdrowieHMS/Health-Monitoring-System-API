@@ -2,7 +2,6 @@ package agh.edu.pl.healthmonitoringsystemapplication.resources.readiness;
 
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.services.DbConnectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
