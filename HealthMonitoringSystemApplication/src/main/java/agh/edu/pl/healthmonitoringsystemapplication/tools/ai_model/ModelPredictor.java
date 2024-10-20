@@ -2,12 +2,14 @@ package agh.edu.pl.healthmonitoringsystemapplication.tools.ai_model;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.InvalidTensorShapeException;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.ModelLoadingException;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.PredictionException;
+import org.springframework.stereotype.Component;
 import org.tensorflow.SavedModelBundle;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
 import org.tensorflow.ndarray.Shape;
 import org.tensorflow.types.TFloat32;
 
+@Component
 public class ModelPredictor {
 
     private static final String INPUT_TENSOR_NAME = "serve_input_layer";

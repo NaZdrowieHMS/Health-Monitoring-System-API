@@ -1,9 +1,9 @@
-package agh.edu.pl.healthmonitoringsystemapplication.resources.patients;
+package agh.edu.pl.healthmonitoringsystemapplication.resources.doctors;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
-import agh.edu.pl.healthmonitoringsystemapplication.services.PatientService;
+import agh.edu.pl.healthmonitoringsystemapplication.models.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.services.DoctorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,13 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class PatientControllerTest {
+public class DoctorControllerTest {
 
     @InjectMocks
-    private PatientController patientController;
+    private DoctorController doctorController;
 
     @Mock
-    private PatientService patientService;
+    private DoctorService doctorService;
 
     @BeforeEach
     void setUp() {
@@ -34,16 +34,16 @@ public class PatientControllerTest {
     }
 
     @Test
-    void testGetPatientsShouldReturnListOfPatients() {
+    void testGetDoctorsShouldReturnListOfDoctors() {
         // Given
-        Patient patient1 = ModelTestUtil.patientBuilder().name("John").build();
-        Patient patient2 = ModelTestUtil.patientBuilder().name("Jane").build();
-        List<Patient> patients = Arrays.asList(patient1, patient2);
+        Doctor doctor1 = ModelTestUtil.doctorBuilder().name("John").build();
+        Doctor doctor2 = ModelTestUtil.doctorBuilder().name("Jane").build();
+        List<Doctor> doctors = Arrays.asList(doctor1, doctor2);
 
-        when(patientService.getPatients(0, 50)).thenReturn(patients);
+        when(doctorService.getDoctors(0, 50)).thenReturn(doctors);
 
         // When
-        ResponseEntity<List<PatientResponse>> response = patientController.getPatients(0, 50);
+        ResponseEntity<List<DoctorResponse>> response = doctorController.getDoctors(0, 50);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -53,12 +53,12 @@ public class PatientControllerTest {
     }
 
     @Test
-    void testGetPatientsShouldReturnEmptyListWhenNoPatientsFound() {
+    void testGetDoctorsShouldReturnEmptyListWhenNoDoctorsFound() {
         // Given
-        when(patientService.getPatients(0, 50)).thenReturn(Collections.emptyList());
+        when(doctorService.getDoctors(0, 50)).thenReturn(Collections.emptyList());
 
         // When
-        ResponseEntity<List<PatientResponse>> response = patientController.getPatients(0, 50);
+        ResponseEntity<List<DoctorResponse>> response = doctorController.getDoctors(0, 50);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -66,32 +66,32 @@ public class PatientControllerTest {
     }
 
     @Test
-    void testGetPatientByIdShouldReturnPatientResponse() {
+    void testGetDoctorByIdShouldReturnDoctorResponse() {
         // Given
-        Long patientId = 1L;
-        Patient patient = ModelTestUtil.patientBuilder().name("John").build();
+        Long doctorId = 1L;
+        Doctor doctor = ModelTestUtil.doctorBuilder().name("John").build();
 
-        when(patientService.getPatientById(patientId)).thenReturn(patient);
+        when(doctorService.getDoctorById(doctorId)).thenReturn(doctor);
 
         // When
-        ResponseEntity<PatientResponse> response = patientController.getPatientById(patientId);
+        ResponseEntity<DoctorResponse> response = doctorController.getDoctorById(doctorId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getId()).isEqualTo(patientId);
+        assertThat(response.getBody().getId()).isEqualTo(doctorId);
         assertThat(response.getBody().getName()).isEqualTo("John");
     }
 
     @Test
-    void testGetPatientByIdShouldReturn404WhenPatientNotFound() {
+    void testGetDoctorByIdShouldReturn404WhenDoctorNotFound() {
         // Given
-        Long patientId = 999L;
-        when(patientService.getPatientById(patientId)).thenThrow(new RequestValidationException("Patient not found"));
+        Long doctorId = 999L;
+        when(doctorService.getDoctorById(doctorId)).thenThrow(new RequestValidationException("Doctor not found"));
 
         // When
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            patientController.getPatientById(patientId);
+            doctorController.getDoctorById(doctorId);
         });
     }
 }

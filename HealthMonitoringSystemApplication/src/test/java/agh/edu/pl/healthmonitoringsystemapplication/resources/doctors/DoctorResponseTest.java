@@ -1,12 +1,14 @@
-package agh.edu.pl.healthmonitoringsystemapplication.resources.patients;
+package agh.edu.pl.healthmonitoringsystemapplication.resources.doctors;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelResponseTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PatientResponseTest {
+
+public class DoctorResponseTest {
 
     @Test
     public void shouldInitializeFieldsCorrectly() {
@@ -16,14 +18,16 @@ public class PatientResponseTest {
         String surname = "Doe";
         String email = "john.doe@example.com";
         String pesel = "12345678901";
+        String pwz = "5425740";
 
         // When
-        PatientResponse patientResponse = ModelResponseTestUtil.patientResponseBuilder()
+        DoctorResponse patientResponse = ModelResponseTestUtil.doctorResponseBuilder()
                 .id(id)
                 .name(name)
                 .surname(surname)
                 .email(email)
                 .pesel(pesel)
+                .pwz(pwz)
                 .build();
 
         // Then
@@ -32,13 +36,14 @@ public class PatientResponseTest {
         assertEquals(surname, patientResponse.getSurname());
         assertEquals(email, patientResponse.getEmail());
         assertEquals(pesel, patientResponse.getPesel());
+        assertEquals(pwz, patientResponse.getPwz());
     }
 
     @Test
     public void builderShouldThrowExceptionWhenIdIsNull() {
         // When & Then
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            ModelResponseTestUtil.patientResponseBuilder()
+            ModelResponseTestUtil.doctorResponseBuilder()
                     .id(null)
                     .build();
         });
@@ -49,7 +54,7 @@ public class PatientResponseTest {
     public void builderShouldThrowExceptionWhenNameIsNull() {
         // When & Then
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            ModelResponseTestUtil.patientResponseBuilder()
+            ModelResponseTestUtil.doctorResponseBuilder()
                     .name(null)
                     .build();
         });
@@ -60,7 +65,7 @@ public class PatientResponseTest {
     public void builderShouldThrowExceptionWhenSurnameIsNull() {
         // When & Then
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            ModelResponseTestUtil.patientResponseBuilder()
+            ModelResponseTestUtil.doctorResponseBuilder()
                     .surname(null)
                     .build();
         });
@@ -72,7 +77,7 @@ public class PatientResponseTest {
 
         // When & Then
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            ModelResponseTestUtil.patientResponseBuilder()
+            ModelResponseTestUtil.doctorResponseBuilder()
                     .email(null)
                     .build();
         });
@@ -83,7 +88,7 @@ public class PatientResponseTest {
     public void builderShouldThrowExceptionWhenPeselIsNull() {
         // When & Then
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            ModelResponseTestUtil.patientResponseBuilder()
+            ModelResponseTestUtil.doctorResponseBuilder()
                     .pesel(null)
                     .build();
         });
@@ -94,10 +99,32 @@ public class PatientResponseTest {
     public void builderShouldThrowExceptionWhenPeselHasWrongLength() {
         // When & Then
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            ModelResponseTestUtil.patientResponseBuilder()
+            ModelResponseTestUtil.doctorResponseBuilder()
                     .pesel("2137")
                     .build();
         });
         assertEquals("PESEL must be 11 characters", exception.getMessage());
+    }
+
+    @Test
+    public void builderShouldThrowExceptionWhenPwzNumberIsNull() {
+        // When & Then
+        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
+            ModelResponseTestUtil.doctorResponseBuilder()
+                    .pwz(null)
+                    .build();
+        });
+        assertEquals("PWZ number cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void builderShouldThrowExceptionWhenPwzNumberHasWrongLength() {
+        // When & Then
+        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
+            ModelResponseTestUtil.doctorResponseBuilder()
+                    .pwz("11")
+                    .build();
+        });
+        assertEquals("PWZ number must be 7 characters", exception.getMessage());
     }
 }

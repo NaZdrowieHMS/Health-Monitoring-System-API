@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.repositories.PatientRepository;
@@ -42,7 +43,7 @@ class PatientServiceTest {
         int page = 0;
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);
-        Patient patient = new Patient(1L, "John", "Doe", "john.doe@example.com", "12345678901", null, null);
+        Patient patient = ModelTestUtil.patientBuilder().name("John").build();
 
         when(patientRepository.findAll(pageable)).thenReturn(patientPage);
         when(patientPage.getContent()).thenReturn(Collections.singletonList(patient));
@@ -78,7 +79,7 @@ class PatientServiceTest {
     void getPatientByIdShouldReturnPatientWhenFound() {
         // Given
         Long patientId = 1L;
-        Patient patient = new Patient(patientId, "John", "Doe", "john.doe@example.com", "12345678901", null, null);
+        Patient patient = ModelTestUtil.patientBuilder().name("John").build();
 
         when(patientRepository.findById(patientId)).thenReturn(Optional.of(patient));
 

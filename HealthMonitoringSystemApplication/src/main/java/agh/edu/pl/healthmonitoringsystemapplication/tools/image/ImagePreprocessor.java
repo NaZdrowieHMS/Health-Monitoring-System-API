@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.tools.image;
 
+import org.springframework.stereotype.Component;
 import org.tensorflow.Tensor;
 import org.tensorflow.ndarray.Shape;
 import org.tensorflow.ndarray.buffer.DataBuffers;
@@ -8,7 +9,7 @@ import org.tensorflow.types.TFloat32;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-
+@Component
 public class ImagePreprocessor {
 
     public Tensor preprocessImage(BufferedImage image) {

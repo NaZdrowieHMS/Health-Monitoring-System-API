@@ -1,12 +1,14 @@
 package agh.edu.pl.healthmonitoringsystemapplication.tools.image;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.InvalidImageException;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
 
+@Component
 public class ImageDecoder {
 
     public BufferedImage decodeBase64Image(String base64Str) {

@@ -9,4 +9,10 @@ public class PreconditionValidator {
             throw runtimeExceptionSupplier.get();
         }
     }
+
+    public static void checkLength(String string, Integer length, Supplier<RuntimeException> runtimeExceptionSupplier){
+        if (string.length() != length){
+            throw runtimeExceptionSupplier.get();
+        }
+    }
 }

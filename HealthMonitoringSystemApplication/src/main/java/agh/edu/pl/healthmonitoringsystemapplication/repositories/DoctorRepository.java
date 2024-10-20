@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.repositories;
 
-import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.models.Doctor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PatientRepository extends CrudRepository<Patient, Long>, PagingAndSortingRepository<Patient, Long> {
+public interface DoctorRepository extends CrudRepository<Doctor, Long>, PagingAndSortingRepository<Doctor, Long> {
 
     @Override
-    Optional<Patient> findById(Long id);
+    Optional<Doctor> findById(Long id);
 }

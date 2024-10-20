@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.models;
 
+import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ public class PatientTest {
         LocalDateTime lastUpdated = LocalDateTime.now();
 
         // When
-        Patient patient = Patient.builder()
+        Patient patient = ModelTestUtil.patientBuilder()
                 .id(id)
                 .name(name)
                 .surname(surname)
