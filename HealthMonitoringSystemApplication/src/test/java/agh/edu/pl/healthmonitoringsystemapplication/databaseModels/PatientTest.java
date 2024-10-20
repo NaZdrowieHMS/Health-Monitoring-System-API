@@ -1,6 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.databaseModels;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -79,4 +80,68 @@ public class PatientTest {
         assertNull(patient.getCreatedAt());
         assertNull(patient.getLastUpdated());
     }
+
+    @Test
+    public void shouldThrowExceptionWhenNameIsNull() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelTestUtil.patientBuilder().name(null).build()
+        );
+        assertEquals("Name cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenSurnameIsNull() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelTestUtil.patientBuilder().surname(null).build()
+        );
+        assertEquals("Surname cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenEmailIsNull() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelTestUtil.patientBuilder().email(null).build()
+        );
+        assertEquals("Email cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenPeselIsNull() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelTestUtil.patientBuilder().pesel(null).build()
+        );
+        assertEquals("PESEL cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenPeselLengthIsInvalid() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelTestUtil.patientBuilder().pesel("2137").build()
+        );
+        assertEquals("PESEL must be 11 characters", exception.getMessage());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenCreatedAtIsNull() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelTestUtil.patientBuilder().createdAt(null).build()
+        );
+        assertEquals("Creation date cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenLastUpdatedIsNull() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelTestUtil.patientBuilder().lastUpdated(null).build()
+        );
+        assertEquals("Last update date cannot be null", exception.getMessage());
+    }
 }
+

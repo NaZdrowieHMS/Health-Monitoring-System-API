@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystemapplication.validators;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.InvalidImageException;
-import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.PredictionRequest;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

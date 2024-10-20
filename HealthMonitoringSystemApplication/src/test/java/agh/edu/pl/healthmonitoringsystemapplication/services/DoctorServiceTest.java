@@ -1,9 +1,12 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
 import agh.edu.pl.healthmonitoringsystemapplication.repositories.DoctorRepository;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.models.DoctorRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -106,6 +110,57 @@ class DoctorServiceTest {
                 .hasMessage("Entity not found: Doctor with id " + doctorId + " not found");
 
         verify(doctorRepository, times(1)).findById(doctorId);
+    }
+
+    @Test
+    void createDoctorShouldSaveDoctorAndReturnIt() {
+        // Given
+        DoctorRequest doctorRequest = ModelRequestTestUtil.doctorRequestBuilder()
+                .name("John")
+                .surname("Doe")
+                .email("john.doe@example.com")
+                .pesel("12345678901")
+                .pwz("5425740")
+                .build();
+
+        Doctor savedDoctor = ModelTestUtil.doctorBuilder()
+                .id(1L)
+                .name("John")
+                .surname("Doe")
+                .email("john.doe@example.com")
+                .pesel("12345678901")
+                .pwz("5425740")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        when(doctorRepository.save(any(Doctor.class))).thenReturn(savedDoctor);
+
+        // When
+        Doctor result = doctorService.createDoctor(doctorRequest);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("John");
+        assertThat(result.getSurname()).isEqualTo("Doe");
+        assertThat(result.getEmail()).isEqualTo("john.doe@example.com");
+        assertThat(result.getPesel()).isEqualTo("12345678901");
+        assertThat(result.getPwz()).isEqualTo("5425740");
+        verify(doctorRepository, times(1)).save(any(Doctor.class));
+    }
+
+    @Test
+    void createDoctorShouldThrowExceptionWhenInvalidData() {
+        // Given
+        DoctorRequest doctorRequest = ModelRequestTestUtil.doctorRequestBuilder()
+                .name(null)
+                .build();
+
+        // When & Then
+        assertThatThrownBy(() -> doctorService.createDoctor(doctorRequest))
+                .isInstanceOf(RequestValidationException.class)
+                .hasMessageContaining("Name cannot be null");
+
+        verify(doctorRepository, never()).save(any(Doctor.class));
     }
 }
 

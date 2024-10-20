@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystemapplication.resources.patients;
+package agh.edu.pl.healthmonitoringsystemapplication.resources.patients.models;
 
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;

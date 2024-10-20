@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public class ModelTestUtil {
 
-    public static Patient.PatientBuilder patientBuilder() {
+    public static Patient.Builder patientBuilder() {
         return Patient.builder()
                 .id(1L)
                 .name("Anna")
@@ -18,7 +18,7 @@ public class ModelTestUtil {
                 .lastUpdated(LocalDateTime.now());
     }
 
-    public static Doctor.DoctorBuilder doctorBuilder() {
+    public static Doctor.Builder doctorBuilder() {
         return Doctor.builder()
                 .id(1L)
                 .name("Anna")
