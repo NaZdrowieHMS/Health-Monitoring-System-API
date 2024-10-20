@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystemapplication.resources.patients;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.services.PatientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

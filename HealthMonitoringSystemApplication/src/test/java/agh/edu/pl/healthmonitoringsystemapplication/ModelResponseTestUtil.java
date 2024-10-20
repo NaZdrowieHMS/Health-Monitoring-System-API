@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication;
 
-import agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.DoctorResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.models.DoctorResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.resources.patients.PatientResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.PredictionResponse;
 

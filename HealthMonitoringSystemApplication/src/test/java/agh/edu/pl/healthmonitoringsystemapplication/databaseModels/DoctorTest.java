@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystemapplication.models;
+package agh.edu.pl.healthmonitoringsystemapplication.databaseModels;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import org.junit.jupiter.api.Test;

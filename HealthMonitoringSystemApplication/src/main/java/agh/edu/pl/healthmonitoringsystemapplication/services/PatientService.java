@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.EntityNotFoundException;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.repositories.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

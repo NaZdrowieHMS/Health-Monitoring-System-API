@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.EntityNotFoundException;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.repositories.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

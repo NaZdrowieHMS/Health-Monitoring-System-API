@@ -2,6 +2,7 @@ package agh.edu.pl.healthmonitoringsystemapplication.resources.doctors;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelResponseTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.models.DoctorResponse;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

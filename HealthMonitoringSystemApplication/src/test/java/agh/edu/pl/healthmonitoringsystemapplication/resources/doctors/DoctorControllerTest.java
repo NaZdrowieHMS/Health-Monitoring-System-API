@@ -2,7 +2,8 @@ package agh.edu.pl.healthmonitoringsystemapplication.resources.doctors;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.models.DoctorResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.services.DoctorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.resources.doctors;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.models.DoctorResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.services.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

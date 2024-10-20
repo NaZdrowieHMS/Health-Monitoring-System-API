@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystemapplication.resources.doctors;
+package agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.models;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.RequestValidationException;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystemapplication.models;
+package agh.edu.pl.healthmonitoringsystemapplication.databaseModels;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystemapplication.services;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.EntityNotFoundException;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.repositories.DoctorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
