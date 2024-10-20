@@ -1,13 +1,20 @@
 package agh.edu.pl.healthmonitoringsystemapplication;
 
-import agh.edu.pl.healthmonitoringsystemapplication.models.Prediction;
+import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
+
+import java.time.LocalDateTime;
 
 public class ModelTestUtil {
-    public static Prediction.PredictionBuilder predictionBuilder() {
-        return Prediction.builder()
-                .success(true)
-                .prediction("benign")
-                .confidence(0.87F);
+
+    public static Patient.PatientBuilder predictionResponseBuilder() {
+        return Patient.builder()
+                .id(1L)
+                .name("Anna")
+                .surname("Nowak")
+                .email("nowak@mail.com")
+                .pesel("12345678909")
+                .createdAt(LocalDateTime.now())
+                .lastUpdated(LocalDateTime.now());
     }
 }
 

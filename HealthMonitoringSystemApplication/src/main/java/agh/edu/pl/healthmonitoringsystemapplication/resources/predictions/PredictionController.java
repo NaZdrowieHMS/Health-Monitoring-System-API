@@ -1,7 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.resources.predictions;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Prediction;
 import agh.edu.pl.healthmonitoringsystemapplication.services.PredictionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +32,7 @@ public class PredictionController {
             summary = "Predict breast cancer possibility with AI model.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Prediction successful",
-                            content = @Content(schema = @Schema(implementation = Prediction.class))),
+                            content = @Content(schema = @Schema(implementation = PredictionResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
@@ -45,10 +44,10 @@ public class PredictionController {
                     schema = @Schema(implementation = PredictionRequest.class))),
             tags = {"AI Prediction"}
     )
-    public ResponseEntity<Prediction> testPrediction(@Parameter(description = "Test prediction request")
+    public ResponseEntity<PredictionResponse> testPrediction(@Parameter(description = "Test prediction request")
                                                          @Valid @RequestBody PredictionRequest request) {
-        Prediction prediction = predictionService.predict(request);
+        PredictionResponse predictionResponse = predictionService.predict(request);
 
-        return ResponseEntity.ok(prediction);
+        return ResponseEntity.ok(predictionResponse);
     }
 }

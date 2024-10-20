@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
-import agh.edu.pl.healthmonitoringsystemapplication.models.Prediction;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.PredictionResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.PredictionRequest;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.ai_model.ModelPredictor;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.image.ImageDecoder;
@@ -34,7 +34,7 @@ public class PredictionService {
         this.predictionRequestValidator = predictionRequestValidator;
     }
 
-    public Prediction predict(PredictionRequest request) {
+    public PredictionResponse predict(PredictionRequest request) {
         log.info("Received a test prediction request");
         predictionRequestValidator.validate(request);
 
@@ -45,7 +45,7 @@ public class PredictionService {
         int predictedClass = argMax(predictions);
         String predictionLabel = MODEL_CLASSES[predictedClass];
 
-        return Prediction.builder()
+        return PredictionResponse.builder()
                 .success(true)
                 .prediction(predictionLabel)
                 .confidence(predictions[predictedClass])
