@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication;
 
+import agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.DoctorResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.resources.patients.PatientResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.PredictionResponse;
 
@@ -19,5 +20,15 @@ public class ModelResponseTestUtil {
                 .surname("Nowak")
                 .email("nowak@mail.com")
                 .pesel("12345678909");
+    }
+
+    public static DoctorResponse.Builder doctorResponseBuilder() {
+        return DoctorResponse.builder()
+                .id(1L)
+                .name("Anna")
+                .surname("Nowak")
+                .email("nowak@mail.com")
+                .pesel("12345678909")
+                .pwz("5425740");
     }
 }

@@ -31,4 +31,29 @@ public class PreconditionValidatorTest {
         // When & Then
         PreconditionValidator.checkNotNull(reference, exceptionSupplier);
     }
+
+    @Test
+    void testShouldThrowExceptionWhenStringLengthIsIncorrect() {
+        // Given
+        String string = "hello";
+        int expectedLength = 10;
+        Supplier<RuntimeException> exceptionSupplier = () -> new RuntimeException("String length is incorrect");
+
+        // When & Then
+        RuntimeException thrown = assertThrows(RuntimeException.class, () ->
+                PreconditionValidator.checkLength(string, expectedLength, exceptionSupplier)
+        );
+        assertEquals("String length is incorrect", thrown.getMessage());
+    }
+
+    @Test
+    void testShouldNotThrowExceptionWhenStringLengthIsCorrect() {
+        // Given
+        String string = "hello";
+        int expectedLength = 5;
+        Supplier<RuntimeException> exceptionSupplier = () -> new RuntimeException("String length is incorrect");
+
+        // When & Then
+        PreconditionValidator.checkLength(string, expectedLength, exceptionSupplier);
+    }
 }
