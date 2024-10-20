@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.exceptions.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.repositories.PatientRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 class PatientServiceTest {
@@ -91,17 +93,17 @@ class PatientServiceTest {
     }
 
     @Test
-    void getPatientByIdShouldReturnNullWhenNotFound() {
+    void getPatientByIdShouldThrowEntityNotFoundExceptionWhenNotFound() {
         // Given
         Long patientId = 999L; // Assuming this patient doesn't exist
 
         when(patientRepository.findById(patientId)).thenReturn(Optional.empty());
 
-        // When
-        Patient result = patientService.getPatientById(patientId);
+        // When & Then
+        assertThatThrownBy(() -> patientService.getPatientById(patientId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Entity not found: Patient with id " + patientId + " not found");
 
-        // Then
-        assertThat(result).isNull();
         verify(patientRepository, times(1)).findById(patientId);
     }
 }

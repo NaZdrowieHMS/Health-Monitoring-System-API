@@ -62,7 +62,7 @@ public class PatientController {
         return ResponseEntity.ok(patients);
     }
 
-    @GetMapping("/patients/{patientId}")
+    @GetMapping("/{patientId}")
     @Operation(
             summary = "Get the specific patient by ID.",
             responses = {

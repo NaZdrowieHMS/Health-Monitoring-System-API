@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.exceptions.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.repositories.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class PatientService {
     }
 
     public Patient getPatientById(Long id){
-        return patientRepository.findById(id).orElse(null);
+        return patientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Patient with id " + id + " not found"));
     }
 }
