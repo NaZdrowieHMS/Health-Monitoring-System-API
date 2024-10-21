@@ -2,6 +2,8 @@ package agh.edu.pl.healthmonitoringsystemapplication.resources.predictions;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelResponseTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionRequest;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.services.PredictionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,6 +73,5 @@ class PredictionControllerTest {
                 .andExpect(status().isBadRequest());
 
         verify(predictionService, never()).predict(any(PredictionRequest.class));
-
     }
 }

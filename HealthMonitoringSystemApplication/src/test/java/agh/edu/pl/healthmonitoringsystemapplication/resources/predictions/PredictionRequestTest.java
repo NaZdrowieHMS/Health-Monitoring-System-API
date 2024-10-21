@@ -1,6 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.resources.predictions;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -44,7 +45,7 @@ class PredictionRequestTest {
 
         // Then
         assertEquals(1, violations.size(), "Validation should fail for null imageBase64");
-        assertEquals("Image in Base64 format is mandatory", violations.iterator().next().getMessage());
+        assertEquals("Image in Base64 format is required", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -57,6 +58,6 @@ class PredictionRequestTest {
 
         // Then
         assertEquals(1, violations.size(), "Validation should fail for empty imageBase64");
-        assertEquals("Image in Base64 format is mandatory", violations.iterator().next().getMessage());
+        assertEquals("Image in Base64 format is required", violations.iterator().next().getMessage());
     }
 }

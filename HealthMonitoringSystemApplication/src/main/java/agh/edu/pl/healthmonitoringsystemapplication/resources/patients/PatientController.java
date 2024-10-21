@@ -1,16 +1,20 @@
 package agh.edu.pl.healthmonitoringsystemapplication.resources.patients;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.patients.models.PatientRequest;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.patients.models.PatientResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.services.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +64,33 @@ public class PatientController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(patients);
+    }
+
+    @PostMapping
+    @Operation(
+            summary = "Create a new patient",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Patient created successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PatientResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
+            },
+            tags = {"Patients"}
+    )
+    public ResponseEntity<PatientResponse> createPatient(@Parameter(description = "Patient to be created request")
+                                                       @RequestBody @Valid PatientRequest patientRequest) {
+        Patient patient = patientService.createPatient(patientRequest);
+        PatientResponse patientResponse = PatientResponse.builder()
+                .id(patient.getId())
+                .name(patient.getName())
+                .surname(patient.getSurname())
+                .email(patient.getEmail())
+                .pesel(patient.getPesel())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(patientResponse);
     }
 
     @GetMapping("/{patientId}")

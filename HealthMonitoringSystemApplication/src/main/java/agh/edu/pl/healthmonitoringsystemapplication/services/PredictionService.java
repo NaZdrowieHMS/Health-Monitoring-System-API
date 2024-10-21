@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.services;
 
-import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.PredictionResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.PredictionRequest;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionRequest;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.ai_model.ModelPredictor;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.image.ImageDecoder;
 import agh.edu.pl.healthmonitoringsystemapplication.tools.image.ImagePreprocessor;

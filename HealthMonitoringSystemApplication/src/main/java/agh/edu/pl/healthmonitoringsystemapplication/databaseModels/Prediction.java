@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystemapplication.models;
+package agh.edu.pl.healthmonitoringsystemapplication.databaseModels;
 
 
 public class Prediction {

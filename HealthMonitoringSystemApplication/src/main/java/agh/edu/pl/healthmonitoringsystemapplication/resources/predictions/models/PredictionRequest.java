@@ -1,16 +1,16 @@
-package agh.edu.pl.healthmonitoringsystemapplication.resources.predictions;
+package agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 @Builder
 public class PredictionRequest {
 
-    @NotBlank(message = "Image in Base64 format is mandatory")
+    @NotBlank(message = "Image in Base64 format is required")
     private String imageBase64;
 
     @JsonCreator

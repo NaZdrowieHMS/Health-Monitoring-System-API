@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.repositories;
 
-import agh.edu.pl.healthmonitoringsystemapplication.models.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Patient;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

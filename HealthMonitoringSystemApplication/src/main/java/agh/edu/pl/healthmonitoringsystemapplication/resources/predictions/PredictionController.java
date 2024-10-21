@@ -1,6 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.resources.predictions;
 
 import agh.edu.pl.healthmonitoringsystemapplication.exceptions.response.ErrorResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionRequest;
+import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.services.PredictionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
