@@ -44,7 +44,7 @@ public class ReadinessController {
             log.info("System is ready.");
             return ResponseEntity.ok(new ErrorResponse(HttpStatus.OK.value(),"Ready :)"));
         } else {
-            log.error(String.format("System is not ready. Database connection is not working."));
+            log.error("System is not ready. Database connection is not working.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "System is not ready."));
         }
     }

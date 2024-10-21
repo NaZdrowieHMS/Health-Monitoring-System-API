@@ -1,122 +1,40 @@
 package agh.edu.pl.healthmonitoringsystemapplication.resources.patients;
 
-import agh.edu.pl.healthmonitoringsystemapplication.exceptions.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Patient;
-import agh.edu.pl.healthmonitoringsystemapplication.resources.patients.models.PatientRequest;
-import agh.edu.pl.healthmonitoringsystemapplication.resources.patients.models.PatientResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.services.PatientService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import agh.edu.pl.healthmonitoringsystemapplication.repositories.PatientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static agh.edu.pl.healthmonitoringsystemapplication.resources.Constants.PAGE_SIZE_PARAM;
-import static agh.edu.pl.healthmonitoringsystemapplication.resources.Constants.START_INDEX_PARAM;
-
-@Slf4j
 @RestController
-@RequestMapping("/api/patients")
-@CrossOrigin
+@RequestMapping("/patients")
 public class PatientController {
-    private final PatientService patientService;
 
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
+    private final PatientRepository patientRepository;
+
+    @Autowired
+    public PatientController(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
     }
 
-    @GetMapping(params = { START_INDEX_PARAM, PAGE_SIZE_PARAM })
-    @Operation(
-            summary = "Get list of all patients.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = PatientResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Patients"}
-    )
-    public ResponseEntity<List<PatientResponse>> getPatients(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                             @Parameter(description = "Number of patients per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize) {
-
-        List<PatientResponse> patients = patientService.getPatients(startIndex, pageSize)
-                .stream()
-                .map(patient -> PatientResponse.builder()
-                        .id(patient.getId())
-                        .name(patient.getName())
-                        .surname(patient.getSurname())
-                        .email(patient.getEmail())
-                        .pesel(patient.getPesel())
-                        .build())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(patients);
+    @GetMapping("/{id}")
+    public ResponseEntity<Patient> getPatient(@PathVariable Long id) {
+        return patientRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    @Operation(
-            summary = "Create a new patient",
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "Patient created successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PatientResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
-            },
-            tags = {"Patients"}
-    )
-    public ResponseEntity<PatientResponse> createPatient(@Parameter(description = "Patient to be created request")
-                                                       @RequestBody @Valid PatientRequest patientRequest) {
-        Patient patient = patientService.createPatient(patientRequest);
-        PatientResponse patientResponse = PatientResponse.builder()
-                .id(patient.getId())
-                .name(patient.getName())
-                .surname(patient.getSurname())
-                .email(patient.getEmail())
-                .pesel(patient.getPesel())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(patientResponse);
+    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
+        patientRepository.save(patient);
+        return ResponseEntity.status(201).body(patient);
     }
 
-    @GetMapping("/{patientId}")
-    @Operation(
-            summary = "Get the specific patient by ID.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(implementation = PatientResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    },
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(),
-            tags = {"Patients"}
-            )
-    public ResponseEntity<PatientResponse> getPatientById(@Parameter(description = "Patient ID") @PathVariable("patientId") Long patientId) {
-        Patient patient = patientService.getPatientById(patientId);
-
-        PatientResponse patientResponse = PatientResponse.builder()
-                .id(patient.getId())
-                .name(patient.getName())
-                .surname(patient.getSurname())
-                .email(patient.getEmail())
-                .pesel(patient.getPesel()).build();
-
-        return ResponseEntity.ok(patientResponse);
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
+        patientRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
