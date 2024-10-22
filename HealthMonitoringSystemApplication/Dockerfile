@@ -34,8 +34,14 @@ RUN ls -R /app
 
 # Set Java environment variable
 ENV JAVA_OPTS=""
+
 # Disable oneDNN operations in TensorFlow for consistent results
 ENV TF_ENABLE_ONEDNN_OPTS=0
+
+# Set database-related environment variables
+ENV DATABASE_URL=""
+ENV DATABASE_USERNAME=""
+ENV DATABASE_PASSWORD=""
 
 # Run the application
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
