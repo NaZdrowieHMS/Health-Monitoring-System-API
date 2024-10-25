@@ -1,8 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication;
 
-import agh.edu.pl.healthmonitoringsystemapplication.resources.doctors.models.DoctorRequest;
-import agh.edu.pl.healthmonitoringsystemapplication.resources.patients.models.PatientRequest;
-import agh.edu.pl.healthmonitoringsystemapplication.resources.predictions.models.PredictionRequest;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.DoctorRequest;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.PatientRequest;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.PredictionRequest;
 
 public class ModelRequestTestUtil {
     public static PredictionRequest.PredictionRequestBuilder predictionRequestBuilder() {

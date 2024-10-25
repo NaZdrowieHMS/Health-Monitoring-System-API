@@ -35,12 +35,6 @@
 	</repositories>
 
 	<dependencies>
-		<!-- Spring Data JDBC -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-		</dependency>
-
 		<!-- Spring Web for REST API -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -127,6 +121,18 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.7.2</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Spring Data JPA -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>3.3.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
 	</dependencies>

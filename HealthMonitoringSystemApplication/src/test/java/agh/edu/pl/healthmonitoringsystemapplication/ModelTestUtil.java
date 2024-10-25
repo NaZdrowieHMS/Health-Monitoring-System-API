@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication;
 
-import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Doctor;
-import agh.edu.pl.healthmonitoringsystemapplication.databaseModels.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Patient;
 
 import java.time.LocalDateTime;
 
