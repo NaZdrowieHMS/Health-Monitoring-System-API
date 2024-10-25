@@ -1,7 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.models.request;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.PatientRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

@@ -2,7 +2,6 @@ package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelResponseTestUtil;
-import agh.edu.pl.healthmonitoringsystemapplication.api.resources.PredictionController;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.PredictionRequest;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PredictionResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.PredictionService;
