@@ -128,8 +128,8 @@ class PatientServiceTest {
                 .surname("Doe")
                 .email("john.doe@example.com")
                 .pesel("12345678901")
-                .createdAt(LocalDateTime.now())
-                .lastUpdated(LocalDateTime.now())
+                .createdDate(LocalDateTime.now())
+                .modifiedDate(LocalDateTime.now())
                 .build();
 
         when(patientRepository.save(any(Patient.class))).thenReturn(savedPatient);

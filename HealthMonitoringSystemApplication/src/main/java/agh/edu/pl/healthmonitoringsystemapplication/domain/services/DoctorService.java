@@ -30,13 +30,15 @@ public class DoctorService {
     }
 
     public Doctor createDoctor(DoctorRequest doctorRequest) {
+        LocalDateTime now = LocalDateTime.now();
         Doctor doctor = Doctor.builder()
                 .name(doctorRequest.getName())
                 .surname(doctorRequest.getSurname())
                 .email(doctorRequest.getEmail())
                 .pesel(doctorRequest.getPesel())
                 .pwz(doctorRequest.getPwz())
-                .createdAt(LocalDateTime.now())
+                .createdDate(now)
+                .modifiedDate(now)
                 .build();
         return doctorRepository.save(doctor);
     }

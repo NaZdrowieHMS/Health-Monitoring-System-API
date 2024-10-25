@@ -31,13 +31,14 @@ public class PatientService {
     }
 
     public Patient createPatient(PatientRequest patientRequest) {
+        LocalDateTime now = LocalDateTime.now();
         Patient patient = Patient.builder()
                 .name(patientRequest.getName())
                 .surname(patientRequest.getSurname())
                 .email(patientRequest.getEmail())
                 .pesel(patientRequest.getPesel())
-                .createdAt(LocalDateTime.now())
-                .lastUpdated(LocalDateTime.now())
+                .createdDate(now)
+                .modifiedDate(now)
                 .build();
         return patientRepository.save(patient);
     }

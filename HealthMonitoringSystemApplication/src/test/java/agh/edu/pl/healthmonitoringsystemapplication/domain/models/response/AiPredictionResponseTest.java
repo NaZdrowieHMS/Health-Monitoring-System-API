@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PredictionResponseTest {
+public class AiPredictionResponseTest {
 
     @Test
     public void shouldInitializeFieldsCorrectly() {

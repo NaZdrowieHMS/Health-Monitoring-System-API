@@ -26,20 +26,20 @@ public class Patient {
     private String surname;
     private String email;
     private String pesel;
-    private LocalDateTime createdAt;
-    private LocalDateTime lastUpdated; //updatedAt TODO: rename it here, in the code and in database
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     public Patient() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public Patient(Long id, String name, String surname, String email, String pesel, LocalDateTime createdAt, LocalDateTime lastUpdated) {
+    public Patient(Long id, String name, String surname, String email, String pesel, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.pesel = pesel;
-        this.createdAt = createdAt;
-        this.lastUpdated = lastUpdated;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     public static final class Builder {
@@ -49,9 +49,9 @@ public class Patient {
             checkNotNull(email, () -> new RequestValidationException("Email cannot be null"));
             checkNotNull(pesel, () -> new RequestValidationException("PESEL cannot be null"));
             checkLength(pesel, 11, () -> new RequestValidationException("PESEL must be 11 characters"));
-            checkNotNull(createdAt, () -> new RequestValidationException("Creation date cannot be null"));
-            checkNotNull(lastUpdated, () -> new RequestValidationException("Last update date cannot be null"));
-            return new Patient(id, name, surname, email, pesel, createdAt, lastUpdated);
+            checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
+            checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
+            return new Patient(id, name, surname, email, pesel, createdDate, modifiedDate);
         }
     }
 }
