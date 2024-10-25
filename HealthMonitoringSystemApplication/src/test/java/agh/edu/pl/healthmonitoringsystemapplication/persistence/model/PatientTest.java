@@ -28,8 +28,8 @@ public class PatientTest {
                 .surname(surname)
                 .email(email)
                 .pesel(pesel)
-                .createdAt(createdAt)
-                .lastUpdated(lastUpdated)
+                .createdDate(createdAt)
+                .modifiedDate(lastUpdated)
                 .build();
 
         // Then
@@ -38,8 +38,8 @@ public class PatientTest {
         assertEquals(surname, patient.getSurname());
         assertEquals(email, patient.getEmail());
         assertEquals(pesel, patient.getPesel());
-        assertEquals(createdAt, patient.getCreatedAt());
-        assertEquals(lastUpdated, patient.getLastUpdated());
+        assertEquals(createdAt, patient.getCreatedDate());
+        assertEquals(lastUpdated, patient.getModifiedDate());
     }
 
     @Test
@@ -62,8 +62,8 @@ public class PatientTest {
         assertEquals(surname, patient.getSurname());
         assertEquals(email, patient.getEmail());
         assertEquals(pesel, patient.getPesel());
-        assertEquals(createdAt, patient.getCreatedAt());
-        assertEquals(lastUpdated, patient.getLastUpdated());
+        assertEquals(createdAt, patient.getCreatedDate());
+        assertEquals(lastUpdated, patient.getModifiedDate());
     }
 
     @Test
@@ -77,8 +77,8 @@ public class PatientTest {
         assertNull(patient.getSurname());
         assertNull(patient.getEmail());
         assertNull(patient.getPesel());
-        assertNull(patient.getCreatedAt());
-        assertNull(patient.getLastUpdated());
+        assertNull(patient.getCreatedDate());
+        assertNull(patient.getModifiedDate());
     }
 
     @Test
@@ -127,20 +127,20 @@ public class PatientTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenCreatedAtIsNull() {
+    public void shouldThrowExceptionWhenCreatedDateAtIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.patientBuilder().createdAt(null).build()
+                ModelTestUtil.patientBuilder().createdDate(null).build()
         );
         assertEquals("Creation date cannot be null", exception.getMessage());
     }
 
     @Test
-    public void shouldThrowExceptionWhenLastUpdatedIsNull() {
+    public void shouldThrowExceptionWhenModificationDateIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.patientBuilder().lastUpdated(null).build()
+                ModelTestUtil.patientBuilder().modifiedDate(null).build()
         );
-        assertEquals("Last update date cannot be null", exception.getMessage());
+        assertEquals("Modification date cannot be null", exception.getMessage());
     }
 }

@@ -27,19 +27,22 @@ public class Doctor {
     private String email;
     private String pesel;
     private String pwz;
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     public Doctor() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public Doctor(Long id, String name, String surname, String email, String pesel, String pwz, LocalDateTime createdAt) {
+    public Doctor(Long id, String name, String surname, String email, String pesel, String pwz,
+                  LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.pesel = pesel;
         this.pwz = pwz;
-        this.createdAt = createdAt;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     public static final class Builder {
@@ -51,8 +54,9 @@ public class Doctor {
             checkLength(pesel, 11, () -> new RequestValidationException("PESEL must be 11 characters"));
             checkNotNull(pwz, () -> new RequestValidationException("PWZ number cannot be null"));
             checkLength(pwz, 7, () -> new RequestValidationException("PWZ number must be 7 characters"));
-            checkNotNull(createdAt, () -> new RequestValidationException("Creation date cannot be null"));
-            return new Doctor(id, name, surname, email, pesel, pwz, createdAt);
+            checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
+            checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
+            return new Doctor(id, name, surname, email, pesel, pwz, createdDate, modifiedDate);
         }
     }
 }

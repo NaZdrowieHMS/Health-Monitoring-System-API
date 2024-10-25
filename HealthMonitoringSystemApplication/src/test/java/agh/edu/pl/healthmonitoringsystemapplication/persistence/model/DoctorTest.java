@@ -19,7 +19,8 @@ public class DoctorTest {
         String email = "john.doe@example.com";
         String pesel = "12345678901";
         String pwz = "5425740";
-        LocalDateTime createdAt = LocalDateTime.of(2024, 10, 20, 10, 0);
+        LocalDateTime createdDate = LocalDateTime.of(2024, 10, 20, 10, 0);
+        LocalDateTime modifiedDate = LocalDateTime.of(2024, 10, 20, 10, 0);
 
         // When
         Doctor doctor = ModelTestUtil.doctorBuilder()
@@ -29,7 +30,8 @@ public class DoctorTest {
                 .email(email)
                 .pesel(pesel)
                 .pwz(pwz)
-                .createdAt(createdAt)
+                .createdDate(createdDate)
+                .modifiedDate(modifiedDate)
                 .build();
 
         // Then
@@ -39,7 +41,8 @@ public class DoctorTest {
         assertEquals(email, doctor.getEmail());
         assertEquals(pesel, doctor.getPesel());
         assertEquals(pwz, doctor.getPwz());
-        assertEquals(createdAt, doctor.getCreatedAt());
+        assertEquals(createdDate, doctor.getCreatedDate());
+        assertEquals(modifiedDate, doctor.getModifiedDate());
     }
 
     @Test
@@ -51,10 +54,10 @@ public class DoctorTest {
         String email = "john.doe@example.com";
         String pesel = "12345678901";
         String pwz = "5425740";
-        LocalDateTime createdAt = LocalDateTime.of(2024, 10, 20, 10, 0);
+        LocalDateTime date = LocalDateTime.of(2024, 10, 20, 10, 0);
 
         // When
-        Doctor doctor = new Doctor(id, name, surname, email, pesel, pwz, createdAt);
+        Doctor doctor = new Doctor(id, name, surname, email, pesel, pwz, date, date);
 
         // Then
         assertEquals(id, doctor.getId());
@@ -63,7 +66,8 @@ public class DoctorTest {
         assertEquals(email, doctor.getEmail());
         assertEquals(pesel, doctor.getPesel());
         assertEquals(pwz, doctor.getPwz());
-        assertEquals(createdAt, doctor.getCreatedAt());
+        assertEquals(date, doctor.getCreatedDate());
+        assertEquals(date, doctor.getModifiedDate());
     }
 
     @Test
@@ -77,7 +81,7 @@ public class DoctorTest {
         assertNull(doctor.getSurname());
         assertNull(doctor.getEmail());
         assertNull(doctor.getPesel());
-        assertNull(doctor.getCreatedAt());
+        assertNull(doctor.getCreatedDate());
         assertNull(doctor.getPwz());
     }
 
@@ -145,11 +149,20 @@ public class DoctorTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenCreatedAtIsNull() {
+    public void shouldThrowExceptionWhenCreatedDateAtIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().createdAt(null).build()
+                ModelTestUtil.doctorBuilder().createdDate(null).build()
         );
         assertEquals("Creation date cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenModificationDateIsNull() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelTestUtil.doctorBuilder().modifiedDate(null).build()
+        );
+        assertEquals("Modification date cannot be null", exception.getMessage());
     }
 }

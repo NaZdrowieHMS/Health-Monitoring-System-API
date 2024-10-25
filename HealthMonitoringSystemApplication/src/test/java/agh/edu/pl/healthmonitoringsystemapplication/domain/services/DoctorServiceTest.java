@@ -130,7 +130,8 @@ class DoctorServiceTest {
                 .email("john.doe@example.com")
                 .pesel("12345678901")
                 .pwz("5425740")
-                .createdAt(LocalDateTime.now())
+                .createdDate(LocalDateTime.now())
+                .modifiedDate(LocalDateTime.now())
                 .build();
 
         when(doctorRepository.save(any(Doctor.class))).thenReturn(savedDoctor);
