@@ -1,7 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.models.response;
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Doctor;
 import lombok.Getter;
 
 import static agh.edu.pl.healthmonitoringsystemapplication.domain.validators.PreconditionValidator.checkLength;
