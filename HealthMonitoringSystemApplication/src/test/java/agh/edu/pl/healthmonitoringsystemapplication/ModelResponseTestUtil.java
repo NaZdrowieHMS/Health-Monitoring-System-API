@@ -4,6 +4,7 @@ import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Docto
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.HealthResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PatientResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PredictionResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.ReferralResponse;
 
 import java.time.LocalDateTime;
 
@@ -49,5 +50,16 @@ public class ModelResponseTestUtil {
                         .pesel("09876543211")
                         .pwz("7865431")
                         .build());
+    }
+
+    public static ReferralResponse.Builder referralResponseBuilder() {
+        return ReferralResponse.builder()
+                .modifiedDate(LocalDateTime.now())
+                .referralId(1L)
+                .doctorId(1L)
+                .patientId(1L)
+                .testType("Test")
+                .referralNumber("123")
+                .completed(true);
     }
 }
