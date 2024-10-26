@@ -1,4 +1,5 @@
-package agh.edu.pl.healthmonitoringsystemapplication.persistence.model;
+package agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table;
+
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
 import jakarta.persistence.Entity;
@@ -14,36 +15,36 @@ import java.time.LocalDateTime;
 import static agh.edu.pl.healthmonitoringsystemapplication.domain.validators.PreconditionValidator.checkNotNull;
 
 @Entity
-@Table(name = "referral_comment")
+@Table(name = "ai_prediction")
 @Getter
 @Setter
-public class ReferralComment {
+public class AiPrediction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long doctorId;
+    private Long patientId;
     private String content;
     private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
 
-    public ReferralComment() {}
+    public AiPrediction() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public ReferralComment(Long id, Long doctorId, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public AiPrediction(Long id, Long doctorId, Long patientId, String content, LocalDateTime createdDate) {
         this.id = id;
         this.doctorId = doctorId;
+        this.patientId = patientId;
         this.content = content;
         this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
     }
 
     public static final class Builder {
-        public ReferralComment build(){
+        public AiPrediction build(){
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
+            checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
             checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
-            checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
-            return new ReferralComment(id, doctorId, content, createdDate, modifiedDate);
+            return new AiPrediction(id, doctorId, patientId, content, createdDate);
         }
     }
 }

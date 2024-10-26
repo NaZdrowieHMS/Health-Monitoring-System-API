@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystemapplication.domain.services;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.PatientRepository;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

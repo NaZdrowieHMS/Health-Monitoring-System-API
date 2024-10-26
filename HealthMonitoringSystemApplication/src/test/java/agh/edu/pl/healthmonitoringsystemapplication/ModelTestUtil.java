@@ -1,14 +1,14 @@
 package agh.edu.pl.healthmonitoringsystemapplication;
 
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.AiPrediction;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.AiPredictionComment;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Doctor;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Health;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Patient;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Referral;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.ReferralComment;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Result;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.ResultComment;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.AiPrediction;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.AiPredictionComment;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.HealthComment;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Referral;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.ReferralComment;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Result;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.ResultComment;
 
 import java.time.LocalDateTime;
 
@@ -56,8 +56,8 @@ public class ModelTestUtil {
                 .modifiedDate(LocalDateTime.now());
     }
 
-    public static Health.Builder healthBuilder() {
-        return Health.builder()
+    public static HealthComment.Builder healthBuilder() {
+        return HealthComment.builder()
                 .id(1L)
                 .doctorId(2L)
                 .patientId(3L)

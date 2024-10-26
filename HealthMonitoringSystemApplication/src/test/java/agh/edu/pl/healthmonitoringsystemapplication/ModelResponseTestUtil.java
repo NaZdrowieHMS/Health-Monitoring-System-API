@@ -1,8 +1,11 @@
 package agh.edu.pl.healthmonitoringsystemapplication;
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.DoctorResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.HealthResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PatientResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PredictionResponse;
+
+import java.time.LocalDateTime;
 
 public class ModelResponseTestUtil {
 
@@ -30,5 +33,21 @@ public class ModelResponseTestUtil {
                 .email("nowak@mail.com")
                 .pesel("12345678909")
                 .pwz("5425740");
+    }
+
+    public static HealthResponse.Builder healthResponseBuilder() {
+        return HealthResponse.builder()
+                .id(2L)
+                .patientId(1L)
+                .content("Second comment")
+                .modifiedDate(LocalDateTime.now())
+                .doctor(DoctorResponse.builder()
+                        .id(2L)
+                        .name("Jan")
+                        .surname("Kowalski")
+                        .email("jan.kowalski@mail.com")
+                        .pesel("09876543211")
+                        .pwz("7865431")
+                        .build());
     }
 }

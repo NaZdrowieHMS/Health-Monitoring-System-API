@@ -2,6 +2,7 @@ package agh.edu.pl.healthmonitoringsystemapplication.persistence.model;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.AiPredictionComment;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

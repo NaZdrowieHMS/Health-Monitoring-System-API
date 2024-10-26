@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.DoctorRequest;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.DoctorResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.DoctorService;
