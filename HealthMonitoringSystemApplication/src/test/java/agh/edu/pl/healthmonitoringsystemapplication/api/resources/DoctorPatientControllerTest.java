@@ -1,10 +1,9 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
-import agh.edu.pl.healthmonitoringsystemapplication.ModelResponseTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PatientResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.DoctorPatientService;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

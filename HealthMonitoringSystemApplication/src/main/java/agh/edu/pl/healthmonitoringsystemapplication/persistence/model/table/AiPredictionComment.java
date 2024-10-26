@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystemapplication.persistence.model;
+package agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table;
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
 import jakarta.persistence.Entity;

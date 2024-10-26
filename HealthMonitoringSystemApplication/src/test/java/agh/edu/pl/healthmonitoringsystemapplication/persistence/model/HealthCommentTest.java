@@ -2,13 +2,14 @@ package agh.edu.pl.healthmonitoringsystemapplication.persistence.model;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.HealthComment;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HealthTest {
+public class HealthCommentTest {
 
     @Test
     public void shouldInitializeFieldsCorrectlyUsingBuilder() {
@@ -21,7 +22,7 @@ public class HealthTest {
         LocalDateTime modifiedDate = LocalDateTime.of(2024, 10, 21, 10, 0);
 
         // When
-        Health health = ModelTestUtil.healthBuilder()
+        HealthComment health = ModelTestUtil.healthBuilder()
                 .id(id)
                 .doctorId(doctorId)
                 .patientId(patientId)
@@ -50,7 +51,7 @@ public class HealthTest {
         LocalDateTime modifiedDate = LocalDateTime.of(2024, 10, 21, 10, 0);
 
         // When
-        Health health = new Health(id, doctorId, patientId, content, createdDate, modifiedDate);
+        HealthComment health = new HealthComment(id, doctorId, patientId, content, createdDate, modifiedDate);
 
         // Then
         assertEquals(id, health.getId());
@@ -64,7 +65,7 @@ public class HealthTest {
     @Test
     public void shouldCreateHealthWithDefaultConstructor() {
         // When
-        Health health = new Health();
+        HealthComment health = new HealthComment();
 
         // Then
         assertNull(health.getId());

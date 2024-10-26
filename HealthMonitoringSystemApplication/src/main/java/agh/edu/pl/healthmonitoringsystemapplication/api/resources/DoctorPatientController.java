@@ -39,7 +39,7 @@ public class DoctorPatientController {
 
     @GetMapping(path = "/{doctorId}/all-patients", params = { START_INDEX_PARAM, PAGE_SIZE_PARAM })
     @Operation(
-            summary = "Get list of all doctor's patients",
+            summary = "Get list of doctor's patients",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
                             content = @Content(schema = @Schema(type = "array", implementation = PatientResponse.class))),

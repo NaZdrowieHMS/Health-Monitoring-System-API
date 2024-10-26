@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.services;
 
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.PatientRepository;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +23,5 @@ public class DoctorPatientService {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Patient> patientPage = patientRepository.findPatientsByDoctorId(doctorId, pageRequest);
         return patientPage.getContent();
-
     }
 }

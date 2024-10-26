@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.persistence;
 
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
