@@ -1,9 +1,9 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
-import agh.edu.pl.healthmonitoringsystemapplication.ModelResponseTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.PredictionRequest;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PredictionResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Prediction;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.PredictionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,7 @@ class AiPredictionControllerTest {
     void testPredictionSuccess() throws Exception {
         // Given
         PredictionRequest request = ModelRequestTestUtil.predictionRequestBuilder().build();
-        PredictionResponse expectedPrediction = ModelResponseTestUtil.predictionResponseBuilder().build();
+        Prediction expectedPrediction = ModelTestUtil.predictionBuilder().build();
         when(predictionService.predict(any(PredictionRequest.class))).thenReturn(expectedPrediction);
 
         // When

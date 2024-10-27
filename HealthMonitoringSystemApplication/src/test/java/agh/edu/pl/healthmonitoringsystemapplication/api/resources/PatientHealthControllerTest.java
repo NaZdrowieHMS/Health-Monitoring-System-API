@@ -1,8 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.HealthResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.HealthComment;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.PatientHealthService;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.projection.HealthCommentWithAuthorProjection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,36 +40,27 @@ class PatientHealthControllerTest {
         int startIndex = 0;
         int pageSize = 2;
 
-        HealthCommentWithAuthorProjection healthComment1 = mock(HealthCommentWithAuthorProjection.class);
-        when(healthComment1.getHealthCommentId()).thenReturn(1L);
-        when(healthComment1.getPatientId()).thenReturn(patientId);
-        when(healthComment1.getContent()).thenReturn("First comment");
-        when(healthComment1.getModifiedDate()).thenReturn(LocalDateTime.now());
-        when(healthComment1.getDoctorId()).thenReturn(1L);
-        when(healthComment1.getDoctorName()).thenReturn("Anna");
-        when(healthComment1.getDoctorSurname()).thenReturn("Nowak");
-        when(healthComment1.getDoctorEmail()).thenReturn("anna.nowak@mail.com");
-        when(healthComment1.getDoctorPesel()).thenReturn("12345678909");
-        when(healthComment1.getPwz()).thenReturn("5425740");
+        HealthComment healthComment1 = ModelTestUtil.healthCommentBuilder()
+                .id(1L)
+                .patientId(patientId)
+                .content("First comment")
+                .modifiedDate(LocalDateTime.now())
+                .doctor(ModelTestUtil.doctorBuilder().id(1L).name("Anna").surname("Nowak").build())
+                .build();
 
-        HealthCommentWithAuthorProjection healthComment2 = mock(HealthCommentWithAuthorProjection.class);
-        when(healthComment2.getHealthCommentId()).thenReturn(2L);
-        when(healthComment2.getPatientId()).thenReturn(patientId);
-        when(healthComment2.getContent()).thenReturn("Second comment");
-        when(healthComment2.getModifiedDate()).thenReturn(LocalDateTime.now());
-        when(healthComment2.getDoctorId()).thenReturn(2L);
-        when(healthComment2.getDoctorName()).thenReturn("Jan");
-        when(healthComment2.getDoctorSurname()).thenReturn("Kowalski");
-        when(healthComment2.getDoctorEmail()).thenReturn("jan.kowalski@mail.com");
-        when(healthComment2.getDoctorPesel()).thenReturn("09876543211");
-        when(healthComment2.getPwz()).thenReturn("7865431");
+        HealthComment healthComment2 = ModelTestUtil.healthCommentBuilder()
+                .id(2L)
+                .patientId(patientId)
+                .content("Second comment")
+                .modifiedDate(LocalDateTime.now())
+                .doctor(ModelTestUtil.doctorBuilder().id(2L).name("Jan").surname("Kowalski").build())
+                .build();
 
-        List<HealthCommentWithAuthorProjection> healthComments = Arrays.asList(healthComment1, healthComment2);
-
+        List<HealthComment> healthComments = Arrays.asList(healthComment1, healthComment2);
         when(patientHealthService.getHealthCommentsByPatientId(patientId, startIndex, pageSize)).thenReturn(healthComments);
 
         // When
-        ResponseEntity<List<HealthResponse>> response = patientHealthController.getPatientHealthComments(startIndex, pageSize, patientId);
+        ResponseEntity<List<HealthComment>> response = patientHealthController.getPatientHealthComments(startIndex, pageSize, patientId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -88,7 +79,7 @@ class PatientHealthControllerTest {
         when(patientHealthService.getHealthCommentsByPatientId(patientId, startIndex, pageSize)).thenReturn(Collections.emptyList());
 
         // When
-        ResponseEntity<List<HealthResponse>> response = patientHealthController.getPatientHealthComments(startIndex, pageSize, patientId);
+        ResponseEntity<List<HealthComment>> response = patientHealthController.getPatientHealthComments(startIndex, pageSize, patientId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

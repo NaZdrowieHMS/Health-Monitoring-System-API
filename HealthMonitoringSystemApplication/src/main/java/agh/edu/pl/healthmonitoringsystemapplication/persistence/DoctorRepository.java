@@ -1,14 +1,14 @@
 package agh.edu.pl.healthmonitoringsystemapplication.persistence;
 
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.entity.DoctorEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+public interface DoctorRepository extends JpaRepository<DoctorEntity, Long> {
 
     @Override
-    Optional<Doctor> findById(Long id);
+    Optional<DoctorEntity> findById(Long id);
 }

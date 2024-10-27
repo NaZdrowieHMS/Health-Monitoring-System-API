@@ -3,9 +3,8 @@ package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.PatientRequest;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PatientResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.PatientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +56,7 @@ public class PatientControllerTest {
         when(patientService.getPatients(0, 50)).thenReturn(patients);
 
         // When
-        ResponseEntity<List<PatientResponse>> response = patientController.getPatients(0, 50);
+        ResponseEntity<List<Patient>> response = patientController.getPatients(0, 50);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -72,7 +71,7 @@ public class PatientControllerTest {
         when(patientService.getPatients(0, 50)).thenReturn(Collections.emptyList());
 
         // When
-        ResponseEntity<List<PatientResponse>> response = patientController.getPatients(0, 50);
+        ResponseEntity<List<Patient>> response = patientController.getPatients(0, 50);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -88,7 +87,7 @@ public class PatientControllerTest {
         when(patientService.getPatientById(patientId)).thenReturn(patient);
 
         // When
-        ResponseEntity<PatientResponse> response = patientController.getPatientById(patientId);
+        ResponseEntity<Patient> response = patientController.getPatientById(patientId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -101,12 +100,15 @@ public class PatientControllerTest {
     void testGetPatientByIdShouldReturn404WhenPatientNotFound() {
         // Given
         Long patientId = 999L;
-        when(patientService.getPatientById(patientId)).thenThrow(new RequestValidationException("Patient not found"));
+        when(patientService.getPatientById(patientId)).thenThrow(new RequestValidationException("PatientEntity not found"));
 
         // When
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
             patientController.getPatientById(patientId);
         });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("PatientEntity not found");
     }
 
     @Test
@@ -130,7 +132,7 @@ public class PatientControllerTest {
         when(patientService.createPatient(patientRequest)).thenReturn(createdPatient);
 
         // When
-        ResponseEntity<PatientResponse> response = patientController.createPatient(patientRequest);
+        ResponseEntity<Patient> response = patientController.createPatient(patientRequest);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -148,7 +150,7 @@ public class PatientControllerTest {
     void testCreatePatientShouldReturn400WhenInvalidRequest() throws Exception {
         // Given
         PatientRequest invalidRequest = ModelRequestTestUtil.patientRequestBuilder()
-                .name(null)
+                .name(null)  // Invalid name
                 .build();
 
         // When
@@ -159,7 +161,6 @@ public class PatientControllerTest {
                 .andExpect(status().isBadRequest());
         verify(patientService, never()).createPatient(any(PatientRequest.class));
     }
-
 
     @Test
     void testCreatePatientShouldReturn500WhenServiceThrowsException() {
@@ -183,5 +184,3 @@ public class PatientControllerTest {
         verify(patientService, times(1)).createPatient(patientRequest);
     }
 }
-
-

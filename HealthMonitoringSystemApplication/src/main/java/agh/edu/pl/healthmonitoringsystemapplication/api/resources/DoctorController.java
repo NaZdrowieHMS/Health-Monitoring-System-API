@@ -1,9 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.DoctorRequest;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.DoctorResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static agh.edu.pl.healthmonitoringsystemapplication.api.commons.Constants.PAGE_SIZE_PARAM;
 import static agh.edu.pl.healthmonitoringsystemapplication.api.commons.Constants.START_INDEX_PARAM;
@@ -39,7 +37,7 @@ public class DoctorController {
             summary = "Get list of all doctors.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = DoctorResponse.class))),
+                            content = @Content(schema = @Schema(type = "array", implementation = Doctor.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
@@ -47,20 +45,10 @@ public class DoctorController {
             },
             tags = {"Doctors"}
     )
-    public ResponseEntity<List<DoctorResponse>> getDoctors(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                             @Parameter(description = "Number of doctors per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize) {
-        List<DoctorResponse> doctors = doctorService.getDoctors(startIndex, pageSize)
-                .stream()
-                .map(doctor -> DoctorResponse.builder()
-                        .id(doctor.getId())
-                        .name(doctor.getName())
-                        .surname(doctor.getSurname())
-                        .email(doctor.getEmail())
-                        .pesel(doctor.getPesel())
-                        .pwz(doctor.getPwz())
-                        .build())
-                .collect(Collectors.toList());
+    public ResponseEntity<List<Doctor>> getDoctors(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                   @Parameter(description = "Number of doctors per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize) {
 
+        List<Doctor> doctors = doctorService.getDoctors(startIndex, pageSize);
         return ResponseEntity.ok(doctors);
     }
 
@@ -69,7 +57,7 @@ public class DoctorController {
             summary = "Create a new doctor.",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Doctor created successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = DoctorResponse.class))),
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Doctor.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
@@ -77,19 +65,11 @@ public class DoctorController {
             },
             tags = {"Doctors"}
     )
-    public ResponseEntity<DoctorResponse> createDoctor(@Parameter(description = "Doctor to be created request")
+    public ResponseEntity<Doctor> createDoctor(@Parameter(description = "Doctor to be created request")
                                                            @RequestBody @Valid DoctorRequest doctorRequest) {
-        Doctor doctor = doctorService.createDoctor(doctorRequest);
-        DoctorResponse doctorResponse = DoctorResponse.builder()
-                .id(doctor.getId())
-                .name(doctor.getName())
-                .surname(doctor.getSurname())
-                .email(doctor.getEmail())
-                .pesel(doctor.getPesel())
-                .pwz(doctor.getPwz())
-                .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(doctorResponse);
+        Doctor doctor = doctorService.createDoctor(doctorRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(doctor);
     }
 
     @GetMapping("/{doctorId}")
@@ -97,7 +77,7 @@ public class DoctorController {
             summary = "Get the specific doctor by ID.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(implementation = DoctorResponse.class))),
+                            content = @Content(schema = @Schema(implementation = Doctor.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
@@ -106,16 +86,9 @@ public class DoctorController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(),
             tags = {"Doctors"}
     )
-    public ResponseEntity<DoctorResponse> getDoctorById(@Parameter(description = "Doctor ID") @PathVariable("doctorId") Long doctorId) {
-        Doctor doctor = doctorService.getDoctorById(doctorId);
-        DoctorResponse doctorResponse = DoctorResponse.builder()
-                .id(doctor.getId())
-                .name(doctor.getName())
-                .surname(doctor.getSurname())
-                .email(doctor.getEmail())
-                .pesel(doctor.getPesel())
-                .pwz(doctor.getPwz()).build();
+    public ResponseEntity<Doctor> getDoctorById(@Parameter(description = "Doctor ID") @PathVariable("doctorId") Long doctorId) {
 
-        return ResponseEntity.ok(doctorResponse);
+        Doctor doctor = doctorService.getDoctorById(doctorId);
+        return ResponseEntity.ok(doctor);
     }
 }

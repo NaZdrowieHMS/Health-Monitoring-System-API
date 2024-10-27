@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.ReferralResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Referral;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.PatientReferralService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static agh.edu.pl.healthmonitoringsystemapplication.api.commons.Constants.PAGE_SIZE_PARAM;
 import static agh.edu.pl.healthmonitoringsystemapplication.api.commons.Constants.START_INDEX_PARAM;
@@ -41,7 +40,7 @@ public class PatientReferralController {
             summary = "Get list of referrals with comment for a specific patient",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = ReferralResponse.class))),
+                            content = @Content(schema = @Schema(type = "array", implementation = Referral.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
@@ -49,25 +48,11 @@ public class PatientReferralController {
             },
             tags = {"PatientReferral"}
     )
-    public ResponseEntity<List<ReferralResponse>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                                         @Parameter(description = "Number of referrals per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                                         @Parameter(description = "Patient ID") @PathVariable Long patientId) {
+    public ResponseEntity<List<Referral>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                                   @Parameter(description = "Number of referrals per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                                   @Parameter(description = "PatientEntity ID") @PathVariable Long patientId) {
 
-        List<ReferralResponse> patientReferrals = patientReferralService.getPatientReferralsByPatientId(patientId, startIndex, pageSize)
-                .stream()
-                .map(referral -> ReferralResponse.builder()
-                        .referralId(referral.getReferralId())
-                        .commentId(referral.getCommentId())
-                        .doctorId(referral.getDoctorId())
-                        .patientId(referral.getPatientId())
-                        .testType(referral.getTestType())
-                        .referralNumber(referral.getReferralNumber())
-                        .completed(referral.getCompleted())
-                        .commentContent(referral.getCommentContent())
-                        .modifiedDate(referral.getModifiedDate())
-                        .build())
-                .collect(Collectors.toList());
-
+        List<Referral> patientReferrals = patientReferralService.getPatientReferralsByPatientId(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientReferrals);
     }
 }

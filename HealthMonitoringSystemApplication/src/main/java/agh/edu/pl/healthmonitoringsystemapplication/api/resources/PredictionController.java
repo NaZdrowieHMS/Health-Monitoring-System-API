@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.PredictionRequest;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PredictionResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Prediction;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.PredictionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,7 +34,7 @@ public class PredictionController {
             summary = "Predict breast cancer possibility with AI model.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Prediction successful",
-                            content = @Content(schema = @Schema(implementation = PredictionResponse.class))),
+                            content = @Content(schema = @Schema(implementation = Prediction.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
@@ -46,10 +46,10 @@ public class PredictionController {
                     schema = @Schema(implementation = PredictionRequest.class))),
             tags = {"AI Prediction"}
     )
-    public ResponseEntity<PredictionResponse> testPrediction(@Parameter(description = "Test prediction request")
+    public ResponseEntity<Prediction> testPrediction(@Parameter(description = "Test prediction request")
                                                          @Valid @RequestBody PredictionRequest request) {
-        PredictionResponse predictionResponse = predictionService.predict(request);
 
-        return ResponseEntity.ok(predictionResponse);
+        Prediction prediction = predictionService.predict(request);
+        return ResponseEntity.ok(prediction);
     }
 }

@@ -1,8 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.persistence.model;
 
-import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.ModelEntityTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.entity.DoctorEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class DoctorTest {
         LocalDateTime modifiedDate = LocalDateTime.of(2024, 10, 20, 10, 0);
 
         // When
-        Doctor doctor = ModelTestUtil.doctorBuilder()
+        DoctorEntity doctor = ModelEntityTestUtil.doctorBuilder()
                 .id(id)
                 .name(name)
                 .surname(surname)
@@ -58,7 +58,7 @@ public class DoctorTest {
         LocalDateTime date = LocalDateTime.of(2024, 10, 20, 10, 0);
 
         // When
-        Doctor doctor = new Doctor(id, name, surname, email, pesel, pwz, date, date);
+        DoctorEntity doctor = new DoctorEntity(id, name, surname, email, pesel, pwz, date, date);
 
         // Then
         assertEquals(id, doctor.getId());
@@ -74,7 +74,7 @@ public class DoctorTest {
     @Test
     public void shouldCreateDoctorWithDefaultConstructor() {
         // When
-        Doctor doctor = new Doctor();
+        DoctorEntity doctor = new DoctorEntity();
 
         // Then
         assertNull(doctor.getId());
@@ -90,7 +90,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenNameIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().name(null).build()
+                ModelEntityTestUtil.doctorBuilder().name(null).build()
         );
         assertEquals("Name cannot be null", exception.getMessage());
     }
@@ -99,7 +99,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenSurnameIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().surname(null).build()
+                ModelEntityTestUtil.doctorBuilder().surname(null).build()
         );
         assertEquals("Surname cannot be null", exception.getMessage());
     }
@@ -108,7 +108,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenEmailIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().email(null).build()
+                ModelEntityTestUtil.doctorBuilder().email(null).build()
         );
         assertEquals("Email cannot be null", exception.getMessage());
     }
@@ -117,7 +117,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenPeselIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().pesel(null).build()
+                ModelEntityTestUtil.doctorBuilder().pesel(null).build()
         );
         assertEquals("PESEL cannot be null", exception.getMessage());
     }
@@ -126,7 +126,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenPwzIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().pwz(null).build()
+                ModelEntityTestUtil.doctorBuilder().pwz(null).build()
         );
         assertEquals("PWZ number cannot be null", exception.getMessage());
     }
@@ -135,7 +135,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenPeselLengthIsInvalid() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().pesel("2137").build()
+                ModelEntityTestUtil.doctorBuilder().pesel("2137").build()
         );
         assertEquals("PESEL must be 11 characters", exception.getMessage());
     }
@@ -144,7 +144,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenPwzLengthIsInvalid() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().pwz("123").build()
+                ModelEntityTestUtil.doctorBuilder().pwz("123").build()
         );
         assertEquals("PWZ number must be 7 characters", exception.getMessage());
     }
@@ -153,7 +153,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenCreatedDateAtIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().createdDate(null).build()
+                ModelEntityTestUtil.doctorBuilder().createdDate(null).build()
         );
         assertEquals("Creation date cannot be null", exception.getMessage());
     }
@@ -162,7 +162,7 @@ public class DoctorTest {
     public void shouldThrowExceptionWhenModificationDateIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelTestUtil.doctorBuilder().modifiedDate(null).build()
+                ModelEntityTestUtil.doctorBuilder().modifiedDate(null).build()
         );
         assertEquals("Modification date cannot be null", exception.getMessage());
     }

@@ -1,37 +1,44 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.domain.components.ModelMapper;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.EntityNotFoundException;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.entity.DoctorEntity;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.DoctorRepository;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.DoctorRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public DoctorService(DoctorRepository doctorRepository) {
+    public DoctorService(DoctorRepository doctorRepository, ModelMapper modelMapper) {
         this.doctorRepository = doctorRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<Doctor> getDoctors(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Doctor> doctorPage = doctorRepository.findAll(pageable);
-        return doctorPage.getContent();
+        List<DoctorEntity> doctors = doctorRepository.findAll(pageable).getContent();
+
+        return doctors.stream()
+                .map(modelMapper::mapDoctorEntityToDoctor)
+                .collect(Collectors.toList());
     }
 
     public Doctor createDoctor(DoctorRequest doctorRequest) {
         LocalDateTime now = LocalDateTime.now();
-        Doctor doctor = Doctor.builder()
+        DoctorEntity doctorEntity = DoctorEntity.builder()
                 .name(doctorRequest.getName())
                 .surname(doctorRequest.getSurname())
                 .email(doctorRequest.getEmail())
@@ -40,11 +47,15 @@ public class DoctorService {
                 .createdDate(now)
                 .modifiedDate(now)
                 .build();
-        return doctorRepository.save(doctor);
+        DoctorEntity doctorEntitySaved = doctorRepository.save(doctorEntity);
+
+        return modelMapper.mapDoctorEntityToDoctor(doctorEntitySaved);
     }
 
     public Doctor getDoctorById(Long id){
-        return doctorRepository.findById(id)
+        DoctorEntity doctorEntity = doctorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Doctor with id " + id + " not found"));
+
+        return modelMapper.mapDoctorEntityToDoctor(doctorEntity);
     }
 }
