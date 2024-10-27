@@ -32,7 +32,6 @@ public class PatientResponse {
             checkNotNull(email, () -> new RequestValidationException("Email cannot be null"));
             checkNotNull(pesel, () -> new RequestValidationException("PESEL cannot be null"));
             checkLength(pesel, 11, () -> new RequestValidationException("PESEL must be 11 characters"));
-
             return new PatientResponse(id, name, surname, email, pesel);
         }
     }
