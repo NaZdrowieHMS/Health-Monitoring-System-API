@@ -1,18 +1,21 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.services;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.ModelEntityTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.components.ModelMapper;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.EntityNotFoundException;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.DoctorRepository;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.entity.DoctorEntity;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.DoctorRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -34,7 +37,7 @@ class DoctorServiceTest {
     private DoctorRepository doctorRepository;
 
     @Mock
-    private Page<Doctor> doctorPage;
+    private ModelMapper modelMapper;
 
     @BeforeEach
     void setUp() {
@@ -42,15 +45,16 @@ class DoctorServiceTest {
     }
 
     @Test
-    void getDoctorShouldReturnListOfDoctors() {
+    void getDoctorsShouldReturnListOfDoctors() {
         // Given
         int page = 0;
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);
+        DoctorEntity doctorEntity = ModelEntityTestUtil.doctorBuilder().name("John").build();
         Doctor doctor = ModelTestUtil.doctorBuilder().name("John").build();
 
-        when(doctorRepository.findAll(pageable)).thenReturn(doctorPage);
-        when(doctorPage.getContent()).thenReturn(Collections.singletonList(doctor));
+        when(doctorRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(doctorEntity), pageable, 1));
+        when(modelMapper.mapDoctorEntityToDoctor(doctorEntity)).thenReturn(doctor);
 
         // When
         List<Doctor> doctors = doctorService.getDoctors(page, size);
@@ -58,7 +62,7 @@ class DoctorServiceTest {
         // Then
         assertThat(doctors).hasSize(1);
         assertThat(doctors.get(0).getName()).isEqualTo("John");
-        verify(doctorRepository, times(1)).findAll(pageable);
+        verify(doctorRepository).findAll(pageable);
     }
 
     @Test
@@ -68,8 +72,7 @@ class DoctorServiceTest {
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);
 
-        when(doctorRepository.findAll(pageable)).thenReturn(doctorPage);
-        when(doctorPage.getContent()).thenReturn(Collections.emptyList());
+        when(doctorRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.emptyList(), pageable, 0));
 
         // When
         List<Doctor> doctors = doctorService.getDoctors(page, size);
@@ -83,9 +86,11 @@ class DoctorServiceTest {
     void getDoctorByIdShouldReturnDoctorWhenFound() {
         // Given
         Long doctorId = 1L;
+        DoctorEntity doctorEntity = ModelEntityTestUtil.doctorBuilder().name("John").build();
         Doctor doctor = ModelTestUtil.doctorBuilder().name("John").build();
 
-        when(doctorRepository.findById(doctorId)).thenReturn(Optional.of(doctor));
+        when(doctorRepository.findById(doctorId)).thenReturn(Optional.of(doctorEntity));
+        when(modelMapper.mapDoctorEntityToDoctor(doctorEntity)).thenReturn(doctor);
 
         // When
         Doctor result = doctorService.getDoctorById(doctorId);
@@ -100,7 +105,7 @@ class DoctorServiceTest {
     @Test
     void getDoctorByIdShouldThrowEntityNotFoundExceptionWhenNotFound() {
         // Given
-        Long doctorId = 999L; // Assuming this doctor doesn't exist
+        Long doctorId = 999L;
 
         when(doctorRepository.findById(doctorId)).thenReturn(Optional.empty());
 
@@ -123,7 +128,7 @@ class DoctorServiceTest {
                 .pwz("5425740")
                 .build();
 
-        Doctor savedDoctor = ModelTestUtil.doctorBuilder()
+        DoctorEntity savedDoctor = ModelEntityTestUtil.doctorBuilder()
                 .id(1L)
                 .name("John")
                 .surname("Doe")
@@ -134,7 +139,17 @@ class DoctorServiceTest {
                 .modifiedDate(LocalDateTime.now())
                 .build();
 
-        when(doctorRepository.save(any(Doctor.class))).thenReturn(savedDoctor);
+        Doctor doctor = ModelTestUtil.doctorBuilder()
+                .id(1L)
+                .name("John")
+                .surname("Doe")
+                .email("john.doe@example.com")
+                .pesel("12345678901")
+                .pwz("5425740")
+                .build();
+
+        when(doctorRepository.save(any(DoctorEntity.class))).thenReturn(savedDoctor);
+        when(modelMapper.mapDoctorEntityToDoctor(savedDoctor)).thenReturn(doctor);
 
         // When
         Doctor result = doctorService.createDoctor(doctorRequest);
@@ -146,7 +161,7 @@ class DoctorServiceTest {
         assertThat(result.getEmail()).isEqualTo("john.doe@example.com");
         assertThat(result.getPesel()).isEqualTo("12345678901");
         assertThat(result.getPwz()).isEqualTo("5425740");
-        verify(doctorRepository, times(1)).save(any(Doctor.class));
+        verify(doctorRepository, times(1)).save(any(DoctorEntity.class));
     }
 
     @Test
@@ -161,7 +176,7 @@ class DoctorServiceTest {
                 .isInstanceOf(RequestValidationException.class)
                 .hasMessageContaining("Name cannot be null");
 
-        verify(doctorRepository, never()).save(any(Doctor.class));
+        verify(doctorRepository, never()).save(any(DoctorEntity.class));
     }
 }
 

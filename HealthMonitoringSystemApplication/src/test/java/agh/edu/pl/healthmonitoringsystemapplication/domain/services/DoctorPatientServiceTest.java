@@ -1,8 +1,11 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.ModelEntityTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.components.ModelMapper;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.PatientRepository;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.entity.PatientEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class DoctorPatientServiceTest {
@@ -25,6 +29,9 @@ class DoctorPatientServiceTest {
 
     @Mock
     private PatientRepository patientRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
 
     @BeforeEach
     void setUp() {
@@ -36,15 +43,20 @@ class DoctorPatientServiceTest {
         // Given
         Long doctorId = 1L;
         int page = 0;
-        int size = 5;
+        int size = 2;
         PageRequest pageRequest = PageRequest.of(page, size);
+
+        PatientEntity patientEntity1 = ModelEntityTestUtil.patientBuilder().name("John").build();
+        PatientEntity patientEntity2 = ModelEntityTestUtil.patientBuilder().name("Jane").build();
+        List<PatientEntity> patientEntities = List.of(patientEntity1, patientEntity2);
+        Page<PatientEntity> patientPage = new PageImpl<>(patientEntities, pageRequest, patientEntities.size());
+
+        when(patientRepository.findPatientsByDoctorId(doctorId, pageRequest)).thenReturn(patientPage);
 
         Patient patient1 = ModelTestUtil.patientBuilder().name("John").build();
         Patient patient2 = ModelTestUtil.patientBuilder().name("Jane").build();
-        List<Patient> patients = List.of(patient1, patient2);
-        Page<Patient> patientPage = new PageImpl<>(patients, pageRequest, patients.size());
-
-        when(patientRepository.findPatientsByDoctorId(doctorId, pageRequest)).thenReturn(patientPage);
+        when(modelMapper.mapPatientEntityToPatient(patientEntity1)).thenReturn(patient1);
+        when(modelMapper.mapPatientEntityToPatient(patientEntity2)).thenReturn(patient2);
 
         // When
         List<Patient> result = doctorPatientService.getPatientsByDoctorId(doctorId, page, size);
@@ -52,6 +64,7 @@ class DoctorPatientServiceTest {
         // Then
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getName()).isEqualTo("John");
+        assertThat(result.get(1).getName()).isEqualTo("Jane");
         verify(patientRepository, times(1)).findPatientsByDoctorId(doctorId, pageRequest);
     }
 
@@ -74,26 +87,21 @@ class DoctorPatientServiceTest {
     }
 
     @Test
-    void testGetPatientsByDoctorIdWithPagination() {
+    void testGetPatientsByDoctorIdHandlesRepositoryException() {
         // Given
         Long doctorId = 1L;
-        int page = 1;
-        int size = 2;
+        int page = 0;
+        int size = 5;
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        Patient patient1 = ModelTestUtil.patientBuilder().name("Jane").build();
-        Patient patient2 = ModelTestUtil.patientBuilder().name("John").build();
-        List<Patient> patients = List.of(patient1, patient2);
-        Page<Patient> patientPage = new PageImpl<>(patients, pageRequest, 10);
+        when(patientRepository.findPatientsByDoctorId(doctorId, pageRequest)).thenThrow(new RuntimeException("Repository error"));
 
-        when(patientRepository.findPatientsByDoctorId(doctorId, pageRequest)).thenReturn(patientPage);
+        // When & Then
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            doctorPatientService.getPatientsByDoctorId(doctorId, page, size);
+        });
 
-        // When
-        List<Patient> result = doctorPatientService.getPatientsByDoctorId(doctorId, page, size);
-
-        // Then
-        assertThat(result).hasSize(2);
-        assertThat(result.get(1).getName()).isEqualTo("John");
+        assertThat(exception.getMessage()).isEqualTo("Repository error");
         verify(patientRepository, times(1)).findPatientsByDoctorId(doctorId, pageRequest);
     }
 }

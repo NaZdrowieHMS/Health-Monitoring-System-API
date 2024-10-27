@@ -1,5 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.components.ModelMapper;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Referral;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.projection.PatientReferralWithCommentProjection;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
@@ -27,7 +31,7 @@ class PatientReferralServiceTest {
     private ReferralRepository referralRepository;
 
     @Mock
-    private Page<PatientReferralWithCommentProjection> referralPage;
+    private ModelMapper modelMapper;
 
     @BeforeEach
     void setUp() {
@@ -41,20 +45,26 @@ class PatientReferralServiceTest {
         int page = 0;
         int size = 2;
 
-        PatientReferralWithCommentProjection referral1 = mock(PatientReferralWithCommentProjection.class);
-        when(referral1.getReferralId()).thenReturn(1L);
-        when(referral1.getCommentId()).thenReturn(1L);
+        PatientReferralWithCommentProjection referralP1 = mock(PatientReferralWithCommentProjection.class);
+        when(referralP1.getReferralId()).thenReturn(1L);
+        when(referralP1.getCommentId()).thenReturn(1L);
 
-        PatientReferralWithCommentProjection referral2 = mock(PatientReferralWithCommentProjection.class);
-        when(referral2.getReferralId()).thenReturn(2L);
-        when(referral2.getCommentId()).thenReturn(2L);
+        PatientReferralWithCommentProjection referralP2 = mock(PatientReferralWithCommentProjection.class);
+        when(referralP2.getReferralId()).thenReturn(2L);
+        when(referralP2.getCommentId()).thenReturn(2L);
 
-        List<PatientReferralWithCommentProjection> referrals = Arrays.asList(referral1, referral2);
+        List<PatientReferralWithCommentProjection> referralsList = Arrays.asList(referralP1, referralP2);
+        Page<PatientReferralWithCommentProjection> referralPage = new PageImpl<>(referralsList, PageRequest.of(page, size), referralsList.size());
+
         when(referralRepository.getPatientReferralsByPatientId(patientId, PageRequest.of(page, size))).thenReturn(referralPage);
-        when(referralPage.getContent()).thenReturn(referrals);
+
+        Referral referral1 = ModelTestUtil.referralBuilder().referralId(1L).build();
+        Referral referral2 = ModelTestUtil.referralBuilder().referralId(2L).build();
+        when(modelMapper.mapProjectionToReferral(referralP1)).thenReturn(referral1);
+        when(modelMapper.mapProjectionToReferral(referralP2)).thenReturn(referral2);
 
         // When
-        List<PatientReferralWithCommentProjection> result = patientReferralService.getPatientReferralsByPatientId(patientId, page, size);
+        List<Referral> result = patientReferralService.getPatientReferralsByPatientId(patientId, page, size);
 
         // Then
         assertThat(result).hasSize(2);
@@ -70,11 +80,11 @@ class PatientReferralServiceTest {
         int page = 0;
         int size = 2;
 
-        when(referralRepository.getPatientReferralsByPatientId(patientId, PageRequest.of(page, size))).thenReturn(referralPage);
-        when(referralPage.getContent()).thenReturn(Collections.emptyList());
+        Page<PatientReferralWithCommentProjection> emptyReferralPage = new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
+        when(referralRepository.getPatientReferralsByPatientId(patientId, PageRequest.of(page, size))).thenReturn(emptyReferralPage);
 
         // When
-        List<PatientReferralWithCommentProjection> result = patientReferralService.getPatientReferralsByPatientId(patientId, page, size);
+        List<Referral> result = patientReferralService.getPatientReferralsByPatientId(patientId, page, size);
 
         // Then
         assertThat(result).isEmpty();

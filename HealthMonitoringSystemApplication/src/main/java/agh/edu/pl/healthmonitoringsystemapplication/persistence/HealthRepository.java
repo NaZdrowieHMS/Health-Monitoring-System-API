@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystemapplication.persistence;
 
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.HealthComment;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.entity.HealthCommentEntity;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.projection.HealthCommentWithAuthorProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface HealthRepository extends JpaRepository<HealthComment, Long> {
+public interface HealthRepository extends JpaRepository<HealthCommentEntity, Long> {
 
     @Override
-    Optional<HealthComment> findById(Long id);
+    Optional<HealthCommentEntity> findById(Long id);
 
     @Query(value = "SELECT h.health_comment_id AS healthCommentId, h.patient_id AS patientId, h.content AS content, h.modified_date AS modifiedDate, " +
             "h.doctor_id AS doctorId, h.doctor_name AS doctorName, h.doctor_surname AS doctorSurname, h.doctor_email AS doctorEmail, " +

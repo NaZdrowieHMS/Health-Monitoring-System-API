@@ -1,8 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.DoctorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.HealthResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.HealthComment;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.PatientHealthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static agh.edu.pl.healthmonitoringsystemapplication.api.commons.Constants.PAGE_SIZE_PARAM;
 import static agh.edu.pl.healthmonitoringsystemapplication.api.commons.Constants.START_INDEX_PARAM;
@@ -41,7 +39,7 @@ public class PatientHealthController {
             summary = "Get list of health comment with autor data for a specific patient",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = HealthResponse.class))),
+                            content = @Content(schema = @Schema(type = "array", implementation = HealthComment.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
@@ -49,28 +47,11 @@ public class PatientHealthController {
             },
             tags = {"PatientHealth"}
     )
-    public ResponseEntity<List<HealthResponse>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                                         @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                                         @Parameter(description = "Patient ID") @PathVariable Long patientId) {
+    public ResponseEntity<List<HealthComment>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                                        @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                                        @Parameter(description = "PatientEntity ID") @PathVariable Long patientId) {
 
-        List<HealthResponse> patientHealthComments = patientHealthService.getHealthCommentsByPatientId(patientId, startIndex, pageSize)
-                .stream()
-                .map(healthComment -> HealthResponse.builder()
-                        .id(healthComment.getHealthCommentId())
-                        .patientId(healthComment.getPatientId())
-                        .modifiedDate(healthComment.getModifiedDate())
-                        .content(healthComment.getContent())
-                        .doctor(DoctorResponse.builder()
-                                .id(healthComment.getDoctorId())
-                                .name(healthComment.getDoctorName())
-                                .surname(healthComment.getDoctorSurname())
-                                .email(healthComment.getDoctorEmail())
-                                .pesel(healthComment.getDoctorPesel())
-                                .pwz(healthComment.getPwz())
-                                .build())
-                        .build())
-                .collect(Collectors.toList());
-
+        List<HealthComment> patientHealthComments = patientHealthService.getHealthCommentsByPatientId(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientHealthComments);
     }
 }

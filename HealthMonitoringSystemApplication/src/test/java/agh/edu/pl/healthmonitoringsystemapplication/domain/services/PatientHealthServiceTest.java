@@ -1,5 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.components.ModelMapper;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.HealthComment;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.HealthRepository;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.projection.HealthCommentWithAuthorProjection;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +27,9 @@ class PatientHealthServiceTest {
 
     @Mock
     private HealthRepository healthRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
 
     @Mock
     private Page<HealthCommentWithAuthorProjection> healthCommentsPage;
@@ -54,13 +60,18 @@ class PatientHealthServiceTest {
         when(healthRepository.getHealthCommentsWithAutorByPatientId(patientId, PageRequest.of(page, size))).thenReturn(healthCommentsPage);
         when(healthCommentsPage.getContent()).thenReturn(healthComments);
 
+        HealthComment mappedComment1 = ModelTestUtil.healthCommentBuilder().build();
+        HealthComment mappedComment2 = ModelTestUtil.healthCommentBuilder().build();
+        when(modelMapper.mapProjectionToHealth(healthComment1)).thenReturn(mappedComment1);
+        when(modelMapper.mapProjectionToHealth(healthComment2)).thenReturn(mappedComment2);
+
         // When
-        List<HealthCommentWithAuthorProjection> result = patientHealthService.getHealthCommentsByPatientId(patientId, page, size);
+        List<HealthComment> result = patientHealthService.getHealthCommentsByPatientId(patientId, page, size);
 
         // Then
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getContent()).isEqualTo("First comment");
-        assertThat(result.get(1).getContent()).isEqualTo("Second comment");
+        assertThat(result.get(0)).isEqualTo(mappedComment1);
+        assertThat(result.get(1)).isEqualTo(mappedComment2);
         verify(healthRepository, times(1)).getHealthCommentsWithAutorByPatientId(patientId, PageRequest.of(page, size));
     }
 
@@ -75,7 +86,7 @@ class PatientHealthServiceTest {
         when(healthCommentsPage.getContent()).thenReturn(Collections.emptyList());
 
         // When
-        List<HealthCommentWithAuthorProjection> result = patientHealthService.getHealthCommentsByPatientId(patientId, page, size);
+        List<HealthComment> result = patientHealthService.getHealthCommentsByPatientId(patientId, page, size);
 
         // Then
         assertThat(result).isEmpty();
@@ -100,4 +111,3 @@ class PatientHealthServiceTest {
         verify(healthRepository, times(1)).getHealthCommentsWithAutorByPatientId(patientId, PageRequest.of(page, size));
     }
 }
-

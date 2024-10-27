@@ -3,9 +3,8 @@ package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelRequestTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.DoctorRequest;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.DoctorResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Doctor;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.DoctorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +56,7 @@ public class DoctorControllerTest {
         when(doctorService.getDoctors(0, 50)).thenReturn(doctors);
 
         // When
-        ResponseEntity<List<DoctorResponse>> response = doctorController.getDoctors(0, 50);
+        ResponseEntity<List<Doctor>> response = doctorController.getDoctors(0, 50);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -72,7 +71,7 @@ public class DoctorControllerTest {
         when(doctorService.getDoctors(0, 50)).thenReturn(Collections.emptyList());
 
         // When
-        ResponseEntity<List<DoctorResponse>> response = doctorController.getDoctors(0, 50);
+        ResponseEntity<List<Doctor>> response = doctorController.getDoctors(0, 50);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -88,7 +87,7 @@ public class DoctorControllerTest {
         when(doctorService.getDoctorById(doctorId)).thenReturn(doctor);
 
         // When
-        ResponseEntity<DoctorResponse> response = doctorController.getDoctorById(doctorId);
+        ResponseEntity<Doctor> response = doctorController.getDoctorById(doctorId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -107,6 +106,9 @@ public class DoctorControllerTest {
         RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
             doctorController.getDoctorById(doctorId);
         });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("Doctor not found");
     }
 
     @Test
@@ -132,7 +134,7 @@ public class DoctorControllerTest {
         when(doctorService.createDoctor(doctorRequest)).thenReturn(createdDoctor);
 
         // When
-        ResponseEntity<DoctorResponse> response = doctorController.createDoctor(doctorRequest);
+        ResponseEntity<Doctor> response = doctorController.createDoctor(doctorRequest);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -150,7 +152,11 @@ public class DoctorControllerTest {
     void testCreateDoctorShouldReturn400WhenInvalidRequest() throws Exception {
         // Given
         DoctorRequest invalidRequest = ModelRequestTestUtil.doctorRequestBuilder()
-                .name(null)
+                .name(null)  // Invalid input
+                .surname("Doe")
+                .email("john.doe@example.com")
+                .pesel("12345678901")
+                .pwz("5425740")
                 .build();
 
         // When
@@ -161,7 +167,6 @@ public class DoctorControllerTest {
                 .andExpect(status().isBadRequest());
         verify(doctorService, never()).createDoctor(any(DoctorRequest.class));
     }
-
 
     @Test
     void testCreateDoctorShouldReturn500WhenServiceThrowsException() {
@@ -186,4 +191,3 @@ public class DoctorControllerTest {
         verify(doctorService, times(1)).createDoctor(doctorRequest);
     }
 }
-

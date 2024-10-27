@@ -1,38 +1,44 @@
 package agh.edu.pl.healthmonitoringsystemapplication.domain.services;
 
+import agh.edu.pl.healthmonitoringsystemapplication.domain.components.ModelMapper;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.EntityNotFoundException;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.persistence.PatientRepository;
+import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.models.request.PatientRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public PatientService(PatientRepository patientRepository) {
+    public PatientService(PatientRepository patientRepository, ModelMapper modelMapper) {
         this.patientRepository = patientRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<Patient> getPatients(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Patient> patientPage = patientRepository.findAll(pageable);
-        return patientPage.getContent();
+        List<PatientEntity> patients = patientRepository.findAll(pageable).getContent();
+
+        return patients.stream()
+                .map(modelMapper::mapPatientEntityToPatient)
+                .collect(Collectors.toList());
     }
 
     public Patient createPatient(PatientRequest patientRequest) {
         LocalDateTime now = LocalDateTime.now();
-        Patient patient = Patient.builder()
+        PatientEntity patientEntity = PatientEntity.builder()
                 .name(patientRequest.getName())
                 .surname(patientRequest.getSurname())
                 .email(patientRequest.getEmail())
@@ -40,11 +46,15 @@ public class PatientService {
                 .createdDate(now)
                 .modifiedDate(now)
                 .build();
-        return patientRepository.save(patient);
+        PatientEntity savedPatientEntity = patientRepository.save(patientEntity);
+
+        return modelMapper.mapPatientEntityToPatient(savedPatientEntity);
     }
 
-    public Patient getPatientById(Long id){
-        return patientRepository.findById(id)
+    public Patient getPatientById(Long id) {
+        PatientEntity patientEntity = patientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Patient with id " + id + " not found"));
+
+        return modelMapper.mapPatientEntityToPatient(patientEntity);
     }
 }

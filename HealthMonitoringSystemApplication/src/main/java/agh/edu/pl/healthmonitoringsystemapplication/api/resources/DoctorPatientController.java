@@ -1,8 +1,7 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
-
 import agh.edu.pl.healthmonitoringsystemapplication.domain.exceptions.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PatientResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.DoctorPatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static agh.edu.pl.healthmonitoringsystemapplication.api.commons.Constants.PAGE_SIZE_PARAM;
 import static agh.edu.pl.healthmonitoringsystemapplication.api.commons.Constants.START_INDEX_PARAM;
@@ -42,7 +40,7 @@ public class DoctorPatientController {
             summary = "Get list of doctor's patients",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = PatientResponse.class))),
+                            content = @Content(schema = @Schema(type = "array", implementation = Patient.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
@@ -50,21 +48,11 @@ public class DoctorPatientController {
             },
             tags = {"DoctorPatients"}
     )
-    public ResponseEntity<List<PatientResponse>> getDoctorPatients(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                                   @Parameter(description = "Number of patients per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                                   @Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
+    public ResponseEntity<List<Patient>> getDoctorPatients(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                           @Parameter(description = "Number of patients per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                           @Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
 
-        List<PatientResponse> doctorPatients = doctorPatientService.getPatientsByDoctorId(doctorId, startIndex, pageSize)
-                .stream()
-                .map(patient -> PatientResponse.builder()
-                        .id(patient.getId())
-                        .name(patient.getName())
-                        .surname(patient.getSurname())
-                        .email(patient.getEmail())
-                        .pesel(patient.getPesel())
-                        .build())
-                .collect(Collectors.toList());
-
+        List<Patient> doctorPatients = doctorPatientService.getPatientsByDoctorId(doctorId, startIndex, pageSize);
         return ResponseEntity.ok(doctorPatients);
     }
 }

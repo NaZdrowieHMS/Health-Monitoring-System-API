@@ -1,18 +1,23 @@
 package agh.edu.pl.healthmonitoringsystemapplication;
 
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.AiPrediction;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.AiPredictionComment;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Doctor;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.HealthComment;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Referral;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.ReferralComment;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Result;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.ResultComment;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Doctor;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.HealthComment;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Patient;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Prediction;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Referral;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Result;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.ResultDataContent;
 
 import java.time.LocalDateTime;
 
 public class ModelTestUtil {
+
+    public static Prediction.Builder predictionBuilder() {
+        return Prediction.builder()
+                .success(true)
+                .prediction("benign")
+                .confidence(0.87F);
+    }
 
     public static Patient.Builder patientBuilder() {
         return Patient.builder()
@@ -20,9 +25,7 @@ public class ModelTestUtil {
                 .name("Anna")
                 .surname("Nowak")
                 .email("nowak@mail.com")
-                .pesel("12345678909")
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now());
+                .pesel("12345678909");
     }
 
     public static Doctor.Builder doctorBuilder() {
@@ -32,83 +35,48 @@ public class ModelTestUtil {
                 .surname("Nowak")
                 .email("nowak@mail.com")
                 .pesel("12345678909")
-                .pwz("5425740")
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now());
+                .pwz("5425740");
     }
 
-    public static AiPrediction.Builder aiPredictionBuilder() {
-        return AiPrediction.builder()
-                .id(1L)
-                .doctorId(2L)
-                .patientId(3L)
-                .content("Prediction content")
-                .createdDate(LocalDateTime.now());
-    }
-
-    public static AiPredictionComment.Builder aiPredictionCommentBuilder() {
-        return AiPredictionComment.builder()
-                .id(1L)
-                .doctorId(2L)
-                .patientId(3L)
-                .content("Comment content")
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now());
-    }
-
-    public static HealthComment.Builder healthBuilder() {
+    public static HealthComment.Builder healthCommentBuilder() {
         return HealthComment.builder()
-                .id(1L)
-                .doctorId(2L)
-                .patientId(3L)
-                .content("Health content")
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now());
+                .id(2L)
+                .patientId(1L)
+                .content("Second comment")
+                .modifiedDate(LocalDateTime.now())
+                .doctor(Doctor.builder()
+                        .id(2L)
+                        .name("Jan")
+                        .surname("Kowalski")
+                        .email("jan.kowalski@mail.com")
+                        .pesel("09876543211")
+                        .pwz("7865431")
+                        .build());
     }
 
     public static Referral.Builder referralBuilder() {
         return Referral.builder()
-                .id(1L)
-                .doctorId(2L)
-                .patientId(3L)
-                .commentId(null)
-                .testType("Blood Test")
-                .number("12345")
-                .completed(false)
-                .completedDate(null)
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now());
+                .modifiedDate(LocalDateTime.now())
+                .referralId(1L)
+                .doctorId(1L)
+                .patientId(1L)
+                .testType("Test")
+                .referralNumber("123")
+                .completed(true);
     }
 
-    public static ReferralComment.Builder referralCommentBuilder() {
-        return ReferralComment.builder()
-                .id(1L)
-                .doctorId(2L)
-                .content("Sample content")
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now());
+    public static ResultDataContent.Builder resultDataContentBuilder() {
+        return ResultDataContent.builder()
+                .data("Some data")
+                .type("Blood");
     }
 
     public static Result.Builder resultBuilder() {
         return Result.builder()
-                .id(1L)
-                .patientId(2L)
-                .testType("Blood Test")
-                .content("Test result content")
-                .aiSelected(false)
-                .viewed(false)
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now());
-    }
-
-    public static ResultComment.Builder resultCommentBuilder() {
-        return ResultComment.builder()
-                .id(1L)
-                .resultId(2L)
-                .doctorId(3L)
-                .content("Comment content")
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now());
+                .id(2L)
+                .patientId(1L)
+                .testType("typ")
+                .content(resultDataContentBuilder().build())
+                .createdDate(LocalDateTime.now());
     }
 }
-

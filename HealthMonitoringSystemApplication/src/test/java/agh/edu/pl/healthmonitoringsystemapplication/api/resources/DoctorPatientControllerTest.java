@@ -1,9 +1,8 @@
 package agh.edu.pl.healthmonitoringsystemapplication.api.resources;
 
 import agh.edu.pl.healthmonitoringsystemapplication.ModelTestUtil;
-import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.PatientResponse;
+import agh.edu.pl.healthmonitoringsystemapplication.domain.models.response.Patient;
 import agh.edu.pl.healthmonitoringsystemapplication.domain.services.DoctorPatientService;
-import agh.edu.pl.healthmonitoringsystemapplication.persistence.model.table.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -47,11 +46,13 @@ class DoctorPatientControllerTest {
         when(doctorPatientService.getPatientsByDoctorId(doctorId, startIndex, pageSize)).thenReturn(patients);
 
         // When
-        ResponseEntity<List<PatientResponse>> response = doctorPatientController.getDoctorPatients(startIndex, pageSize, doctorId);
+        ResponseEntity<List<Patient>> response = doctorPatientController.getDoctorPatients(startIndex, pageSize, doctorId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).hasSize(2);
         assertThat(response.getBody().get(0).getName()).isEqualTo("John");
+        assertThat(response.getBody().get(1).getName()).isEqualTo("Jane");
         verify(doctorPatientService, times(1)).getPatientsByDoctorId(doctorId, startIndex, pageSize);
     }
 
@@ -65,7 +66,7 @@ class DoctorPatientControllerTest {
         when(doctorPatientService.getPatientsByDoctorId(doctorId, startIndex, pageSize)).thenReturn(Collections.emptyList());
 
         // When
-        ResponseEntity<List<PatientResponse>> response = doctorPatientController.getDoctorPatients(startIndex, pageSize, doctorId);
+        ResponseEntity<List<Patient>> response = doctorPatientController.getDoctorPatients(startIndex, pageSize, doctorId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -77,10 +78,11 @@ class DoctorPatientControllerTest {
     void testGetDoctorPatientsHandlesServiceException() {
         // Given
         Long doctorId = 1L;
-        int startIndex = -4;
+        int startIndex = 0;
         int pageSize = 50;
 
-        when(doctorPatientService.getPatientsByDoctorId(doctorId, startIndex, pageSize)).thenThrow(new RuntimeException("Service error"));
+        when(doctorPatientService.getPatientsByDoctorId(doctorId, startIndex, pageSize))
+                .thenThrow(new RuntimeException("Service error"));
 
         // When & Then
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
