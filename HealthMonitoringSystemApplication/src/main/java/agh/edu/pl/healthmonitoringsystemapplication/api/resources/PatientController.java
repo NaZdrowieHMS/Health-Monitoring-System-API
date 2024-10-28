@@ -34,7 +34,7 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @GetMapping(params = { START_INDEX_PARAM, PAGE_SIZE_PARAM })
+    @GetMapping
     @Operation(
             summary = "Get list of all patients.",
             responses = {

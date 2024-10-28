@@ -32,7 +32,7 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    @GetMapping(params = { START_INDEX_PARAM, PAGE_SIZE_PARAM })
+    @GetMapping
     @Operation(
             summary = "Get list of all doctors.",
             responses = {

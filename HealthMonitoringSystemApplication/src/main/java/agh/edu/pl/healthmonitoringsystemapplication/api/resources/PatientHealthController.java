@@ -34,7 +34,7 @@ public class PatientHealthController {
         this.patientHealthService = patientHealthService;
     }
 
-    @GetMapping(path = "/{patientId}/health", params = { START_INDEX_PARAM, PAGE_SIZE_PARAM })
+    @GetMapping(path = "/{patientId}/health")
     @Operation(
             summary = "Get list of health comment with autor data for a specific patient",
             responses = {

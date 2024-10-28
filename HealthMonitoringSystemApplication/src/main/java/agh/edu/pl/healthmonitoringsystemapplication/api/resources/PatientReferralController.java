@@ -35,7 +35,7 @@ public class PatientReferralController {
         this.patientReferralService = patientReferralService;
     }
 
-    @GetMapping(path = "/{patientId}/referrals", params = { START_INDEX_PARAM, PAGE_SIZE_PARAM })
+    @GetMapping(path = "/{patientId}/referrals")
     @Operation(
             summary = "Get list of referrals with comment for a specific patient",
             responses = {

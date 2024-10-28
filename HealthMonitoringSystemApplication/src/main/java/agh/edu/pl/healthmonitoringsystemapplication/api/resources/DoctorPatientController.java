@@ -35,7 +35,7 @@ public class DoctorPatientController {
         this.doctorPatientService = doctorPatientService;
     }
 
-    @GetMapping(path = "/{doctorId}/all-patients", params = { START_INDEX_PARAM, PAGE_SIZE_PARAM })
+    @GetMapping(path = "/{doctorId}/all-patients")
     @Operation(
             summary = "Get list of doctor's patients",
             responses = {
