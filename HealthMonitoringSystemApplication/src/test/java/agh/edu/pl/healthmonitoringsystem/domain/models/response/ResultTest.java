@@ -2,6 +2,8 @@ package agh.edu.pl.healthmonitoringsystem.domain.models.response;
 
 import agh.edu.pl.healthmonitoringsystem.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystem.domain.exceptions.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -17,129 +19,24 @@ public class ResultTest {
         Long id = 1L;
         Long patientId = 2L;
         String testType = "Blood Test";
-        ResultDataContent content = ModelTestUtil.resultDataContentBuilder().build();
+        ResultDataContent content = ModelTestUtil.resultDataContent();
         LocalDateTime createdDate = LocalDateTime.now();
 
         // When
-        Result result = ModelTestUtil.resultBuilder()
-                .id(id)
-                .patientId(patientId)
-                .testType(testType)
-                .content(content)
-                .createdDate(createdDate)
-                .build();
+        Result result = new Result(
+                id,
+                patientId,
+                testType,
+                content,
+                createdDate
+        );
 
         // Then
-        assertEquals(id, result.getId());
-        assertEquals(patientId, result.getPatientId());
-        assertEquals(testType, result.getTestType());
-        assertEquals(content, result.getContent());
-        assertEquals(createdDate, result.getCreatedDate());
-    }
-
-    @Test
-    public void builderShouldThrowExceptionWhenIdIsNull() {
-        // Given
-        Long patientId = 2L;
-        String testType = "Blood Test";
-        ResultDataContent content = ModelTestUtil.resultDataContentBuilder().data("Some data").type("Blood").build();
-        LocalDateTime createdDate = LocalDateTime.now();
-
-        // When & Then
-        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            Result.builder()
-                    .id(null)
-                    .patientId(patientId)
-                    .testType(testType)
-                    .content(content)
-                    .createdDate(createdDate)
-                    .build();
-        });
-        assertEquals("Id cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void builderShouldThrowExceptionWhenPatientIdIsNull() {
-        // Given
-        Long id = 1L;
-        String testType = "Blood Test";
-        ResultDataContent content = ModelTestUtil.resultDataContentBuilder().data("Some data").type("Blood").build();
-        LocalDateTime createdDate = LocalDateTime.now();
-
-        // When & Then
-        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            Result.builder()
-                    .id(id)
-                    .patientId(null)
-                    .testType(testType)
-                    .content(content)
-                    .createdDate(createdDate)
-                    .build();
-        });
-        assertEquals("PatientEntity id cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void builderShouldThrowExceptionWhenTestTypeIsNull() {
-        // Given
-        Long id = 1L;
-        Long patientId = 2L;
-        ResultDataContent content = ModelTestUtil.resultDataContentBuilder().data("Some data").type("Blood").build();
-        LocalDateTime createdDate = LocalDateTime.now();
-
-        // When & Then
-        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            Result.builder()
-                    .id(id)
-                    .patientId(patientId)
-                    .testType(null)
-                    .content(content)
-                    .createdDate(createdDate)
-                    .build();
-        });
-        assertEquals("Test type cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void builderShouldThrowExceptionWhenContentIsNull() {
-        // Given
-        Long id = 1L;
-        Long patientId = 2L;
-        String testType = "Blood Test";
-        LocalDateTime createdDate = LocalDateTime.now();
-
-        // When & Then
-        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            Result.builder()
-                    .id(id)
-                    .patientId(patientId)
-                    .testType(testType)
-                    .content(null)
-                    .createdDate(createdDate)
-                    .build();
-        });
-        assertEquals("Content cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void builderShouldThrowExceptionWhenCreatedDateIsNull() {
-        // Given
-        Long id = 1L;
-        Long patientId = 2L;
-        String testType = "Blood Test";
-        ResultDataContent content = ModelTestUtil.resultDataContentBuilder().data("Some data").type("Blood").build();
-
-        // When & Then
-        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            Result.builder()
-                    .id(id)
-                    .patientId(patientId)
-                    .testType(testType)
-                    .content(content)
-                    .createdDate(null)
-                    .build();
-        });
-        assertEquals("Creation date cannot be null", exception.getMessage());
+        assertEquals(id, result.id());
+        assertEquals(patientId, result.patientId());
+        assertEquals(testType, result.testType());
+        assertEquals(content, result.content());
+        assertEquals(createdDate, result.createdDate());
     }
 }
 

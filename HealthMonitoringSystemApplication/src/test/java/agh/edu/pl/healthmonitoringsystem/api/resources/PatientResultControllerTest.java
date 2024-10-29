@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.api.resources;
 
 import agh.edu.pl.healthmonitoringsystem.ModelTestUtil;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Result;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.domain.services.PatientResultService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.tensorflow.op.math.Mod;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -40,21 +41,21 @@ class PatientResultControllerTest {
         int startIndex = 0;
         int pageSize = 2;
 
-        Result result1 = ModelTestUtil.resultBuilder()
-                .id(1L)
-                .patientId(patientId)
-                .testType("Blood Test")
-                .content(ModelTestUtil.resultDataContentBuilder().build())
-                .createdDate(LocalDateTime.now())
-                .build();
+        Result result1 = new Result(
+                1L,
+                patientId,
+                "Blood Test",
+                ModelTestUtil.resultDataContent(),
+                LocalDateTime.now()
+        );
 
-        Result result2 = ModelTestUtil.resultBuilder()
-                .id(2L)
-                .patientId(patientId)
-                .testType("X-Ray")
-                .content(ModelTestUtil.resultDataContentBuilder().build())
-                .createdDate(LocalDateTime.now())
-                .build();
+        Result result2 = new Result(
+                2L,
+                patientId,
+                "X-Ray",
+                ModelTestUtil.resultDataContent(),
+                LocalDateTime.now()
+        );
 
         List<Result> results = Arrays.asList(result1, result2);
         when(patientResultService.getPatientResultsByPatientId(patientId, startIndex, pageSize)).thenReturn(results);
@@ -65,10 +66,10 @@ class PatientResultControllerTest {
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(2);
-        assertThat(response.getBody().get(0).getId()).isEqualTo(1L);
-        assertThat(response.getBody().get(0).getTestType()).isEqualTo("Blood Test");
-        assertThat(response.getBody().get(1).getId()).isEqualTo(2L);
-        assertThat(response.getBody().get(1).getTestType()).isEqualTo("X-Ray");
+        assertThat(response.getBody().get(0).id()).isEqualTo(1L);
+        assertThat(response.getBody().get(0).testType()).isEqualTo("Blood Test");
+        assertThat(response.getBody().get(1).id()).isEqualTo(2L);
+        assertThat(response.getBody().get(1).testType()).isEqualTo("X-Ray");
         verify(patientResultService, times(1)).getPatientResultsByPatientId(patientId, startIndex, pageSize);
     }
 

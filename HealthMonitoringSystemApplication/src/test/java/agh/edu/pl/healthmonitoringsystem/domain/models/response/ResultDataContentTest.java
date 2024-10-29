@@ -2,6 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.domain.models.response;
 
 import agh.edu.pl.healthmonitoringsystem.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystem.domain.exceptions.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,44 +17,11 @@ public class ResultDataContentTest {
         String type = "Blood Test";
 
         // When
-        ResultDataContent resultDataContent = ModelTestUtil.resultDataContentBuilder()
-                .data(data)
-                .type(type)
-                .build();
+        ResultDataContent resultDataContent = new ResultDataContent(data, type);
 
         // Then
-        assertEquals(data, resultDataContent.getData());
-        assertEquals(type, resultDataContent.getType());
-    }
-
-    @Test
-    public void builderShouldThrowExceptionWhenDataIsNull() {
-        // Given
-        String type = "Blood Test";
-
-        // When & Then
-        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            ResultDataContent.builder()
-                    .data(null)
-                    .type(type)
-                    .build();
-        });
-        assertEquals("Data cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void builderShouldThrowExceptionWhenTypeIsNull() {
-        // Given
-        String data = "Some result data";
-
-        // When & Then
-        RequestValidationException exception = assertThrows(RequestValidationException.class, () -> {
-            ResultDataContent.builder()
-                    .data(data)
-                    .type(null)
-                    .build();
-        });
-        assertEquals("Data type id cannot be null", exception.getMessage());
+        assertEquals(data, resultDataContent.data());
+        assertEquals(type, resultDataContent.type());
     }
 }
 
