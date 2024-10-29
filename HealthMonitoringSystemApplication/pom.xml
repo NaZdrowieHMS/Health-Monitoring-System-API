@@ -146,6 +146,12 @@
 			<version>2.3.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>agh.edu.pl.healthmonitoringsystem</groupId>
+			<artifactId>healthmonitoringsystem-shared</artifactId>
+			<version>1.1-SNAPSHOT</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
