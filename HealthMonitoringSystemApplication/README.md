@@ -11,6 +11,10 @@ DATABASE_PASSWORD=
 secrets (url, username and password) are available in supabase -> ask Szymon or Karolina
 
 ### Run Docker
+TYMCZASOWO: zmienić w settings.xml na swoje dane:
+
+<username>[Nazwa użytkownika]</username>
+<password>[User Password Token]</password>
 
 1.  Build image `docker build -t health-monitoring-app .`
 2.  Run container ~~`docker run -p 8080:8080 health-monitoring-app`~~

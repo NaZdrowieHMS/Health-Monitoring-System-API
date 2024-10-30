@@ -11,6 +11,8 @@ COPY src ./src
 # Copy the AI model into the app's resource directory
 COPY src/main/resources/models/ai_model /app/src/main/resources/models/ai_model
 
+COPY src/main/resources/settings.xml /root/.m2/settings.xml
+
 # Check if the model files are copied correctly (optional)
 RUN ls -la /app/src/main/resources/models/ai_model
 
