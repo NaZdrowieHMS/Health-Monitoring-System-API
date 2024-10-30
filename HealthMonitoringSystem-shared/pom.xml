@@ -6,7 +6,7 @@
 
     <groupId>agh.edu.pl.healthmonitoringsystem</groupId>
     <artifactId>healthmonitoringsystem-shared</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -21,5 +21,18 @@
             <url>https://maven.pkg.github.com/nazdrowiehms/health-monitoring-system-api</url>
         </repository>
     </distributionManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-gson</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
