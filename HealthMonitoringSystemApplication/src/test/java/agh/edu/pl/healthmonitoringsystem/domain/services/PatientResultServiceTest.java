@@ -4,9 +4,9 @@ import agh.edu.pl.healthmonitoringsystem.ModelEntityTestUtil;
 import agh.edu.pl.healthmonitoringsystem.ModelTestUtil;
 import agh.edu.pl.healthmonitoringsystem.domain.components.JsonFieldExtractor;
 import agh.edu.pl.healthmonitoringsystem.domain.components.ModelMapper;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Result;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -71,24 +71,20 @@ class PatientResultServiceTest {
         Page<ResultEntity> resultPage = new PageImpl<>(resultEntities, PageRequest.of(page, size), resultEntities.size());
 
         when(resultRepository.getPatientResultsByPatientId(patientId, PageRequest.of(page, size))).thenReturn(resultPage);
-        when(modelMapper.mapResultEntityToResult(resultEntity1)).thenReturn(ModelTestUtil.resultBuilder()
-                .id(1L)
-                .testType("Blood Test").build());
-        when(modelMapper.mapResultEntityToResult(resultEntity2)).thenReturn(ModelTestUtil.resultBuilder()
-                .id(2L)
-                .testType("X-Ray").build());
+        when(modelMapper.mapResultEntityToResult(resultEntity1)).thenReturn(new Result(1L, 1L, "Blood Test", ModelTestUtil.resultDataContent(), LocalDateTime.now()));
+        when(modelMapper.mapResultEntityToResult(resultEntity2)).thenReturn(new Result(2L, 1L, "X-Ray", ModelTestUtil.resultDataContent(), LocalDateTime.now()));
 
         // When
         List<Result> results = patientResultService.getPatientResultsByPatientId(patientId, page, size);
 
         // Then
         assertThat(results).hasSize(2);
-        assertThat(results.get(0).getId()).isEqualTo(1L);
-        assertThat(results.get(0).getTestType()).isEqualTo("Blood Test");
-        assertThat(results.get(0).getContent().getType()).isEqualTo("Blood");
+        assertThat(results.get(0).id()).isEqualTo(1L);
+        assertThat(results.get(0).testType()).isEqualTo("Blood Test");
+        assertThat(results.get(0).content().type()).isEqualTo("Blood");
 
-        assertThat(results.get(1).getId()).isEqualTo(2L);
-        assertThat(results.get(1).getTestType()).isEqualTo("X-Ray");
+        assertThat(results.get(1).id()).isEqualTo(2L);
+        assertThat(results.get(1).testType()).isEqualTo("X-Ray");
 
         verify(resultRepository, times(1)).getPatientResultsByPatientId(patientId, PageRequest.of(page, size));
     }

@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.domain.services;
 
 import agh.edu.pl.healthmonitoringsystem.domain.components.ModelMapper;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Result;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;

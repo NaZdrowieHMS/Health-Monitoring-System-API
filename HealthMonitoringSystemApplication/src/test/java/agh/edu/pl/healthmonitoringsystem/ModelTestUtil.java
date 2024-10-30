@@ -5,8 +5,8 @@ import agh.edu.pl.healthmonitoringsystem.domain.models.response.HealthComment;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.Referral;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Result;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.ResultDataContent;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 
 import java.time.LocalDateTime;
 
@@ -65,18 +65,10 @@ public class ModelTestUtil {
                 .completed(true);
     }
 
-    public static ResultDataContent.Builder resultDataContentBuilder() {
-        return ResultDataContent.builder()
-                .data("Some data")
-                .type("Blood");
-    }
-
-    public static Result.Builder resultBuilder() {
-        return Result.builder()
-                .id(2L)
-                .patientId(1L)
-                .testType("typ")
-                .content(resultDataContentBuilder().build())
-                .createdDate(LocalDateTime.now());
+    public static ResultDataContent resultDataContent() {
+        return new ResultDataContent(
+                "Some data",
+                "Blood"
+        );
     }
 }

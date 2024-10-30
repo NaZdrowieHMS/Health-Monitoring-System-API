@@ -4,8 +4,8 @@ import agh.edu.pl.healthmonitoringsystem.domain.models.response.Doctor;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.HealthComment;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.Referral;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Result;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.ResultDataContent;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
@@ -51,16 +51,13 @@ public class ModelMapper {
         String dataValue = jsonFieldExtractor.extract(jsonContent, "data");
         String typeValue = jsonFieldExtractor.extract(jsonContent, "type");
 
-        return Result.builder()
-                .id(result.getId())
-                .patientId(result.getPatientId())
-                .testType(result.getTestType())
-                .createdDate(result.getCreatedDate())
-                .content(ResultDataContent.builder()
-                        .data(dataValue)
-                        .type(typeValue)
-                        .build())
-                .build();
+        return new Result(
+                result.getId(),
+                result.getPatientId(),
+                result.getTestType(),
+                new ResultDataContent(dataValue, typeValue),
+                result.getCreatedDate()
+        );
     }
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {

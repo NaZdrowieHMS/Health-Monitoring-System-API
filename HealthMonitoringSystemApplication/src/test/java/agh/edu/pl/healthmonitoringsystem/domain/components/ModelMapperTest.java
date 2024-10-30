@@ -5,7 +5,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.models.response.Doctor;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.HealthComment;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.models.response.Referral;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Result;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
@@ -103,12 +103,12 @@ class ModelMapperTest {
         Result result = modelMapper.mapResultEntityToResult(resultEntity);
 
         // Then
-        assertEquals(resultEntity.getId(), result.getId());
-        assertEquals(resultEntity.getPatientId(), result.getPatientId());
-        assertEquals(resultEntity.getTestType(), result.getTestType());
-        assertEquals(resultEntity.getCreatedDate(), result.getCreatedDate());
-        assertEquals("Test data", result.getContent().getData());
-        assertEquals("Blood", result.getContent().getType());
+        assertEquals(resultEntity.getId(), result.id());
+        assertEquals(resultEntity.getPatientId(), result.patientId());
+        assertEquals(resultEntity.getTestType(), result.testType());
+        assertEquals(resultEntity.getCreatedDate(), result.createdDate());
+        assertEquals("Test data", result.content().data());
+        assertEquals("Blood", result.content().type());
     }
 
     @Test

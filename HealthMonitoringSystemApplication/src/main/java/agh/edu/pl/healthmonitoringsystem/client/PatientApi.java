@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.client;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Result;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
 import retrofit2.http.Path;
 
 import java.util.List;
