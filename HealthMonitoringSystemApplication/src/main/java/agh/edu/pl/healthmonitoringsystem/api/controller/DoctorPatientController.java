@@ -2,6 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
 import agh.edu.pl.healthmonitoringsystem.domain.service.DoctorPatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,7 +36,7 @@ public class DoctorPatientController {
         this.doctorPatientService = doctorPatientService;
     }
 
-    @GetMapping(path = "/{doctorId}/all-patients")
+    @GetMapping(path = "/{doctorId}/patients")
     @Operation(
             summary = "Get list of doctor's patients",
             responses = {
@@ -48,11 +49,30 @@ public class DoctorPatientController {
             },
             tags = {"DoctorPatients"}
     )
-    public ResponseEntity<List<Patient>> getDoctorPatients(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+    public ResponseEntity<List<Patient>> getDoctorPatient(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                            @Parameter(description = "Number of patients per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
                                                            @Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
 
         List<Patient> doctorPatients = doctorPatientService.getPatientsByDoctorId(doctorId, startIndex, pageSize);
         return ResponseEntity.ok(doctorPatients);
+    }
+
+    @GetMapping(path = "/{doctorId}/patients/{patientId}/results")
+    @Operation(
+            summary = "Get all patient results for a specific doctor view",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation",
+                            content = @Content(schema = @Schema(type = "array", implementation = ResultForDoctorView.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"DoctorPatients"}
+    )
+    public ResponseEntity<List<ResultForDoctorView>> getDoctorPatientResultWithAiSelectedAndViewed(@Parameter(description = "Doctor ID") @PathVariable Long doctorId,  @Parameter(description = "Patient ID") @PathVariable Long patientId) {
+
+        List<ResultForDoctorView> doctorPatientResults = doctorPatientService.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId);
+        return ResponseEntity.ok(doctorPatientResults);
     }
 }
