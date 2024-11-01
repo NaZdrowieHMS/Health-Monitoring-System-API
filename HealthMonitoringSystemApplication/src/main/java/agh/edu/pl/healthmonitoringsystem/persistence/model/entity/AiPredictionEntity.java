@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.persistence.model.entity;
 
 
-import agh.edu.pl.healthmonitoringsystem.domain.exceptions.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +12,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-import static agh.edu.pl.healthmonitoringsystem.domain.validators.PreconditionValidator.checkNotNull;
+import static agh.edu.pl.healthmonitoringsystem.domain.validator.PreconditionValidator.checkNotNull;
 
 @Entity
 @Table(name = "ai_prediction")

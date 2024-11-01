@@ -1,10 +1,10 @@
 package agh.edu.pl.healthmonitoringsystem;
 
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Doctor;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.HealthComment;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Patient;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Prediction;
-import agh.edu.pl.healthmonitoringsystem.domain.models.response.Referral;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Doctor;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.HealthComment;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Prediction;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 
