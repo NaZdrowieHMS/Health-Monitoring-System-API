@@ -47,7 +47,7 @@ public class PatientResultController {
             },
             tags = {"PatientResult"}
     )
-    public ResponseEntity<List<Result>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+    public ResponseEntity<List<Result>> getPatientResults(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                                  @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
                                                                  @Parameter(description = "PatientEntity ID") @PathVariable Long patientId) {
 

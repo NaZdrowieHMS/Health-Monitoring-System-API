@@ -5,7 +5,9 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.HealthComment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientDataProjection;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorEntity;
@@ -26,13 +28,7 @@ public class ModelMapper {
 
     public Patient mapPatientEntityToPatient(PatientEntity patient) {
         if (patient == null) { return null; }
-        return Patient.builder()
-                        .id(patient.getId())
-                        .name(patient.getName())
-                        .surname(patient.getSurname())
-                        .email(patient.getEmail())
-                        .pesel(patient.getPesel())
-                        .build();
+        return new Patient(patient.getId(), patient.getName(), patient.getSurname(), patient.getEmail(), patient.getPesel());
     }
 
     public Doctor mapDoctorEntityToDoctor(DoctorEntity doctor) {
@@ -107,6 +103,19 @@ public class ModelMapper {
                 new ResultDataContent(dataValue, typeValue),
                 result.getAiSelected(),
                 result.getViewed(),
+                result.getCreatedDate());
+    }
+
+    public ResultWithPatientData mapProjectionToResultWithPatientData(ResultWithPatientDataProjection result) {
+        if (result == null) { return null; }
+        String jsonContent = result.getContent();
+        String dataValue = jsonFieldExtractor.extract(jsonContent, "data");
+        String typeValue = jsonFieldExtractor.extract(jsonContent, "type");
+
+        return new ResultWithPatientData(result.getId(),
+                new Patient(result.getId(), result.getName(), result.getSurname(), result.getEmail(), result.getPesel()),
+                result.getTestType(),
+                new ResultDataContent(dataValue, typeValue),
                 result.getCreatedDate());
     }
 }

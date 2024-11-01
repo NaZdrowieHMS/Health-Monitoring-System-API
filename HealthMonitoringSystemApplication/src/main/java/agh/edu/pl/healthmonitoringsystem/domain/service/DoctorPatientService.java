@@ -3,10 +3,12 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientDataProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,13 @@ public class DoctorPatientService {
         List<ResultWithAiSelectedAndViewedProjection> results = resultRepository.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId);
         return results.stream()
                 .map(modelMapper::mapProjectionToResultForDoctorView)
+                .collect(Collectors.toList());
+    }
+
+    public List<ResultWithPatientData> getDoctorUnviewedResults(Long doctorId) {
+        List<ResultWithPatientDataProjection> results = resultRepository.getDoctorUnviewedResults(doctorId);
+        return results.stream()
+                .map(modelMapper::mapProjectionToResultWithPatientData)
                 .collect(Collectors.toList());
     }
 }
