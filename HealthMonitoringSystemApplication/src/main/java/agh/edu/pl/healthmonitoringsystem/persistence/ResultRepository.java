@@ -1,7 +1,9 @@
 package agh.edu.pl.healthmonitoringsystem.persistence;
 
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientDataProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,4 +37,12 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
     List<ResultWithAiSelectedAndViewedProjection> getDoctorPatientResultWithAiSelectedAndViewed(
             @Param("doctorId") Long doctorId,
             @Param("patientId") Long patientId);
+
+    @Query(value = "SELECT r.id, r.patient_id AS patientId, r.name, r.surname, r.email, r.pesel, " +
+            "r.test_type AS testType, r.content AS content, r.created_date AS createdDate " +
+            "FROM result_viewed rv " +
+            "JOIN result_with_patient_data r ON rv.result_id = r.id " +
+            "WHERE rv.doctor_id = :doctorId",
+            nativeQuery = true)
+    List<ResultWithPatientDataProjection> getDoctorUnviewedResults(@Param("doctorId") Long doctorId);
 }

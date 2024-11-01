@@ -12,54 +12,35 @@ import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/results/ai-selected")
+@RequestMapping("/api/results/view")
 @CrossOrigin
-public class AiSelectedController {
+public class ViewedResultController {
     private final ResultService resultService;
 
-    public AiSelectedController(ResultService resultService) {
+    public ViewedResultController(ResultService resultService) {
         this.resultService = resultService;
     }
 
     @PutMapping
     @Operation(
-            summary = "Select result for AI Prediction.",
+            summary = "View result by doctor.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Result selected successfully",
+                    @ApiResponse(responseCode = "200", description = "Result viewed successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
             },
             tags = {"Result"}
     )
-    public ResponseEntity<Void> selectResult(@Parameter(description = "Select result request") @RequestBody @Valid ResultRequest resultRequest) {
+    public ResponseEntity<Void> selectResult(@Parameter(description = "View result request") @RequestBody @Valid ResultRequest resultRequest) {
 
-        resultService.selectResult(resultRequest);
+        resultService.viewResult(resultRequest);
         return ResponseEntity.ok().build();
     }
-
-    @DeleteMapping
-    @Operation(
-            summary = "Unselect result for AI Prediction.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Result unselected successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
-            },
-            tags = {"Result"}
-    )
-    public ResponseEntity<Void> unselectResult(@Parameter(description = "Unselect result request") @RequestBody @Valid ResultRequest resultRequest) {
-
-        resultService.unselectResult(resultRequest);
-        return ResponseEntity.ok().build();
-    }
-
 }

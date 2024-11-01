@@ -3,6 +3,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
 import agh.edu.pl.healthmonitoringsystem.domain.service.DoctorPatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -68,11 +69,30 @@ public class DoctorPatientController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"DoctorPatient"}
+            tags = {"DoctorPatientResult"}
     )
     public ResponseEntity<List<ResultForDoctorView>> getDoctorPatientResultWithAiSelectedAndViewed(@Parameter(description = "Doctor ID") @PathVariable Long doctorId,  @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 
         List<ResultForDoctorView> doctorPatientResults = doctorPatientService.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId);
         return ResponseEntity.ok(doctorPatientResults);
+    }
+
+    @GetMapping(path = "/{doctorId}/results/unviewed")
+    @Operation(
+            summary = "Get all patient results for a specific doctor view",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation",
+                            content = @Content(schema = @Schema(type = "array", implementation = ResultWithPatientData.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"DoctorPatientResult"}
+    )
+    public ResponseEntity<List<ResultWithPatientData>> getDoctorUnviewedResults(@Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
+
+        List<ResultWithPatientData> doctorPatientsResults = doctorPatientService.getDoctorUnviewedResults(doctorId);
+        return ResponseEntity.ok(doctorPatientsResults);
     }
 }

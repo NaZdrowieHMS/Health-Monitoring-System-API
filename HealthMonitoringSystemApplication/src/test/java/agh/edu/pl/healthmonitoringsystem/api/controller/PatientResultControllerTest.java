@@ -60,7 +60,7 @@ class PatientResultControllerTest {
         when(patientResultService.getPatientResultsByPatientId(patientId, startIndex, pageSize)).thenReturn(results);
 
         // When
-        ResponseEntity<List<Result>> response = patientResultController.getPatientHealthComments(startIndex, pageSize, patientId);
+        ResponseEntity<List<Result>> response = patientResultController.getPatientResults(startIndex, pageSize, patientId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -82,7 +82,7 @@ class PatientResultControllerTest {
         when(patientResultService.getPatientResultsByPatientId(patientId, startIndex, pageSize)).thenReturn(Collections.emptyList());
 
         // When
-        ResponseEntity<List<Result>> response = patientResultController.getPatientHealthComments(startIndex, pageSize, patientId);
+        ResponseEntity<List<Result>> response = patientResultController.getPatientResults(startIndex, pageSize, patientId);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -102,7 +102,7 @@ class PatientResultControllerTest {
 
         // When & Then
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            patientResultController.getPatientHealthComments(startIndex, pageSize, patientId);
+            patientResultController.getPatientResults(startIndex, pageSize, patientId);
         });
 
         assertThat(exception.getMessage()).isEqualTo("Service error");
