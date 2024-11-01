@@ -26,7 +26,9 @@ public class ResultAiSelectedEntity {
     public ResultAiSelectedEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
+
     public ResultAiSelectedEntity(Long id, Long patientId, Long doctorId, Long resultId ) {
+
         this.id = id;
         this.patientId = patientId;
         this.doctorId = doctorId;

@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-
 import static agh.edu.pl.healthmonitoringsystem.domain.validator.PreconditionValidator.checkNotNull;
 
 @Entity
@@ -27,11 +26,13 @@ public class ResultViewedEntity {
     public ResultViewedEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
+
     public ResultViewedEntity(Long id, Long patientId, Long doctorId, Long resultId) {
         this.id = id;
         this.patientId = patientId;
         this.doctorId = doctorId;
         this.resultId = resultId;
+
     }
 
     public static final class Builder {
