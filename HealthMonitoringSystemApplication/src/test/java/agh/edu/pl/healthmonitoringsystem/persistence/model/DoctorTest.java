@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.persistence.model;
 
 import agh.edu.pl.healthmonitoringsystem.ModelEntityTestUtil;
-import agh.edu.pl.healthmonitoringsystem.domain.exceptions.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorEntity;
 import org.junit.jupiter.api.Test;
 
