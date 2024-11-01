@@ -14,40 +14,36 @@ import java.time.LocalDateTime;
 import static agh.edu.pl.healthmonitoringsystem.domain.validator.PreconditionValidator.checkNotNull;
 
 @Entity
-@Table(name = "result")
+@Table(name = "result_ai_selected")
 @Getter
 @Setter
-public class ResultEntity {
+public class ResultAiSelectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long patientId;
-    private String testType;
-    private String content;
+    private Long doctorId;
+    private Long resultId;
     private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
 
-    public ResultEntity() {}
+    public ResultAiSelectedEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public ResultEntity(Long id, Long patientId, String testType, String content, LocalDateTime createdDate,
-                        LocalDateTime modifiedDate) {
+    public ResultAiSelectedEntity(Long id, Long patientId, Long doctorId, Long resultId, LocalDateTime createdDate) {
         this.id = id;
         this.patientId = patientId;
-        this.testType = testType;
-        this.content = content;
+        this.doctorId = doctorId;
+        this.resultId = resultId;
         this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
     }
 
     public static final class Builder {
-        public ResultEntity build(){
+        public ResultAiSelectedEntity build(){
             checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
-            checkNotNull(testType, () -> new RequestValidationException("Test type cannot be null"));
-            checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
+            checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
+            checkNotNull(resultId, () -> new RequestValidationException("Result Id cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
-            checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
-            return new ResultEntity(id, patientId, testType, content, createdDate, modifiedDate);
+            return new ResultAiSelectedEntity(id, patientId, doctorId, resultId, createdDate);
         }
     }
 }
