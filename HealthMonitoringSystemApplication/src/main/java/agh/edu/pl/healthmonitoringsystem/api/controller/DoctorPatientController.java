@@ -47,7 +47,7 @@ public class DoctorPatientController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"DoctorPatients"}
+            tags = {"DoctorPatient"}
     )
     public ResponseEntity<List<Patient>> getDoctorPatient(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                            @Parameter(description = "Number of patients per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
@@ -68,7 +68,7 @@ public class DoctorPatientController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"DoctorPatients"}
+            tags = {"DoctorPatient"}
     )
     public ResponseEntity<List<ResultForDoctorView>> getDoctorPatientResultWithAiSelectedAndViewed(@Parameter(description = "Doctor ID") @PathVariable Long doctorId,  @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 

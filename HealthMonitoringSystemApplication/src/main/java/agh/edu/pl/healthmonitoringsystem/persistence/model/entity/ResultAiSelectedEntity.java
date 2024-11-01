@@ -9,8 +9,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 import static agh.edu.pl.healthmonitoringsystem.domain.validator.PreconditionValidator.checkNotNull;
 
 @Entity
@@ -24,17 +22,17 @@ public class ResultAiSelectedEntity {
     private Long patientId;
     private Long doctorId;
     private Long resultId;
-    private LocalDateTime createdDate;
 
     public ResultAiSelectedEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public ResultAiSelectedEntity(Long id, Long patientId, Long doctorId, Long resultId, LocalDateTime createdDate) {
+
+    public ResultAiSelectedEntity(Long id, Long patientId, Long doctorId, Long resultId ) {
+
         this.id = id;
         this.patientId = patientId;
         this.doctorId = doctorId;
         this.resultId = resultId;
-        this.createdDate = createdDate;
     }
 
     public static final class Builder {
@@ -42,8 +40,7 @@ public class ResultAiSelectedEntity {
             checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
             checkNotNull(resultId, () -> new RequestValidationException("Result Id cannot be null"));
-            checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
-            return new ResultAiSelectedEntity(id, patientId, doctorId, resultId, createdDate);
+            return new ResultAiSelectedEntity(id, patientId, doctorId, resultId);
         }
     }
 }

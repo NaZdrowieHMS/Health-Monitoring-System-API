@@ -43,7 +43,7 @@ public class DoctorController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"Doctors"}
+            tags = {"Doctor"}
     )
     public ResponseEntity<List<Doctor>> getDoctors(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                    @Parameter(description = "Number of doctors per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize) {
@@ -63,7 +63,7 @@ public class DoctorController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
             },
-            tags = {"Doctors"}
+            tags = {"Doctor"}
     )
     public ResponseEntity<Doctor> createDoctor(@Parameter(description = "Doctor to be created request")
                                                            @RequestBody @Valid DoctorRequest doctorRequest) {
@@ -84,7 +84,7 @@ public class DoctorController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(),
-            tags = {"Doctors"}
+            tags = {"Doctor"}
     )
     public ResponseEntity<Doctor> getDoctorById(@Parameter(description = "Doctor ID") @PathVariable("doctorId") Long doctorId) {
 
