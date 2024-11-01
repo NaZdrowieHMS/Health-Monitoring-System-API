@@ -1,8 +1,8 @@
 name: Main CI
 
 on:
-  push:
-    branches:
+#  push:
+#    branches:
       # - '**' # all branches
   # pull_request:
   #   branches:
