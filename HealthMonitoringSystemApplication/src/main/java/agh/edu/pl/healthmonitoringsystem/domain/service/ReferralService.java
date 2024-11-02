@@ -4,6 +4,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.DeleteRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralRequest;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.ReferralRequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
@@ -16,7 +17,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static agh.edu.pl.healthmonitoringsystem.domain.component.UpdateUtil.updateField;
 
 @Service
 public class ReferralService {
@@ -61,22 +65,41 @@ public class ReferralService {
                 .createdDate(now)
                 .modifiedDate(now).build();
 
-        ReferralEntity savedReferralEntity = referralRepository.save(referralEntity);
-        PatientReferralWithCommentProjection referral = referralRepository.getPatientReferralWithAllData(savedReferralEntity.getId());
-        return modelMapper.mapProjectionToReferral(referral);
+        return saveAndMapReferral(referralEntity);
     }
 
-
     public Referral getReferralById(Long referralId) {
-        referralRepository.findById(referralId)
+        ReferralEntity referralEntity = referralRepository.findById(referralId)
                 .orElseThrow(() -> new EntityNotFoundException("Referral with id " + referralId + " does not exist"));
-        PatientReferralWithCommentProjection referral = referralRepository.getPatientReferralWithAllData(referralId);
-        return modelMapper.mapProjectionToReferral(referral);
+        return mapReferral(referralEntity);
     }
 
     public void deleteReferral(DeleteRequest referralDeleteRequest) {
         ReferralEntity entity = referralRepository.findById(referralDeleteRequest.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Referral with id " + referralDeleteRequest.getId() + " does not exist"));
         referralRepository.delete(entity);
+    }
+
+    public Referral updateReferral(ReferralUpdateRequest referralUpdateRequest) {
+        ReferralEntity referralEntity = referralRepository.findById(referralUpdateRequest.getReferralId())
+                .orElseThrow(() -> new EntityNotFoundException("Referral with id " + referralUpdateRequest.getReferralId() + " does not exist"));
+        referralRequestValidator.validateUpdateRequest(referralUpdateRequest, referralEntity);
+
+        updateField(Optional.ofNullable(referralUpdateRequest.getTestType()), referralEntity::setTestType);
+        updateField(Optional.ofNullable(referralUpdateRequest.getCompleted()), referralEntity::setCompleted);
+        updateField(Optional.ofNullable(referralUpdateRequest.getComment()), referralEntity::setComment);
+        referralEntity.setModifiedDate(LocalDateTime.now());
+
+        return saveAndMapReferral(referralEntity);
+    }
+
+    private Referral mapReferral(ReferralEntity referralEntity) {
+        PatientReferralWithCommentProjection referral = referralRepository.getPatientReferralWithAllData(referralEntity.getId());
+        return modelMapper.mapProjectionToReferral(referral);
+    }
+
+    private Referral saveAndMapReferral(ReferralEntity referralEntity) {
+        ReferralEntity savedReferralEntity = referralRepository.save(referralEntity);
+        return mapReferral(savedReferralEntity);
     }
 }

@@ -19,7 +19,7 @@ public class ReferralRequest {
     @NotBlank(message = "Test type is required")
     private String testType;
 
-    @NotBlank(message = "Referral number Id is required")
+    @NotBlank(message = "Referral number is required")
     private String referralNumber;
 
     private Boolean completed = false;
