@@ -1,9 +1,12 @@
 package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
+import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralRequest;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.persistence.DoctorRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,5 +28,12 @@ public class ReferralRequestValidator {
 
         doctorRepository.findById(request.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor with id " + request.getDoctorId() + " does not exist"));
+    }
+
+    public void validateUpdateRequest(ReferralUpdateRequest request, ReferralEntity referralEntity) {
+        if (!referralEntity.getDoctorId().equals(request.getDoctorId())){
+            throw new AccessDeniedException(String.format("Only the author of the referral can edit it. " +
+                    "Author id: %s. Current editor id: %s.", referralEntity.getDoctorId(), request.getDoctorId()));
+        }
     }
 }

@@ -4,6 +4,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.DeleteRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralRequest;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.service.ReferralService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -75,10 +77,32 @@ public class ReferralController {
         return ResponseEntity.status(HttpStatus.CREATED).body(referral);
     }
 
+    @PutMapping
+    @Operation(
+            summary = "Update a specific referral/referral comment",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Referral updated successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Referral.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
+            },
+            tags = {"Referral"}
+    )
+    public ResponseEntity<Referral> updateReferral(@Parameter(description = "Referral to be updated request")
+                                                   @RequestBody @Valid ReferralUpdateRequest referralUpdateRequest) {
+
+        Referral referral = referralService.updateReferral(referralUpdateRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(referral);
+    }
+
 
     @DeleteMapping
     @Operation(
-            summary = "Delete referral by referral Id.",
+            summary = "Delete referral by referral ID.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Result unselected successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
