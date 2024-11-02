@@ -24,4 +24,11 @@ public interface ReferralRepository extends JpaRepository<ReferralEntity, Long> 
             countQuery = "SELECT COUNT(*) FROM referral_with_comment_view r WHERE r.patient_id = :patientId",
             nativeQuery = true)
     Page<PatientReferralWithCommentProjection> getPatientReferralsByPatientId(@Param("patientId") Long patientId, Pageable pageable);
+
+    @Query(value = "SELECT r.id AS referralId, r.patient_id AS patientId, r.test_type AS testType, " +
+            "r.number AS referralNumber, r.completed, r.doctor_id AS doctorId, r.name AS doctorName, " +
+            "r.surname AS doctorSurname, r.comment, r.modified_date AS modifiedDate, r.created_date AS createdDate " +
+            "FROM referral_with_comment_view r WHERE r.id = :referralId",
+            nativeQuery = true)
+    PatientReferralWithCommentProjection getPatientReferralWithAllData(@Param("referralId") Long referralId);
 }

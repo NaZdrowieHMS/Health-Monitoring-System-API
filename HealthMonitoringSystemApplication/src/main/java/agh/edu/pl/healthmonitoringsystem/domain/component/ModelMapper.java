@@ -63,6 +63,7 @@ public class ModelMapper {
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
         if (referral == null) { return null; }
         Author doctor = new Author(referral.getDoctorId(), referral.getDoctorName(), referral.getDoctorSurname());
+        Comment comment = referral.getComment() != null ? new Comment(doctor, referral.getModifiedDate(), referral.getComment()) : null;
         return new Referral(
                 referral.getReferralId(),
                 referral.getPatientId(),
@@ -70,7 +71,7 @@ public class ModelMapper {
                 referral.getReferralNumber(),
                 referral.getCompleted(),
                 doctor,
-                new Comment(doctor, referral.getModifiedDate(), referral.getComment()),
+                comment,
                 referral.getCreatedDate());
 
     }
