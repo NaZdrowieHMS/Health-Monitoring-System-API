@@ -10,13 +10,13 @@ import lombok.Data;
 @Builder
 public class ResultRequest {
 
-    @NotNull(message = "Result Id Result")
+    @NotNull(message = "Result Id is required")
     private Long resultId;
 
-    @NotNull(message = "Patient Id Result")
+    @NotNull(message = "Patient Id is required")
     private Long patientId;
 
-    @NotNull(message = "Doctor Id Result")
+    @NotNull(message = "Doctor Id is required")
     private Long doctorId;
 
     @JsonCreator

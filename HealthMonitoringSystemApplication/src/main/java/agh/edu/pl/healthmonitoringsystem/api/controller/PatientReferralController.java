@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
-import agh.edu.pl.healthmonitoringsystem.domain.service.PatientReferralService;
+import agh.edu.pl.healthmonitoringsystem.domain.service.ReferralService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,15 +29,15 @@ import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.START_INDEX
 @RequestMapping("/api/patients")
 @CrossOrigin
 public class PatientReferralController {
-    private final PatientReferralService patientReferralService;
+    private final ReferralService referralService;
 
-    public PatientReferralController(PatientReferralService patientReferralService) {
-        this.patientReferralService = patientReferralService;
+    public PatientReferralController(ReferralService referralService) {
+        this.referralService = referralService;
     }
 
     @GetMapping(path = "/{patientId}/referrals")
     @Operation(
-            summary = "Get list of referrals with healthComment for a specific patient",
+            summary = "Get list of referrals comment for a specific patient",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
                             content = @Content(schema = @Schema(type = "array", implementation = Referral.class))),
@@ -52,7 +52,7 @@ public class PatientReferralController {
                                                                    @Parameter(description = "Number of referrals per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
                                                                    @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 
-        List<Referral> patientReferrals = patientReferralService.getPatientReferralsByPatientId(patientId, startIndex, pageSize);
+        List<Referral> patientReferrals = referralService.getPatientReferralsByPatientId(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientReferrals);
     }
 }

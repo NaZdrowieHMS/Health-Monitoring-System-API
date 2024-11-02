@@ -61,5 +61,4 @@ public class AiSelectedController {
         resultService.unselectResult(resultRequest);
         return ResponseEntity.ok().build();
     }
-
 }
