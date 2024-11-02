@@ -5,12 +5,14 @@ import java.time.LocalDateTime;
 
 public interface PatientReferralWithCommentProjection {
     Long getReferralId();
-    Long getCommentId();
-    Long getDoctorId();
     Long getPatientId();
     String getTestType();
     String getReferralNumber();
     Boolean getCompleted();
-    String getCommentContent();
+    Long getDoctorId();
+    String getDoctorName();
+    String getDoctorSurname();
+    String getComment();
     LocalDateTime getModifiedDate();
+    LocalDateTime getCreatedDate();
 }

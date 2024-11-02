@@ -49,29 +49,29 @@ class PatientHealthServiceTest {
         HealthCommentWithAuthorProjection healthComment1 = mock(HealthCommentWithAuthorProjection.class);
         when(healthComment1.getHealthCommentId()).thenReturn(1L);
         when(healthComment1.getPatientId()).thenReturn(patientId);
-        when(healthComment1.getContent()).thenReturn("First comment");
+        when(healthComment1.getContent()).thenReturn("First healthComment");
 
         HealthCommentWithAuthorProjection healthComment2 = mock(HealthCommentWithAuthorProjection.class);
         when(healthComment2.getHealthCommentId()).thenReturn(2L);
         when(healthComment2.getPatientId()).thenReturn(patientId);
-        when(healthComment2.getContent()).thenReturn("Second comment");
+        when(healthComment2.getContent()).thenReturn("Second healthComment");
 
         List<HealthCommentWithAuthorProjection> healthComments = Arrays.asList(healthComment1, healthComment2);
         when(healthRepository.getHealthCommentsWithAutorByPatientId(patientId, PageRequest.of(page, size))).thenReturn(healthCommentsPage);
         when(healthCommentsPage.getContent()).thenReturn(healthComments);
 
-        HealthComment mappedComment1 = ModelTestUtil.healthCommentBuilder().build();
-        HealthComment mappedComment2 = ModelTestUtil.healthCommentBuilder().build();
-        when(modelMapper.mapProjectionToHealth(healthComment1)).thenReturn(mappedComment1);
-        when(modelMapper.mapProjectionToHealth(healthComment2)).thenReturn(mappedComment2);
+        HealthComment mappedHealthComment1 = ModelTestUtil.healthCommentBuilder().build();
+        HealthComment mappedHealthComment2 = ModelTestUtil.healthCommentBuilder().build();
+        when(modelMapper.mapProjectionToHealth(healthComment1)).thenReturn(mappedHealthComment1);
+        when(modelMapper.mapProjectionToHealth(healthComment2)).thenReturn(mappedHealthComment2);
 
         // When
         List<HealthComment> result = patientHealthService.getHealthCommentsByPatientId(patientId, page, size);
 
         // Then
         assertThat(result).hasSize(2);
-        assertThat(result.get(0)).isEqualTo(mappedComment1);
-        assertThat(result.get(1)).isEqualTo(mappedComment2);
+        assertThat(result.get(0)).isEqualTo(mappedHealthComment1);
+        assertThat(result.get(1)).isEqualTo(mappedHealthComment2);
         verify(healthRepository, times(1)).getHealthCommentsWithAutorByPatientId(patientId, PageRequest.of(page, size));
     }
 

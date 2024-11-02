@@ -43,7 +43,7 @@ class PatientHealthControllerTest {
         HealthComment healthComment1 = ModelTestUtil.healthCommentBuilder()
                 .id(1L)
                 .patientId(patientId)
-                .content("First comment")
+                .content("First healthComment")
                 .modifiedDate(LocalDateTime.now())
                 .doctor(ModelTestUtil.doctorBuilder().id(1L).name("Anna").surname("Nowak").build())
                 .build();
@@ -51,7 +51,7 @@ class PatientHealthControllerTest {
         HealthComment healthComment2 = ModelTestUtil.healthCommentBuilder()
                 .id(2L)
                 .patientId(patientId)
-                .content("Second comment")
+                .content("Second healthComment")
                 .modifiedDate(LocalDateTime.now())
                 .doctor(ModelTestUtil.doctorBuilder().id(2L).name("Jan").surname("Kowalski").build())
                 .build();
@@ -65,7 +65,7 @@ class PatientHealthControllerTest {
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(2);
-        assertThat(response.getBody().get(0).getContent()).isEqualTo("First comment");
+        assertThat(response.getBody().get(0).getContent()).isEqualTo("First healthComment");
         verify(patientHealthService, times(1)).getHealthCommentsByPatientId(patientId, startIndex, pageSize);
     }
 

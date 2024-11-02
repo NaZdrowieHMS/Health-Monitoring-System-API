@@ -2,88 +2,103 @@ package agh.edu.pl.healthmonitoringsystem.persistence.model;
 
 import agh.edu.pl.healthmonitoringsystem.ModelEntityTestUtil;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiPredictionCommentEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultCommentEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AiPredictionEntityCommentTest {
+public class ResultEntityHealthCommentTest {
 
     @Test
     public void shouldInitializeFieldsCorrectlyUsingBuilder() {
         // Given
         Long id = 1L;
-        Long doctorId = 2L;
-        Long patientId = 3L;
-        String content = "Comment content";
+        Long resultId = 2L;
+        Long doctorId = 3L;
+        String content = "This is a healthComment on the result";
         LocalDateTime createdDate = LocalDateTime.of(2024, 10, 20, 10, 0);
         LocalDateTime modifiedDate = LocalDateTime.of(2024, 10, 21, 10, 0);
 
         // When
-        AiPredictionCommentEntity aiPredictionCommentEntity = ModelEntityTestUtil.aiPredictionCommentBuilder()
+        ResultCommentEntity resultCommentEntity = ModelEntityTestUtil.resultCommentBuilder()
                 .id(id)
+                .resultId(resultId)
                 .doctorId(doctorId)
-                .patientId(patientId)
                 .content(content)
                 .createdDate(createdDate)
                 .modifiedDate(modifiedDate)
                 .build();
 
         // Then
-        assertEquals(id, aiPredictionCommentEntity.getId());
-        assertEquals(doctorId, aiPredictionCommentEntity.getDoctorId());
-        assertEquals(patientId, aiPredictionCommentEntity.getPatientId());
-        assertEquals(content, aiPredictionCommentEntity.getContent());
-        assertEquals(createdDate, aiPredictionCommentEntity.getCreatedDate());
-        assertEquals(modifiedDate, aiPredictionCommentEntity.getModifiedDate());
+        assertEquals(id, resultCommentEntity.getId());
+        assertEquals(resultId, resultCommentEntity.getResultId());
+        assertEquals(doctorId, resultCommentEntity.getDoctorId());
+        assertEquals(content, resultCommentEntity.getContent());
+        assertEquals(createdDate, resultCommentEntity.getCreatedDate());
+        assertEquals(modifiedDate, resultCommentEntity.getModifiedDate());
     }
 
     @Test
     public void shouldInitializeFieldsCorrectlyUsingConstructor() {
         // Given
         Long id = 1L;
-        Long doctorId = 2L;
-        Long patientId = 3L;
-        String content = "Comment content";
+        Long resultId = 2L;
+        Long doctorId = 3L;
+        String content = "This is a healthComment on the result";
         LocalDateTime createdDate = LocalDateTime.of(2024, 10, 20, 10, 0);
         LocalDateTime modifiedDate = LocalDateTime.of(2024, 10, 21, 10, 0);
 
         // When
-        AiPredictionCommentEntity aiPredictionCommentEntity = new AiPredictionCommentEntity(id, doctorId, patientId, content, createdDate, modifiedDate);
+        ResultCommentEntity resultCommentEntity = new ResultCommentEntity(id, resultId, doctorId, content, createdDate, modifiedDate);
 
         // Then
-        assertEquals(id, aiPredictionCommentEntity.getId());
-        assertEquals(doctorId, aiPredictionCommentEntity.getDoctorId());
-        assertEquals(patientId, aiPredictionCommentEntity.getPatientId());
-        assertEquals(content, aiPredictionCommentEntity.getContent());
-        assertEquals(createdDate, aiPredictionCommentEntity.getCreatedDate());
-        assertEquals(modifiedDate, aiPredictionCommentEntity.getModifiedDate());
+        assertEquals(id, resultCommentEntity.getId());
+        assertEquals(resultId, resultCommentEntity.getResultId());
+        assertEquals(doctorId, resultCommentEntity.getDoctorId());
+        assertEquals(content, resultCommentEntity.getContent());
+        assertEquals(createdDate, resultCommentEntity.getCreatedDate());
+        assertEquals(modifiedDate, resultCommentEntity.getModifiedDate());
     }
 
     @Test
-    public void shouldCreateAiPredictionCommentWithDefaultConstructor() {
+    public void shouldCreateResultCommentWithDefaultConstructor() {
         // When
-        AiPredictionCommentEntity aiPredictionCommentEntity = new AiPredictionCommentEntity();
+        ResultCommentEntity resultCommentEntity = new ResultCommentEntity();
 
         // Then
-        assertNull(aiPredictionCommentEntity.getId());
-        assertNull(aiPredictionCommentEntity.getDoctorId());
-        assertNull(aiPredictionCommentEntity.getPatientId());
-        assertNull(aiPredictionCommentEntity.getContent());
-        assertNull(aiPredictionCommentEntity.getCreatedDate());
-        assertNull(aiPredictionCommentEntity.getModifiedDate());
+        assertNull(resultCommentEntity.getId());
+        assertNull(resultCommentEntity.getResultId());
+        assertNull(resultCommentEntity.getDoctorId());
+        assertNull(resultCommentEntity.getContent());
+        assertNull(resultCommentEntity.getCreatedDate());
+        assertNull(resultCommentEntity.getModifiedDate());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenResultIdIsNull() {
+        // When & Then
+        Exception exception = assertThrows(RequestValidationException.class, () ->
+                ModelEntityTestUtil.resultCommentBuilder()
+                        .resultId(null)
+                        .doctorId(1L)
+                        .content("HealthComment content")
+                        .createdDate(LocalDateTime.now())
+                        .modifiedDate(LocalDateTime.now())
+                        .build()
+        );
+        assertEquals("ResultEntity Id cannot be null", exception.getMessage());
     }
 
     @Test
     public void shouldThrowExceptionWhenDoctorIdIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.aiPredictionCommentBuilder()
+                ModelEntityTestUtil.resultCommentBuilder()
+                        .resultId(1L)
                         .doctorId(null)
-                        .patientId(1L)
-                        .content("Some content")
+                        .content("HealthComment content")
                         .createdDate(LocalDateTime.now())
                         .modifiedDate(LocalDateTime.now())
                         .build()
@@ -92,27 +107,12 @@ public class AiPredictionEntityCommentTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenPatientIdIsNull() {
-        // When & Then
-        Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.aiPredictionCommentBuilder()
-                        .doctorId(1L)
-                        .patientId(null)
-                        .content("Some content")
-                        .createdDate(LocalDateTime.now())
-                        .modifiedDate(LocalDateTime.now())
-                        .build()
-        );
-        assertEquals("PatientEntity Id cannot be null", exception.getMessage());
-    }
-
-    @Test
     public void shouldThrowExceptionWhenContentIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.aiPredictionCommentBuilder()
+                ModelEntityTestUtil.resultCommentBuilder()
+                        .resultId(1L)
                         .doctorId(1L)
-                        .patientId(1L)
                         .content(null)
                         .createdDate(LocalDateTime.now())
                         .modifiedDate(LocalDateTime.now())
@@ -125,10 +125,10 @@ public class AiPredictionEntityCommentTest {
     public void shouldThrowExceptionWhenCreatedDateIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.aiPredictionCommentBuilder()
+                ModelEntityTestUtil.resultCommentBuilder()
+                        .resultId(1L)
                         .doctorId(1L)
-                        .patientId(1L)
-                        .content("Some content")
+                        .content("HealthComment content")
                         .createdDate(null)
                         .modifiedDate(LocalDateTime.now())
                         .build()
@@ -140,10 +140,10 @@ public class AiPredictionEntityCommentTest {
     public void shouldThrowExceptionWhenModifiedDateIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.aiPredictionCommentBuilder()
+                ModelEntityTestUtil.resultCommentBuilder()
+                        .resultId(1L)
                         .doctorId(1L)
-                        .patientId(1L)
-                        .content("Some content")
+                        .content("HealthComment content")
                         .createdDate(LocalDateTime.now())
                         .modifiedDate(null)
                         .build()

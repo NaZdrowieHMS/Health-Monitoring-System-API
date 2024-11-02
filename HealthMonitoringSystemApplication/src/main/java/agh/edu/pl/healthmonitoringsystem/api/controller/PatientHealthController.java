@@ -49,7 +49,7 @@ public class PatientHealthController {
     )
     public ResponseEntity<List<HealthComment>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                                         @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                                        @Parameter(description = "PatientEntity ID") @PathVariable Long patientId) {
+                                                                        @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 
         List<HealthComment> patientHealthComments = patientHealthService.getHealthCommentsByPatientId(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientHealthComments);

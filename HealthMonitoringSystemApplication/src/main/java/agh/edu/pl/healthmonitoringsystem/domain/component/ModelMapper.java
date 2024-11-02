@@ -1,7 +1,9 @@
 package agh.edu.pl.healthmonitoringsystem.domain.component;
 
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Doctor;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.HealthComment;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Author;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
@@ -60,17 +62,17 @@ public class ModelMapper {
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
         if (referral == null) { return null; }
-        return Referral.builder()
-                .referralId(referral.getReferralId())
-                .commentId(referral.getCommentId())
-                .doctorId(referral.getDoctorId())
-                .patientId(referral.getPatientId())
-                .testType(referral.getTestType())
-                .referralNumber(referral.getReferralNumber())
-                .completed(referral.getCompleted())
-                .commentContent(referral.getCommentContent())
-                .modifiedDate(referral.getModifiedDate())
-                .build();
+        Author doctor = new Author(referral.getDoctorId(), referral.getDoctorName(), referral.getDoctorSurname());
+        return new Referral(
+                referral.getReferralId(),
+                referral.getPatientId(),
+                referral.getTestType(),
+                referral.getReferralNumber(),
+                referral.getCompleted(),
+                doctor,
+                new Comment(doctor, referral.getModifiedDate(), referral.getComment()),
+                referral.getCreatedDate());
+
     }
 
     public HealthComment mapProjectionToHealth(HealthCommentWithAuthorProjection healthComment) {

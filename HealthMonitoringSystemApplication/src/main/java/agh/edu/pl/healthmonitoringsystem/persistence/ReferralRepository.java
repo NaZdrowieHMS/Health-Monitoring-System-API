@@ -17,9 +17,9 @@ public interface ReferralRepository extends JpaRepository<ReferralEntity, Long> 
     @Override
     Optional<ReferralEntity> findById(Long id);
 
-    @Query(value = "SELECT r.referral_id AS referralId, r.comment_id AS commentId, r.doctor_id AS doctorId, r.patient_id AS patientId, " +
-            "r.test_type AS testType, r.referral_number AS referralNumber, r.completed AS completed, r.comment_content AS commentContent, " + // Dodana spacja tutaj
-            "r.modified_date AS modifiedDate " +
+    @Query(value = "SELECT r.id AS referralId, r.patient_id AS patientId, r.test_type AS testType, " +
+            "r.number AS referralNumber, r.completed, r.doctor_id AS doctorId, r.name AS doctorName, " +
+            "r.surname AS doctorSurname, r.comment, r.modified_date AS modifiedDate, r.created_date AS createdDate " +
             "FROM referral_with_comment_view r WHERE r.patient_id = :patientId",
             countQuery = "SELECT COUNT(*) FROM referral_with_comment_view r WHERE r.patient_id = :patientId",
             nativeQuery = true)
