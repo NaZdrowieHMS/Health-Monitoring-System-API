@@ -2,7 +2,6 @@ package agh.edu.pl.healthmonitoringsystem.persistence.model;
 
 import agh.edu.pl.healthmonitoringsystem.ModelEntityTestUtil;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -16,40 +15,25 @@ public class ReferralEntityTest {
         // Given
         Long id = 1L;
         Long doctorId = 2L;
-        Long patientId = 3L;
-        Long commentId = 4L;
-        String testType = "Blood Test";
-        String number = "12345";
-        Boolean completed = true;
-        LocalDateTime completedDate = LocalDateTime.of(2024, 10, 25, 10, 0);
+        String content = "Sample content";
         LocalDateTime createdDate = LocalDateTime.of(2024, 10, 20, 10, 0);
         LocalDateTime modifiedDate = LocalDateTime.of(2024, 10, 21, 10, 0);
 
         // When
-        ReferralEntity referralEntity = ModelEntityTestUtil.referralBuilder()
+        ReferralCommentEntity referralCommentEntity = ModelEntityTestUtil.referralCommentBuilder()
                 .id(id)
                 .doctorId(doctorId)
-                .patientId(patientId)
-                .commentId(commentId)
-                .testType(testType)
-                .number(number)
-                .completed(completed)
-                .completedDate(completedDate)
+                .content(content)
                 .createdDate(createdDate)
                 .modifiedDate(modifiedDate)
                 .build();
 
         // Then
-        assertEquals(id, referralEntity.getId());
-        assertEquals(doctorId, referralEntity.getDoctorId());
-        assertEquals(patientId, referralEntity.getPatientId());
-        assertEquals(commentId, referralEntity.getCommentId());
-        assertEquals(testType, referralEntity.getTestType());
-        assertEquals(number, referralEntity.getNumber());
-        assertEquals(completed, referralEntity.getCompleted());
-        assertEquals(completedDate, referralEntity.getCompletedDate());
-        assertEquals(createdDate, referralEntity.getCreatedDate());
-        assertEquals(modifiedDate, referralEntity.getModifiedDate());
+        assertEquals(id, referralCommentEntity.getId());
+        assertEquals(doctorId, referralCommentEntity.getDoctorId());
+        assertEquals(content, referralCommentEntity.getContent());
+        assertEquals(createdDate, referralCommentEntity.getCreatedDate());
+        assertEquals(modifiedDate, referralCommentEntity.getModifiedDate());
     }
 
     @Test
@@ -57,58 +41,41 @@ public class ReferralEntityTest {
         // Given
         Long id = 1L;
         Long doctorId = 2L;
-        Long patientId = 3L;
-        Long commentId = 4L;
-        String testType = "Blood Test";
-        String number = "12345";
-        Boolean completed = true;
-        LocalDateTime completedDate = LocalDateTime.of(2024, 10, 25, 10, 0);
+        String content = "Sample content";
         LocalDateTime createdDate = LocalDateTime.of(2024, 10, 20, 10, 0);
         LocalDateTime modifiedDate = LocalDateTime.of(2024, 10, 21, 10, 0);
 
         // When
-        ReferralEntity referralEntity = new ReferralEntity(id, doctorId, patientId, commentId, testType, number, completed, completedDate, createdDate, modifiedDate);
+        ReferralCommentEntity referralCommentEntity = new ReferralCommentEntity(id, doctorId, content, createdDate, modifiedDate);
 
         // Then
-        assertEquals(id, referralEntity.getId());
-        assertEquals(doctorId, referralEntity.getDoctorId());
-        assertEquals(patientId, referralEntity.getPatientId());
-        assertEquals(commentId, referralEntity.getCommentId());
-        assertEquals(testType, referralEntity.getTestType());
-        assertEquals(number, referralEntity.getNumber());
-        assertEquals(completed, referralEntity.getCompleted());
-        assertEquals(completedDate, referralEntity.getCompletedDate());
-        assertEquals(createdDate, referralEntity.getCreatedDate());
-        assertEquals(modifiedDate, referralEntity.getModifiedDate());
+        assertEquals(id, referralCommentEntity.getId());
+        assertEquals(doctorId, referralCommentEntity.getDoctorId());
+        assertEquals(content, referralCommentEntity.getContent());
+        assertEquals(createdDate, referralCommentEntity.getCreatedDate());
+        assertEquals(modifiedDate, referralCommentEntity.getModifiedDate());
     }
 
     @Test
-    public void shouldCreateReferralWithDefaultConstructor() {
+    public void shouldCreateReferralCommentWithDefaultConstructor() {
         // When
-        ReferralEntity referralEntity = new ReferralEntity();
+        ReferralCommentEntity referralCommentEntity = new ReferralCommentEntity();
 
         // Then
-        assertNull(referralEntity.getId());
-        assertNull(referralEntity.getDoctorId());
-        assertNull(referralEntity.getPatientId());
-        assertNull(referralEntity.getCommentId());
-        assertNull(referralEntity.getTestType());
-        assertNull(referralEntity.getNumber());
-        assertFalse(referralEntity.getCompleted());
-        assertNull(referralEntity.getCompletedDate());
-        assertNull(referralEntity.getCreatedDate());
-        assertNull(referralEntity.getModifiedDate());
+        assertNull(referralCommentEntity.getId());
+        assertNull(referralCommentEntity.getDoctorId());
+        assertNull(referralCommentEntity.getContent());
+        assertNull(referralCommentEntity.getCreatedDate());
+        assertNull(referralCommentEntity.getModifiedDate());
     }
 
     @Test
     public void shouldThrowExceptionWhenDoctorIdIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.referralBuilder()
+                ModelEntityTestUtil.referralCommentBuilder()
                         .doctorId(null)
-                        .patientId(1L)
-                        .testType("Blood Test")
-                        .number("12345")
+                        .content("Sample content")
                         .createdDate(LocalDateTime.now())
                         .modifiedDate(LocalDateTime.now())
                         .build()
@@ -117,62 +84,26 @@ public class ReferralEntityTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenPatientIdIsNull() {
+    public void shouldThrowExceptionWhenContentIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.referralBuilder()
+                ModelEntityTestUtil.referralCommentBuilder()
                         .doctorId(1L)
-                        .patientId(null)
-                        .testType("Blood Test")
-                        .number("12345")
+                        .content(null)
                         .createdDate(LocalDateTime.now())
                         .modifiedDate(LocalDateTime.now())
                         .build()
         );
-        assertEquals("PatientEntity Id cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void shouldThrowExceptionWhenTestTypeIsNull() {
-        // When & Then
-        Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.referralBuilder()
-                        .doctorId(1L)
-                        .patientId(1L)
-                        .testType(null)
-                        .number("12345")
-                        .createdDate(LocalDateTime.now())
-                        .modifiedDate(LocalDateTime.now())
-                        .build()
-        );
-        assertEquals("Test type cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void shouldThrowExceptionWhenNumberIsNull() {
-        // When & Then
-        Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.referralBuilder()
-                        .doctorId(1L)
-                        .patientId(1L)
-                        .testType("Blood Test")
-                        .number(null)
-                        .createdDate(LocalDateTime.now())
-                        .modifiedDate(LocalDateTime.now())
-                        .build()
-        );
-        assertEquals("ReferralEntity number cannot be null", exception.getMessage());
+        assertEquals("Content cannot be null", exception.getMessage());
     }
 
     @Test
     public void shouldThrowExceptionWhenCreatedDateIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.referralBuilder()
+                ModelEntityTestUtil.referralCommentBuilder()
                         .doctorId(1L)
-                        .patientId(1L)
-                        .testType("Blood Test")
-                        .number("12345")
+                        .content("Sample content")
                         .createdDate(null)
                         .modifiedDate(LocalDateTime.now())
                         .build()
@@ -184,11 +115,9 @@ public class ReferralEntityTest {
     public void shouldThrowExceptionWhenModifiedDateIsNull() {
         // When & Then
         Exception exception = assertThrows(RequestValidationException.class, () ->
-                ModelEntityTestUtil.referralBuilder()
+                ModelEntityTestUtil.referralCommentBuilder()
                         .doctorId(1L)
-                        .patientId(1L)
-                        .testType("Blood Test")
-                        .number("12345")
+                        .content("Sample content")
                         .createdDate(LocalDateTime.now())
                         .modifiedDate(null)
                         .build()

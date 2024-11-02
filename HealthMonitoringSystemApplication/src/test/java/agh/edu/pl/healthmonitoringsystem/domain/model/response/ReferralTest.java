@@ -21,7 +21,7 @@ public class ReferralTest {
         String testType = "Blood Test";
         String referralNumber = "REF123";
         Boolean completed = true;
-        String commentContent = "This is a comment.";
+        String commentContent = "This is a healthComment.";
         LocalDateTime modifiedDate = LocalDateTime.now();
 
         // When

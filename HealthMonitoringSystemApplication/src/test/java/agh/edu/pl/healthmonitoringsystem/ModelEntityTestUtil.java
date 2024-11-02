@@ -6,7 +6,6 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.HealthCommentEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralCommentEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultCommentEntity;
 
@@ -51,7 +50,7 @@ public class ModelEntityTestUtil {
                 .id(1L)
                 .doctorId(2L)
                 .patientId(3L)
-                .content("Comment content")
+                .content("HealthComment content")
                 .createdDate(LocalDateTime.now())
                 .modifiedDate(LocalDateTime.now());
     }
@@ -106,7 +105,7 @@ public class ModelEntityTestUtil {
                 .id(1L)
                 .resultId(2L)
                 .doctorId(3L)
-                .content("Comment content")
+                .content("HealthComment content")
                 .createdDate(LocalDateTime.now())
                 .modifiedDate(LocalDateTime.now());
     }

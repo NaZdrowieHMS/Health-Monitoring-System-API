@@ -5,7 +5,6 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.HealthComment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
-import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 
 import java.time.LocalDateTime;
@@ -42,7 +41,7 @@ public class ModelTestUtil {
         return HealthComment.builder()
                 .id(2L)
                 .patientId(1L)
-                .content("Second comment")
+                .content("Second healthComment")
                 .modifiedDate(LocalDateTime.now())
                 .doctor(Doctor.builder()
                         .id(2L)
