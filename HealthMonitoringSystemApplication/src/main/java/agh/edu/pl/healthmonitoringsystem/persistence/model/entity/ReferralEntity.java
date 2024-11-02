@@ -23,27 +23,25 @@ public class ReferralEntity {
     private Long id;
     private Long doctorId;
     private Long patientId;
-    private Long commentId = null;
     private String testType;
     private String number;
     private Boolean completed = false;
-    private LocalDateTime completedDate = null;
+    private String comment = null;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
     public ReferralEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public ReferralEntity(Long id, Long doctorId, Long patientId, Long commentId, String testType, String number,
-                          Boolean completed, LocalDateTime completedDate, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public ReferralEntity(Long id, Long doctorId, Long patientId, String testType, String number, Boolean completed,
+                          String comment, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.doctorId = doctorId;
         this.patientId = patientId;
-        this.commentId = commentId;
         this.testType = testType;
         this.number = number;
         this.completed = completed;
-        this.completedDate = completedDate;
+        this.comment = comment;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
@@ -51,13 +49,13 @@ public class ReferralEntity {
     public static final class Builder {
         public ReferralEntity build(){
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
-            checkNotNull(patientId, () -> new RequestValidationException("PatientEntity Id cannot be null"));
+            checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
             checkNotNull(testType, () -> new RequestValidationException("Test type cannot be null"));
-            checkNotNull(number, () -> new RequestValidationException("ReferralEntity number cannot be null"));
+            checkNotNull(number, () -> new RequestValidationException("Referral number cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
-            return new ReferralEntity(id, doctorId, patientId, commentId, testType, number, completed, completedDate,
-                    createdDate, modifiedDate);
+            return new ReferralEntity(id, doctorId, patientId, testType, number, completed, comment, createdDate,
+                    modifiedDate);
         }
     }
 }
