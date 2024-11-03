@@ -3,7 +3,7 @@ package agh.edu.pl.healthmonitoringsystem.domain.model.response;
 import java.time.LocalDateTime;
 
 public record Referral (
-    Long referralId,
+    Long id,
     Long patientId,
     String testType,
     String referralNumber,

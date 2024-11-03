@@ -1,7 +1,6 @@
 package agh.edu.pl.healthmonitoringsystem.persistence.model.entity;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystem.response.ResultDataType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +23,7 @@ public class ResultEntity {
     private Long id;
     private Long patientId;
     private String testType;
-    private ResultDataType dataType;
+    private String dataType;
     private String data;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -32,7 +31,7 @@ public class ResultEntity {
     public ResultEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public ResultEntity(Long id, Long patientId, String testType, ResultDataType dataType, String data,
+    public ResultEntity(Long id, Long patientId, String testType, String dataType, String data,
                         LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.patientId = patientId;

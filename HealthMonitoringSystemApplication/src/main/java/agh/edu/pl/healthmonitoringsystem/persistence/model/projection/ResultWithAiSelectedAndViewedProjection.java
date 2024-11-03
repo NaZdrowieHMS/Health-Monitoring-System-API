@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 public interface ResultWithAiSelectedAndViewedProjection {
     Long getId();
     String getTestType();
-    String getContent();
+    String getDataType();
+    String getData();
     LocalDateTime getCreatedDate();
     Boolean getAiSelected();
     Boolean getViewed();

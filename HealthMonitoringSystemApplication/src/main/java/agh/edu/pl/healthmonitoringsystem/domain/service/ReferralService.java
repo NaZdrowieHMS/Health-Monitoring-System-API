@@ -99,7 +99,6 @@ public class ReferralService {
 
         referralEntity.setCompleted(true);
         referralEntity.setModifiedDate(LocalDateTime.now());
-
         saveAndMapReferral(referralEntity);
     }
 

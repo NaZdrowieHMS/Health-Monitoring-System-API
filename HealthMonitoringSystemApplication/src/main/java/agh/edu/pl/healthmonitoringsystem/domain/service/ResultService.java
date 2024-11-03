@@ -49,7 +49,7 @@ public class ResultService {
         ResultEntity resultEntity = ResultEntity.builder()
                 .patientId(resultRequest.getPatientId())
                 .testType(resultRequest.getTestType())
-                .dataType(resultRequest.getContent().getType())
+                .dataType(String.valueOf(resultRequest.getContent().getType()))
                 .data(resultRequest.getContent().getData())
                 .createdDate(now)
                 .modifiedDate(now).build();

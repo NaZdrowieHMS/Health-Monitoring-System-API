@@ -33,9 +33,9 @@ public class RequestValidator {
 
     public void validate(ResultUploadRequest request) {
         entityValidator.validatePatient(request.getPatientId());
-//        if(request.getReferralId() != null){
-//            entityValidator.validateReferral(request.getReferralId());
-//        }
+        if(request.getReferralId() != null){
+            entityValidator.validateReferral(request.getReferralId());
+        }
     }
 
     public void validate(Long doctorId, Long patientId) {
@@ -63,5 +63,4 @@ public class RequestValidator {
                     "Author id: %s. Current editor id: %s.", referralEntity.getDoctorId(), request.getDoctorId()));
         }
     }
-
 }

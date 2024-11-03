@@ -16,6 +16,7 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthCommentWithAuthorProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataType;
 import org.springframework.stereotype.Component;
 
 
@@ -42,17 +43,16 @@ public class ModelMapper {
                 result.getId(),
                 result.getPatientId(),
                 result.getTestType(),
-                new ResultDataContent(result.getData(), result.getDataType()),
-                result.getCreatedDate()
-        );
+                result.getCreatedDate(),
+                new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()));
     }
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
         if (referral == null) { return null; }
         Author doctor = new Author(referral.getDoctorId(), referral.getDoctorName(), referral.getDoctorSurname());
-        Comment comment = referral.getComment() != null ? new Comment(referral.getReferralId(), doctor, referral.getModifiedDate(), referral.getComment()) : null;
+        Comment comment = referral.getComment() != null ? new Comment(referral.getId(), doctor, referral.getModifiedDate(), referral.getComment()) : null;
         return new Referral(
-                referral.getReferralId(),
+                referral.getId(),
                 referral.getPatientId(),
                 referral.getTestType(),
                 referral.getReferralNumber(),
@@ -73,7 +73,7 @@ public class ModelMapper {
         return new ResultForDoctorView(
                 result.getId(),
                 result.getTestType(),
-                new ResultDataContent(result.getData(), result.getDataType()),
+                new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()),
                 result.getAiSelected(),
                 result.getViewed(),
                 result.getCreatedDate());
@@ -84,7 +84,7 @@ public class ModelMapper {
         return new ResultWithPatientData(result.getId(),
                 new Patient(result.getId(), result.getName(), result.getSurname(), result.getEmail(), result.getPesel()),
                 result.getTestType(),
-                new ResultDataContent(result.getData(), result.getDataType()),
+                new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()),
                 result.getCreatedDate());
     }
 }

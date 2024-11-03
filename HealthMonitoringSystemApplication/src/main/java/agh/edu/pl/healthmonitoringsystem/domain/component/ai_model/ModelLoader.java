@@ -16,7 +16,7 @@ public class ModelLoader {
         try {
 //            File modelDir = getModelFile();                                    //locally uncomment this
 //            return SavedModelBundle.load(modelDir.getAbsolutePath(), "serve"); //locally uncomment this
-            return SavedModelBundle.load(DOCKER_MODEL_PATH, "serve");      //locally healthComment this
+            return SavedModelBundle.load(DOCKER_MODEL_PATH, "serve");      //locally comment this
         } catch (Exception ex) {
             throw new ModelLoadingException(String.format("Error loading model from path: %s", DOCKER_MODEL_PATH), ex);
         }
