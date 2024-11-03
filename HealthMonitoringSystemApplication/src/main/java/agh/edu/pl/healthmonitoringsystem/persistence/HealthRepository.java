@@ -18,8 +18,7 @@ public interface HealthRepository extends JpaRepository<HealthCommentEntity, Lon
     Optional<HealthCommentEntity> findById(Long id);
 
     @Query(value = "SELECT h.health_comment_id AS healthCommentId, h.patient_id AS patientId, h.content AS content, h.modified_date AS modifiedDate, " +
-            "h.doctor_id AS doctorId, h.doctor_name AS doctorName, h.doctor_surname AS doctorSurname, h.doctor_email AS doctorEmail, " +
-            "h.doctor_pesel AS doctorPesel, h.pwz AS pwz " +
+            "h.doctor_id AS doctorId, h.doctor_name AS doctorName, h.doctor_surname " +
             "FROM health_comment_with_autor_data_view h WHERE h.patient_id = :patientId",
             countQuery = "SELECT COUNT(*) FROM health_comment_with_autor_data_view h WHERE h.patient_id = :patientId",
             nativeQuery = true)

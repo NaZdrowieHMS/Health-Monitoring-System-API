@@ -10,8 +10,5 @@ public interface HealthCommentWithAuthorProjection {
     Long getDoctorId();
     String getDoctorName();
     String getDoctorSurname();
-    String getDoctorEmail();
-    String getDoctorPesel();
-    String getPwz();
 }
 
