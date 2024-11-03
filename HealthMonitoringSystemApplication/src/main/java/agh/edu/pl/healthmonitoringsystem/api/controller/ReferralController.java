@@ -96,7 +96,7 @@ public class ReferralController {
                                                    @RequestBody @Valid ReferralUpdateRequest referralUpdateRequest) {
 
         Referral referral = referralService.updateReferral(referralUpdateRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(referral);
+        return ResponseEntity.ok(referral);
     }
 
 

@@ -17,10 +17,16 @@ public interface HealthRepository extends JpaRepository<HealthCommentEntity, Lon
     @Override
     Optional<HealthCommentEntity> findById(Long id);
 
-    @Query(value = "SELECT h.health_comment_id AS healthCommentId, h.patient_id AS patientId, h.content AS content, h.modified_date AS modifiedDate, " +
-            "h.doctor_id AS doctorId, h.doctor_name AS doctorName, h.doctor_surname " +
+    @Query(value = "SELECT h.health_comment_id AS healthCommentId, h.patient_id AS patientId, h.content AS content," +
+            " h.modified_date AS modifiedDate, h.doctor_id AS doctorId, h.doctor_name AS doctorName, h.doctor_surname " +
             "FROM health_comment_with_autor_data_view h WHERE h.patient_id = :patientId",
             countQuery = "SELECT COUNT(*) FROM health_comment_with_autor_data_view h WHERE h.patient_id = :patientId",
             nativeQuery = true)
     Page<HealthCommentWithAuthorProjection> getHealthCommentsWithAutorByPatientId(@Param("patientId") Long patientId, PageRequest pageRequest);
+
+    @Query(value = "SELECT h.health_comment_id AS healthCommentId, h.patient_id AS patientId, h.content AS content, " +
+            "h.modified_date AS modifiedDate, h.doctor_id AS doctorId, h.doctor_name AS doctorName, h.doctor_surname " +
+            "FROM health_comment_with_autor_data_view h WHERE h.health_comment_id = :commentId",
+            nativeQuery = true)
+    HealthCommentWithAuthorProjection getHealthCommentWithAutorByPatientId(@Param("commentId") Long commentId);
 }
