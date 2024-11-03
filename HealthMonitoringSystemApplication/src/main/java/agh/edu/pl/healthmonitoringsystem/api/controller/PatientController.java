@@ -92,5 +92,5 @@ public class PatientController {
 
         Patient patient = patientService.getPatientById(patientId);
         return ResponseEntity.ok(patient);
-        }
+    }
 }

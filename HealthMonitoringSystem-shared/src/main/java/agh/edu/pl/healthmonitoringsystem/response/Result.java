@@ -6,6 +6,6 @@ public record Result(
         Long id,
         Long patientId,
         String testType,
-        ResultDataContent content,
-        LocalDateTime createdDate
+        LocalDateTime createdDate,
+        ResultDataContent content
 ) {}

@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystem.response;
 
 public record ResultDataContent(
-    String data,
-    String type
+    ResultDataType type,
+    String data
 ) {}

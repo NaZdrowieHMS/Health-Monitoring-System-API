@@ -16,55 +16,43 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthCommentWithAuthorProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataType;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class ModelMapper {
-    private final JsonFieldExtractor jsonFieldExtractor;
 
-    public ModelMapper(JsonFieldExtractor jsonFieldExtractor) {
-        this.jsonFieldExtractor = jsonFieldExtractor;
-    }
+    public ModelMapper() {}
 
     public Patient mapPatientEntityToPatient(PatientEntity patient) {
         if (patient == null) { return null; }
-        return new Patient(patient.getId(), patient.getName(), patient.getSurname(), patient.getEmail(), patient.getPesel());
+        return new Patient(patient.getId(), patient.getName(), patient.getSurname(),
+                patient.getEmail(), patient.getPesel());
     }
 
     public Doctor mapDoctorEntityToDoctor(DoctorEntity doctor) {
         if (doctor == null) { return null; }
-        return Doctor.builder()
-                .id(doctor.getId())
-                .name(doctor.getName())
-                .surname(doctor.getSurname())
-                .email(doctor.getEmail())
-                .pesel(doctor.getPesel())
-                .pwz(doctor.getPwz())
-                .build();
+        return new Doctor(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(),
+                doctor.getPesel(), doctor.getPwz());
     }
 
     public Result mapResultEntityToResult(ResultEntity result) {
         if (result == null) { return null; }
-        String jsonContent = result.getContent();
-        String dataValue = jsonFieldExtractor.extract(jsonContent, "data");
-        String typeValue = jsonFieldExtractor.extract(jsonContent, "type");
-
         return new Result(
                 result.getId(),
                 result.getPatientId(),
                 result.getTestType(),
-                new ResultDataContent(dataValue, typeValue),
-                result.getCreatedDate()
-        );
+                result.getCreatedDate(),
+                new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()));
     }
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
         if (referral == null) { return null; }
         Author doctor = new Author(referral.getDoctorId(), referral.getDoctorName(), referral.getDoctorSurname());
-        Comment comment = referral.getComment() != null ? new Comment(referral.getReferralId(), doctor, referral.getModifiedDate(), referral.getComment()) : null;
+        Comment comment = referral.getComment() != null ? new Comment(referral.getId(), doctor, referral.getModifiedDate(), referral.getComment()) : null;
         return new Referral(
-                referral.getReferralId(),
+                referral.getId(),
                 referral.getPatientId(),
                 referral.getTestType(),
                 referral.getReferralNumber(),
@@ -72,7 +60,6 @@ public class ModelMapper {
                 doctor,
                 comment,
                 referral.getCreatedDate());
-
     }
 
     public Comment mapProjectionToHealth(HealthCommentWithAuthorProjection healthComment) {
@@ -83,14 +70,10 @@ public class ModelMapper {
 
     public ResultForDoctorView mapProjectionToResultForDoctorView(ResultWithAiSelectedAndViewedProjection result) {
         if (result == null) { return null; }
-        String jsonContent = result.getContent();
-        String dataValue = jsonFieldExtractor.extract(jsonContent, "data");
-        String typeValue = jsonFieldExtractor.extract(jsonContent, "type");
-
         return new ResultForDoctorView(
                 result.getId(),
                 result.getTestType(),
-                new ResultDataContent(dataValue, typeValue),
+                new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()),
                 result.getAiSelected(),
                 result.getViewed(),
                 result.getCreatedDate());
@@ -98,14 +81,10 @@ public class ModelMapper {
 
     public ResultWithPatientData mapProjectionToResultWithPatientData(ResultWithPatientDataProjection result) {
         if (result == null) { return null; }
-        String jsonContent = result.getContent();
-        String dataValue = jsonFieldExtractor.extract(jsonContent, "data");
-        String typeValue = jsonFieldExtractor.extract(jsonContent, "type");
-
         return new ResultWithPatientData(result.getId(),
                 new Patient(result.getId(), result.getName(), result.getSurname(), result.getEmail(), result.getPesel()),
                 result.getTestType(),
-                new ResultDataContent(dataValue, typeValue),
+                new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()),
                 result.getCreatedDate());
     }
 }

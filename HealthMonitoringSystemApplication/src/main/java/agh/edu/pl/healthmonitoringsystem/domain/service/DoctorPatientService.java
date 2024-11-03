@@ -5,7 +5,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.DoctorPatientRelat
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
-import agh.edu.pl.healthmonitoringsystem.domain.validator.DoctorPatientRelationRequestValidator;
+import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.DoctorPatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
@@ -28,12 +28,12 @@ public class DoctorPatientService {
     private final PatientRepository patientRepository;
     private final ResultRepository resultRepository;
     private final DoctorPatientRepository doctorPatientRepository;
-    private final DoctorPatientRelationRequestValidator validator;
+    private final RequestValidator validator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public DoctorPatientService(PatientRepository patientRepository,  ResultRepository resultRepository, DoctorPatientRepository doctorPatientRepository,
-                                DoctorPatientRelationRequestValidator validator, ModelMapper modelMapper) {
+    public DoctorPatientService(PatientRepository patientRepository, ResultRepository resultRepository, DoctorPatientRepository doctorPatientRepository,
+                                RequestValidator validator, ModelMapper modelMapper) {
         this.patientRepository = patientRepository;
         this.doctorPatientRepository = doctorPatientRepository;
         this.resultRepository = resultRepository;
@@ -64,7 +64,7 @@ public class DoctorPatientService {
     }
 
     public void createRelation(DoctorPatientRelationRequest request) {
-        validator.validate(request);
+        validator.validate(request.getDoctorId(), request.getPatientId());
 
         Optional<DoctorPatientEntity> entity = doctorPatientRepository.findByPatientIdAndDoctorId(
                 request.getPatientId(), request.getDoctorId());

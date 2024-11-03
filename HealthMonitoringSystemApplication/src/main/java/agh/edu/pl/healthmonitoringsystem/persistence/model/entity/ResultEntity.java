@@ -23,19 +23,21 @@ public class ResultEntity {
     private Long id;
     private Long patientId;
     private String testType;
-    private String content;
+    private String dataType;
+    private String data;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
     public ResultEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public ResultEntity(Long id, Long patientId, String testType, String content, LocalDateTime createdDate,
-                        LocalDateTime modifiedDate) {
+    public ResultEntity(Long id, Long patientId, String testType, String dataType, String data,
+                        LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.patientId = patientId;
         this.testType = testType;
-        this.content = content;
+        this.dataType = dataType;
+        this.data = data;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
@@ -44,10 +46,11 @@ public class ResultEntity {
         public ResultEntity build(){
             checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
             checkNotNull(testType, () -> new RequestValidationException("Test type cannot be null"));
-            checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
+            checkNotNull(dataType, () -> new RequestValidationException("Data type cannot be null"));
+            checkNotNull(data, () -> new RequestValidationException("Data cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
-            return new ResultEntity(id, patientId, testType, content, createdDate, modifiedDate);
+            return new ResultEntity(id, patientId, testType, dataType, data, createdDate, modifiedDate);
         }
     }
 }

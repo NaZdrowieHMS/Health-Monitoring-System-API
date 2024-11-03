@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
-import agh.edu.pl.healthmonitoringsystem.domain.service.PatientResultService;
+import agh.edu.pl.healthmonitoringsystem.domain.service.ResultService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,10 +28,10 @@ import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.START_INDEX
 @RequestMapping("/api/patients")
 @CrossOrigin
 public class PatientResultController {
-    private final PatientResultService patientResultService;
+    private final ResultService resultService;
 
-    public PatientResultController(PatientResultService patientResultService) {
-        this.patientResultService = patientResultService;
+    public PatientResultController(ResultService resultService) {
+        this.resultService = resultService;
     }
 
     @GetMapping(path = "/{patientId}/results")
@@ -51,7 +51,7 @@ public class PatientResultController {
                                                                  @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
                                                                  @Parameter(description = "PatientEntity ID") @PathVariable Long patientId) {
 
-        List<Result> patientResults = patientResultService.getPatientResultsByPatientId(patientId, startIndex, pageSize);
+        List<Result> patientResults = resultService.getPatientResultsByPatientId(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientResults);
     }
 }

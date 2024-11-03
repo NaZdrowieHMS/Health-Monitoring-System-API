@@ -1,6 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.domain.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -22,9 +23,11 @@ public class ReferralRequest {
     @NotBlank(message = "Referral number is required")
     private String referralNumber;
 
-    private Boolean completed = false;
+    @Nullable
+    private Boolean completed;
 
-    private String comment = null;
+    @Nullable
+    private String comment;
 
 
     public ReferralRequest(@JsonProperty("doctorId") Long doctorId,

@@ -10,6 +10,7 @@ public interface ResultWithPatientDataProjection {
     String getEmail();
     String getPesel();
     String getTestType();
-    String getContent();
+    String getDataType();
+    String getData();
     LocalDateTime getCreatedDate();;
 }
