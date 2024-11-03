@@ -1,8 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.domain.component;
 
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Doctor;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.HealthComment;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Author;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
@@ -63,7 +62,7 @@ public class ModelMapper {
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
         if (referral == null) { return null; }
         Author doctor = new Author(referral.getDoctorId(), referral.getDoctorName(), referral.getDoctorSurname());
-        Comment comment = referral.getComment() != null ? new Comment(doctor, referral.getModifiedDate(), referral.getComment()) : null;
+        Comment comment = referral.getComment() != null ? new Comment(referral.getReferralId(), doctor, referral.getModifiedDate(), referral.getComment()) : null;
         return new Referral(
                 referral.getReferralId(),
                 referral.getPatientId(),
@@ -76,22 +75,10 @@ public class ModelMapper {
 
     }
 
-    public HealthComment mapProjectionToHealth(HealthCommentWithAuthorProjection healthComment) {
+    public Comment mapProjectionToHealth(HealthCommentWithAuthorProjection healthComment) {
         if (healthComment == null) { return null; }
-        return HealthComment.builder()
-                .id(healthComment.getHealthCommentId())
-                .patientId(healthComment.getPatientId())
-                .modifiedDate(healthComment.getModifiedDate())
-                .content(healthComment.getContent())
-                .doctor(Doctor.builder()
-                        .id(healthComment.getDoctorId())
-                        .name(healthComment.getDoctorName())
-                        .surname(healthComment.getDoctorSurname())
-                        .email(healthComment.getDoctorEmail())
-                        .pesel(healthComment.getDoctorPesel())
-                        .pwz(healthComment.getPwz())
-                        .build())
-                .build();
+        Author doctor = new Author(healthComment.getDoctorId(), healthComment.getDoctorName(), healthComment.getDoctorSurname());
+        return new Comment(healthComment.getHealthCommentId(), doctor, healthComment.getModifiedDate(), healthComment.getContent());
     }
 
     public ResultForDoctorView mapProjectionToResultForDoctorView(ResultWithAiSelectedAndViewedProjection result) {

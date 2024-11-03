@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.HealthComment;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.persistence.HealthRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthCommentWithAuthorProjection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class PatientHealthService {
         this.modelMapper = modelMapper;
     }
 
-    public List<HealthComment> getHealthCommentsByPatientId(Long patientId, Integer page, Integer size) {
+    public List<Comment> getHealthCommentsByPatientId(Long patientId, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         List<HealthCommentWithAuthorProjection> healthComments = healthRepository.getHealthCommentsWithAutorByPatientId(patientId, pageRequest).getContent();
 

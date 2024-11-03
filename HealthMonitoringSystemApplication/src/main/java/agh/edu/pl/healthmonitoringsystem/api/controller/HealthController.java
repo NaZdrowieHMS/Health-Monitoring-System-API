@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.HealthComment;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.service.PatientHealthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,33 +25,35 @@ import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.PAGE_SIZE_P
 import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.START_INDEX_PARAM;
 
 @RestController
-@RequestMapping("/api/patients")
+@RequestMapping("/api")
 @CrossOrigin
-public class PatientHealthController {
+public class HealthController {
     private final PatientHealthService patientHealthService;
 
-    public PatientHealthController(PatientHealthService patientHealthService) {
+    public HealthController(PatientHealthService patientHealthService) {
         this.patientHealthService = patientHealthService;
     }
 
-    @GetMapping(path = "/{patientId}/health")
+    @GetMapping(path = "/patients/{patientId}/health")
     @Operation(
             summary = "Get list of health comment with autor data for a specific patient",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = HealthComment.class))),
+                            content = @Content(schema = @Schema(type = "array", implementation = Comment.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"PatientHealth"}
+            tags = {"Health Comment"}
     )
-    public ResponseEntity<List<HealthComment>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                                        @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                                        @Parameter(description = "Patient ID") @PathVariable Long patientId) {
+    public ResponseEntity<List<Comment>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                                  @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                                  @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 
-        List<HealthComment> patientHealthComments = patientHealthService.getHealthCommentsByPatientId(patientId, startIndex, pageSize);
+        List<Comment> patientHealthComments = patientHealthService.getHealthCommentsByPatientId(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientHealthComments);
     }
+
+
 }
