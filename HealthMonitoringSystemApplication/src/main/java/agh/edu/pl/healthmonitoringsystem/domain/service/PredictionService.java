@@ -5,7 +5,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ai_model.ModelPredictor;
 import agh.edu.pl.healthmonitoringsystem.domain.component.image.ImageDecoder;
 import agh.edu.pl.healthmonitoringsystem.domain.component.image.ImagePreprocessor;
-import agh.edu.pl.healthmonitoringsystem.domain.validator.PredictionRequestValidator;
+import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,22 +21,22 @@ public class PredictionService {
     private final ImageDecoder imageDecoder;
     private final ImagePreprocessor imagePreprocessor;
     private final ModelPredictor modelPredictor;
-    private final PredictionRequestValidator predictionRequestValidator;
+    private final RequestValidator validator;
 
     private final String[] MODEL_CLASSES = {"benign", "malignant", "normal"};
 
     @Autowired
     public PredictionService(ImageDecoder imageDecoder, ImagePreprocessor imagePreprocessor, ModelPredictor modelPredictor,
-                             PredictionRequestValidator predictionRequestValidator) {
+                             RequestValidator validator) {
         this.imageDecoder = imageDecoder;
         this.imagePreprocessor = imagePreprocessor;
         this.modelPredictor = modelPredictor;
-        this.predictionRequestValidator = predictionRequestValidator;
+        this.validator = validator;
     }
 
     public Prediction predict(PredictionRequest request) {
         log.info("Received a test prediction request");
-        predictionRequestValidator.validate(request);
+        validator.validate(request);
 
         BufferedImage image = imageDecoder.decodeBase64Image(request.getImageBase64());
         Tensor inputTensor = imagePreprocessor.preprocessImage(image);

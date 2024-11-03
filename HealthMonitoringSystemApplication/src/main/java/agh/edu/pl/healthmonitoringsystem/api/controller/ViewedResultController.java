@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.service.ResultService;
+import agh.edu.pl.healthmonitoringsystem.domain.service.ResultOperationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/results/view")
 @CrossOrigin
 public class ViewedResultController {
-    private final ResultService resultService;
+    private final ResultOperationService resultService;
 
-    public ViewedResultController(ResultService resultService) {
+    public ViewedResultController(ResultOperationService resultService) {
         this.resultService = resultService;
     }
 

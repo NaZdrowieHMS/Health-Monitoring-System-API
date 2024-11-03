@@ -21,40 +21,28 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ModelMapper {
-    private final JsonFieldExtractor jsonFieldExtractor;
 
-    public ModelMapper(JsonFieldExtractor jsonFieldExtractor) {
-        this.jsonFieldExtractor = jsonFieldExtractor;
-    }
+    public ModelMapper() {}
 
     public Patient mapPatientEntityToPatient(PatientEntity patient) {
         if (patient == null) { return null; }
-        return new Patient(patient.getId(), patient.getName(), patient.getSurname(), patient.getEmail(), patient.getPesel());
+        return new Patient(patient.getId(), patient.getName(), patient.getSurname(),
+                patient.getEmail(), patient.getPesel());
     }
 
     public Doctor mapDoctorEntityToDoctor(DoctorEntity doctor) {
         if (doctor == null) { return null; }
-        return Doctor.builder()
-                .id(doctor.getId())
-                .name(doctor.getName())
-                .surname(doctor.getSurname())
-                .email(doctor.getEmail())
-                .pesel(doctor.getPesel())
-                .pwz(doctor.getPwz())
-                .build();
+        return new Doctor(doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getEmail(),
+                doctor.getPesel(), doctor.getPwz());
     }
 
     public Result mapResultEntityToResult(ResultEntity result) {
         if (result == null) { return null; }
-        String jsonContent = result.getContent();
-        String dataValue = jsonFieldExtractor.extract(jsonContent, "data");
-        String typeValue = jsonFieldExtractor.extract(jsonContent, "type");
-
         return new Result(
                 result.getId(),
                 result.getPatientId(),
                 result.getTestType(),
-                new ResultDataContent(dataValue, typeValue),
+                new ResultDataContent(result.getData(), result.getDataType()),
                 result.getCreatedDate()
         );
     }
@@ -72,7 +60,6 @@ public class ModelMapper {
                 doctor,
                 comment,
                 referral.getCreatedDate());
-
     }
 
     public Comment mapProjectionToHealth(HealthCommentWithAuthorProjection healthComment) {
@@ -83,14 +70,10 @@ public class ModelMapper {
 
     public ResultForDoctorView mapProjectionToResultForDoctorView(ResultWithAiSelectedAndViewedProjection result) {
         if (result == null) { return null; }
-        String jsonContent = result.getContent();
-        String dataValue = jsonFieldExtractor.extract(jsonContent, "data");
-        String typeValue = jsonFieldExtractor.extract(jsonContent, "type");
-
         return new ResultForDoctorView(
                 result.getId(),
                 result.getTestType(),
-                new ResultDataContent(dataValue, typeValue),
+                new ResultDataContent(result.getData(), result.getDataType()),
                 result.getAiSelected(),
                 result.getViewed(),
                 result.getCreatedDate());
@@ -98,14 +81,10 @@ public class ModelMapper {
 
     public ResultWithPatientData mapProjectionToResultWithPatientData(ResultWithPatientDataProjection result) {
         if (result == null) { return null; }
-        String jsonContent = result.getContent();
-        String dataValue = jsonFieldExtractor.extract(jsonContent, "data");
-        String typeValue = jsonFieldExtractor.extract(jsonContent, "type");
-
         return new ResultWithPatientData(result.getId(),
                 new Patient(result.getId(), result.getName(), result.getSurname(), result.getEmail(), result.getPesel()),
                 result.getTestType(),
-                new ResultDataContent(dataValue, typeValue),
+                new ResultDataContent(result.getData(), result.getDataType()),
                 result.getCreatedDate());
     }
 }

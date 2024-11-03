@@ -1,78 +1,63 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
-
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.validator.ResultRequestValidator;
-import agh.edu.pl.healthmonitoringsystem.persistence.ResultAiSelectedRepository;
-import agh.edu.pl.healthmonitoringsystem.persistence.ResultViewedRepository;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultAiSelectedEntity;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultViewedEntity;
+import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
+import agh.edu.pl.healthmonitoringsystem.response.Result;
+import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ResultService {
-    private final ResultAiSelectedRepository resultAiSelectedRepository;
-    private final ResultViewedRepository resultViewedRepository;
-    private final ResultRequestValidator resultRequestValidator;
+
+    private final ResultRepository resultRepository;
+    private final ReferralService referralService;
+    private final RequestValidator validator;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ResultService(ResultAiSelectedRepository resultAiSelectedRepository, ResultViewedRepository resultViewedRepository,
-                         ResultRequestValidator resultRequestValidator){
-        this.resultAiSelectedRepository = resultAiSelectedRepository;
-        this.resultViewedRepository = resultViewedRepository;
-        this.resultRequestValidator = resultRequestValidator;
+    public ResultService(ResultRepository resultRepository, ReferralService referralService, RequestValidator validator, ModelMapper modelMapper) {
+        this.resultRepository = resultRepository;
+        this.referralService = referralService;
+        this.validator = validator;
+        this.modelMapper = modelMapper;
     }
 
-    public void selectResult(ResultRequest resultRequest) {
-        resultRequestValidator.validate(resultRequest);
+    public List<Result> getPatientResultsByPatientId(Long patientId, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<ResultEntity> results = resultRepository.getPatientResultsByPatientId(patientId, pageRequest).getContent();
 
-        Optional<ResultAiSelectedEntity> entity = resultAiSelectedRepository.findByResultIdAndPatientIdAndDoctorId(
-                resultRequest.getResultId(),
-                resultRequest.getPatientId(),
-                resultRequest.getDoctorId()
-        );
+        return results.stream()
+                .map(modelMapper::mapResultEntityToResult)
+                .collect(Collectors.toList());
+    }
 
-        if (entity.isEmpty()) {
-            ResultAiSelectedEntity resultAiSelectedEntity = ResultAiSelectedEntity.builder()
-                    .resultId(resultRequest.getResultId())
-                    .patientId(resultRequest.getPatientId())
-                    .doctorId(resultRequest.getDoctorId())
-                    .build();
-            resultAiSelectedRepository.save(resultAiSelectedEntity);
+    public Result uploadResult(ResultUploadRequest resultRequest) {
+        validator.validate(resultRequest);
+        if(resultRequest.getReferralId() != null){
+            referralService.completeReferral(resultRequest.getReferralId());
         }
+
+        LocalDateTime now = LocalDateTime.now();
+        ResultEntity resultEntity = ResultEntity.builder()
+                .patientId(resultRequest.getPatientId())
+                .testType(resultRequest.getTestType())
+                .dataType(resultRequest.getContent().getType())
+                .data(resultRequest.getContent().getData())
+                .createdDate(now)
+                .modifiedDate(now).build();
+        return saveAndMapResultEntity(resultEntity);
     }
 
-    public void unselectResult(ResultRequest resultRequest) {
-        resultRequestValidator.validate(resultRequest);
-
-        Optional<ResultAiSelectedEntity> entity = resultAiSelectedRepository.findByResultIdAndPatientIdAndDoctorId(
-                resultRequest.getResultId(),
-                resultRequest.getPatientId(),
-                resultRequest.getDoctorId()
-        );
-        entity.ifPresent(resultAiSelectedRepository::delete);
-    }
-
-    public void viewResult(ResultRequest resultRequest) {
-        resultRequestValidator.validate(resultRequest);
-
-        Optional<ResultViewedEntity> entity = resultViewedRepository.findByResultIdAndPatientIdAndDoctorId(
-                resultRequest.getResultId(),
-                resultRequest.getPatientId(),
-                resultRequest.getDoctorId()
-        );
-
-        if (entity.isEmpty()) {
-            ResultViewedEntity resultViewedEntity = ResultViewedEntity.builder()
-                    .resultId(resultRequest.getResultId())
-                    .patientId(resultRequest.getPatientId())
-                    .doctorId(resultRequest.getDoctorId())
-                    .build();
-            resultViewedRepository.save(resultViewedEntity);
-        }
+    private Result saveAndMapResultEntity(ResultEntity resultEntity) {
+        ResultEntity savedResultEntity = resultRepository.save(resultEntity);
+        return modelMapper.mapResultEntityToResult(savedResultEntity);
     }
 }

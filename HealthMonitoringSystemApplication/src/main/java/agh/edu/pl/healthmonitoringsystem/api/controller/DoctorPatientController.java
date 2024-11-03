@@ -71,7 +71,8 @@ public class DoctorPatientController {
             },
             tags = {"DoctorPatientResult"}
     )
-    public ResponseEntity<List<ResultForDoctorView>> getDoctorPatientResultWithAiSelectedAndViewed(@Parameter(description = "Doctor ID") @PathVariable Long doctorId,  @Parameter(description = "Patient ID") @PathVariable Long patientId) {
+    public ResponseEntity<List<ResultForDoctorView>> getDoctorPatientResultWithAiSelectedAndViewed(@Parameter(description = "Doctor ID") @PathVariable Long doctorId,
+                                                                                                   @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 
         List<ResultForDoctorView> doctorPatientResults = doctorPatientService.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId);
         return ResponseEntity.ok(doctorPatientResults);

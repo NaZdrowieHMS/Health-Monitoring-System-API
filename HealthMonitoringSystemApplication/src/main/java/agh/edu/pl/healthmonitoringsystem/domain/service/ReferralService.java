@@ -6,7 +6,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.DeleteRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
-import agh.edu.pl.healthmonitoringsystem.domain.validator.ReferralRequestValidator;
+import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
@@ -27,15 +27,15 @@ public class ReferralService {
 
     private final ReferralRepository referralRepository;
     private final PatientRepository patientRepository;
-    private final ReferralRequestValidator referralRequestValidator;
+    private final RequestValidator validator;
     private final ModelMapper modelMapper;
 
     @Autowired
     public ReferralService(ReferralRepository referralRepository, PatientRepository patientRepository,
-                           ReferralRequestValidator referralRequestValidator, ModelMapper modelMapper) {
+                           RequestValidator validator, ModelMapper modelMapper) {
         this.referralRepository = referralRepository;
         this.patientRepository = patientRepository;
-        this.referralRequestValidator = referralRequestValidator;
+        this.validator = validator;
         this.modelMapper = modelMapper;
     }
 
@@ -52,7 +52,7 @@ public class ReferralService {
     }
 
     public Referral createReferral(ReferralRequest referralRequest) {
-        referralRequestValidator.validate(referralRequest);
+        validator.validate(referralRequest.getDoctorId(), referralRequest.getPatientId());
 
         LocalDateTime now = LocalDateTime.now();
         ReferralEntity referralEntity = ReferralEntity.builder()
@@ -83,7 +83,7 @@ public class ReferralService {
     public Referral updateReferral(ReferralUpdateRequest referralUpdateRequest) {
         ReferralEntity referralEntity = referralRepository.findById(referralUpdateRequest.getReferralId())
                 .orElseThrow(() -> new EntityNotFoundException("Referral with id " + referralUpdateRequest.getReferralId() + " does not exist"));
-        referralRequestValidator.validateUpdateRequest(referralUpdateRequest, referralEntity);
+        validator.validateUpdateRequest(referralUpdateRequest, referralEntity);
 
         updateField(Optional.ofNullable(referralUpdateRequest.getTestType()), referralEntity::setTestType);
         updateField(Optional.ofNullable(referralUpdateRequest.getCompleted()), referralEntity::setCompleted);
@@ -91,6 +91,16 @@ public class ReferralService {
         referralEntity.setModifiedDate(LocalDateTime.now());
 
         return saveAndMapReferral(referralEntity);
+    }
+
+    public void completeReferral(Long referralId){
+        ReferralEntity referralEntity = referralRepository.findById(referralId)
+                .orElseThrow(() -> new EntityNotFoundException("Referral with id " + referralId + " does not exist"));
+
+        referralEntity.setCompleted(true);
+        referralEntity.setModifiedDate(LocalDateTime.now());
+
+        saveAndMapReferral(referralEntity);
     }
 
     private Referral mapReferral(ReferralEntity referralEntity) {

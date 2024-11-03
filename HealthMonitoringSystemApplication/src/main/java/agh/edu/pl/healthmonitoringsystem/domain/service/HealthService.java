@@ -5,7 +5,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundExceptio
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
-import agh.edu.pl.healthmonitoringsystem.domain.validator.HealthCommentRequestValidator;
+import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.HealthRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.HealthCommentEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthCommentWithAuthorProjection;
@@ -24,19 +24,19 @@ import static agh.edu.pl.healthmonitoringsystem.domain.component.UpdateUtil.upda
 public class HealthService {
 
     private final HealthRepository healthRepository;
-    private final HealthCommentRequestValidator healthCommentRequestValidator;
+    private final RequestValidator validator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public HealthService(HealthRepository healthRepository, HealthCommentRequestValidator healthCommentRequestValidator,
+    public HealthService(HealthRepository healthRepository, RequestValidator validator,
                          ModelMapper modelMapper) {
         this.healthRepository = healthRepository;
-        this.healthCommentRequestValidator = healthCommentRequestValidator;
+        this.validator = validator;
         this.modelMapper = modelMapper;
     }
 
     public Comment createHealthComment(CommentRequest healthCommentRequest) {
-        healthCommentRequestValidator.validate(healthCommentRequest);
+        validator.validate(healthCommentRequest.getDoctorId(), healthCommentRequest.getPatientId());
 
         LocalDateTime now = LocalDateTime.now();
         HealthCommentEntity healthCommentEntity = HealthCommentEntity.builder()
@@ -52,7 +52,7 @@ public class HealthService {
     public Comment updateHealthComment(CommentUpdateRequest healthCommentRequest) {
         HealthCommentEntity healthCommentEntity = healthRepository.findById(healthCommentRequest.getCommentId())
                 .orElseThrow(() -> new EntityNotFoundException("Health comment with id " + healthCommentRequest.getCommentId() + " does not exist"));
-        healthCommentRequestValidator.validateUpdateRequest(healthCommentRequest, healthCommentEntity);
+        validator.validateUpdateRequest(healthCommentRequest, healthCommentEntity);
 
         updateField(Optional.ofNullable(healthCommentRequest.getContent()), healthCommentEntity::setContent);
         healthCommentEntity.setModifiedDate(LocalDateTime.now());
