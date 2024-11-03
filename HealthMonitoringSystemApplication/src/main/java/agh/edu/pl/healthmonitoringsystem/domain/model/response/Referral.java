@@ -9,6 +9,6 @@ public record Referral (
     String referralNumber,
     Boolean completed,
     Author doctor,
-    Comment Comment,
+    Comment comment,
     LocalDateTime createdDate )
 {}
