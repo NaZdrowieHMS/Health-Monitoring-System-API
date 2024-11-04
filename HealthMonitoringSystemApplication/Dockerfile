@@ -9,12 +9,12 @@ COPY pom.xml .
 COPY src ./src
 
 # Copy the AI model into the app's resource directory
-COPY src/main/resources/models/ai_model /app/src/main/resources/models/ai_model
+# COPY src/main/resources/models/ai_model /app/src/main/resources/models/ai_model
 
 COPY src/main/resources/settings.xml /root/.m2/settings.xml
 
 # Check if the model files are copied correctly (optional)
-RUN ls -la /app/src/main/resources/models/ai_model
+# RUN ls -la /app/src/main/resources/models/ai_model
 
 # Build the application and package it as a JAR file
 RUN mvn clean package -DskipTests
@@ -29,7 +29,7 @@ WORKDIR /app
 COPY --from=build /app/target/HealthMonitoringSystemApplication-0.0.1-SNAPSHOT.jar app.jar
 
 # Copy the AI model from the build stage
-COPY --from=build /app/src/main/resources/models/ai_model /app/models/ai_model
+# COPY --from=build /app/src/main/resources/models/ai_model /app/models/ai_model
 
 # Diagnostic step to ensure that the model is correctly copied (optional)
 RUN ls -R /app
