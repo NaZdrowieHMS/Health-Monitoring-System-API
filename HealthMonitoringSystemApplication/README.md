@@ -22,4 +22,7 @@ docker run -e DATABASE_URL="" -e DATABASE_USERNAME="" -e DATABASE_PASSWORD="" -p
 ```
 Remember to fill the command above with correct credentials. (Put them inside the `""`)
 
-For deployment, notify Szymon on updates
+For deployment, notify Szymon on updates:
+
+Our deployment branch is: **deploy**
+
