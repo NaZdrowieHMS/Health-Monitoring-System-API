@@ -3,10 +3,14 @@ package agh.edu.pl.healthmonitoringsystem.domain.component;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Doctor;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Author;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Form;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.FormEntry;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntryEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientDataProjection;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
@@ -18,6 +22,8 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthComm
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataType;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @Component
@@ -46,6 +52,22 @@ public class ModelMapper {
                 result.getCreatedDate(),
                 new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()));
     }
+
+
+    public Form  mapFormEntityToForm(FormEntity formEntity, List<FormEntryEntity> formEntityEntities) {
+        if (formEntity == null) { return null; }
+        List<FormEntry> formEntries = formEntityEntities
+                .stream()
+                .map(this::mapFormEntryEntityToFormEntry)
+                .toList();
+        return new Form(formEntity.getId(), formEntity.getPatientId(), formEntity.getCreatedDate(), formEntries);
+    }
+
+    private FormEntry mapFormEntryEntityToFormEntry(FormEntryEntity formEntryEntity) {
+        if (formEntryEntity == null) { return null; }
+        return new FormEntry(formEntryEntity.getHealthParam(), formEntryEntity.getValue());
+    }
+
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
         if (referral == null) { return null; }

@@ -42,7 +42,7 @@ public class HealthCommentEntity {
     public static final class Builder {
         public HealthCommentEntity build(){
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
-            checkNotNull(patientId, () -> new RequestValidationException("PatientEntity Id cannot be null"));
+            checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
             checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));

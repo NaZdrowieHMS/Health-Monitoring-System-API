@@ -63,4 +63,8 @@ public class RequestValidator {
                     "Author id: %s. Current editor id: %s.", referralEntity.getDoctorId(), request.getDoctorId()));
         }
     }
+
+    public void validatePatient(Long patientId) {
+        entityValidator.validatePatient(patientId);
+    }
 }
