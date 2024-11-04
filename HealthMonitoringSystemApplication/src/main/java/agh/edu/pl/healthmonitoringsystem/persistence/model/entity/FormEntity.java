@@ -1,6 +1,5 @@
 package agh.edu.pl.healthmonitoringsystem.persistence.model.entity;
 
-
 import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,36 +14,30 @@ import java.time.LocalDateTime;
 import static agh.edu.pl.healthmonitoringsystem.domain.validator.PreconditionValidator.checkNotNull;
 
 @Entity
-@Table(name = "ai_prediction")
+@Table(name = "health_form")
 @Getter
 @Setter
-public class AiPredictionEntity {
+public class FormEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long doctorId;
     private Long patientId;
-    private String content;
     private LocalDateTime createdDate;
 
-    public AiPredictionEntity() {}
+    public FormEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public AiPredictionEntity(Long id, Long doctorId, Long patientId, String content, LocalDateTime createdDate) {
+    public FormEntity(Long id, Long patientId, LocalDateTime createdDate) {
         this.id = id;
-        this.doctorId = doctorId;
         this.patientId = patientId;
-        this.content = content;
         this.createdDate = createdDate;
     }
 
     public static final class Builder {
-        public AiPredictionEntity build(){
-            checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
+        public FormEntity build(){
             checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
-            checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
-            return new AiPredictionEntity(id, doctorId, patientId, content, createdDate);
+            return new FormEntity(id, patientId, createdDate);
         }
     }
 }
