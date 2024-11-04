@@ -53,7 +53,7 @@ public class HealthController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"Health Comment"}
+            tags = {"Patient"}
     )
     public ResponseEntity<List<Comment>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                                   @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
@@ -76,7 +76,7 @@ public class HealthController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"Health Comment"}
+            tags = {"Health"}
     )
     public ResponseEntity<Comment> createHealthComment(@Parameter(description = "Health comment request")
                                                            @RequestBody @Valid CommentRequest healthCommentRequest) {
@@ -100,7 +100,7 @@ public class HealthController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"Health Comment"}
+            tags = {"Health"}
     )
     public ResponseEntity<Comment> updateHealthComment(@Parameter(description = "Health comment update request")
                                                            @RequestBody @Valid CommentUpdateRequest healthCommentRequest) {
@@ -120,7 +120,7 @@ public class HealthController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"Health Comment"}
+            tags = {"Health"}
     )
     public ResponseEntity<Comment> getHealthComment(@Parameter(description = "Health comment ID") @PathVariable Long commentId) {
 
@@ -141,7 +141,7 @@ public class HealthController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"Health Comment"}
+            tags = {"Health"}
     )
     public ResponseEntity<Void> deleteHealthComment(@Parameter(description = "Health comment ID") @PathVariable Long commentId) {
 

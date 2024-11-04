@@ -42,7 +42,7 @@ public class DoctorPatientRelationController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
             },
-            tags = {"DoctorPatient Relation"}
+            tags = {"Relation"}
     )
     public ResponseEntity<Void> createRelation(@Parameter(description = "Doctor patient relation request") @RequestBody @Valid DoctorPatientRelationRequest request) {
 
@@ -63,7 +63,7 @@ public class DoctorPatientRelationController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
             },
-            tags = {"DoctorPatient Relation"}
+            tags = {"Relation"}
     )
     public ResponseEntity<Void> deleteRelation(@Parameter(description = "Doctor ID") @PathVariable Long doctorId,
                                                @Parameter(description = "Patient ID") @PathVariable Long patientId) {

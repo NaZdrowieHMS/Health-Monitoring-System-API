@@ -46,7 +46,7 @@ public class PatientReferralController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
-            tags = {"PatientReferral"}
+            tags = {"Patient"}
     )
     public ResponseEntity<List<Referral>> getPatientReferrals(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                                    @Parameter(description = "Number of referrals per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
