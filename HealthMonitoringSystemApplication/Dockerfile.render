@@ -1,6 +1,9 @@
 # Build application using Maven
 FROM maven:3.9.5-eclipse-temurin-21 AS build
 
+ARG GITHUB_USERNAME
+ARG GITHUB_TOKEN
+
 # Work directory in the container
 WORKDIR /app
 
@@ -31,6 +34,11 @@ ENV JAVA_OPTS=""
 
 # Disable oneDNN operations in TensorFlow for consistent results
 ENV TF_ENABLE_ONEDNN_OPTS=0
+
+# Set database-related environment variables
+ENV DATABASE_URL=""
+ENV DATABASE_USERNAME=""
+ENV DATABASE_PASSWORD=""
 
 # Expose the application port
 EXPOSE 8080
