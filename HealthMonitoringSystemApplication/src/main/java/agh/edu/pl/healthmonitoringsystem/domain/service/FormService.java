@@ -47,7 +47,7 @@ public class FormService {
                 .map(entry -> FormEntryEntity.builder()
                         .formId(savedFormEntity.getId())
                         .value(entry.getValue())
-                        .healthParam(entry.getHealthParam())
+                        .healthParam(entry.getKey())
                         .build())
                 .toList();
 
