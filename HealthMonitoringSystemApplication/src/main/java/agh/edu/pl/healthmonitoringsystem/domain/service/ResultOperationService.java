@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Service
 public class ResultOperationService {
+
     private final ResultAiSelectedRepository resultAiSelectedRepository;
     private final ResultViewedRepository resultViewedRepository;
     private final RequestValidator validator;

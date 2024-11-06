@@ -3,6 +3,7 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
+import agh.edu.pl.healthmonitoringsystem.domain.validator.EntityValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PatientRequest;
@@ -20,11 +21,13 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
     private final ModelMapper modelMapper;
+    private final EntityValidator validator;
 
     @Autowired
-    public PatientService(PatientRepository patientRepository, ModelMapper modelMapper) {
+    public PatientService(PatientRepository patientRepository, ModelMapper modelMapper, EntityValidator validator) {
         this.patientRepository = patientRepository;
         this.modelMapper = modelMapper;
+        this.validator = validator;
     }
 
     public List<Patient> getPatients(Integer page, Integer size) {
@@ -56,5 +59,16 @@ public class PatientService {
                 .orElseThrow(() -> new EntityNotFoundException("Patient with id " + id + " not found"));
 
         return modelMapper.mapPatientEntityToPatient(patientEntity);
+    }
+
+    public List<Patient> getPatientsByDoctorId(Long doctorId, Integer page, Integer size) {
+        validator.validateDoctor(doctorId);
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<PatientEntity> patients = patientRepository.findPatientsByDoctorId(doctorId, pageRequest).getContent();
+
+        return patients.stream()
+                .map(modelMapper::mapPatientEntityToPatient)
+                .collect(Collectors.toList());
     }
 }

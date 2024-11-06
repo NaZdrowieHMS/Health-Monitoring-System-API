@@ -7,8 +7,10 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.Form;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.FormEntry;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Relation;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorPatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntryEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
@@ -54,8 +56,8 @@ public class ModelMapper {
     }
 
 
-    public Form  mapFormEntityToForm(FormEntity formEntity, List<FormEntryEntity> formEntityEntities) {
-        if (formEntity == null) { return null; }
+    public Form mapFormEntityToForm(FormEntity formEntity, List<FormEntryEntity> formEntityEntities) {
+        if (formEntity == null || formEntityEntities == null) { return null; }
         List<FormEntry> formEntries = formEntityEntities
                 .stream()
                 .map(this::mapFormEntryEntityToFormEntry)
@@ -108,5 +110,10 @@ public class ModelMapper {
                 result.getTestType(),
                 new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()),
                 result.getCreatedDate());
+    }
+
+    public Relation mapRelationEntityToRelation(DoctorPatientEntity relation) {
+        if (relation == null) { return null; }
+        return new Relation(relation.getPatientId(), relation.getDoctorId());
     }
 }
