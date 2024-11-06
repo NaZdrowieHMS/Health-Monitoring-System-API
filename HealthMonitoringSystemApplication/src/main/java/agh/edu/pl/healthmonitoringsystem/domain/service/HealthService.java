@@ -73,6 +73,7 @@ public class HealthService {
     }
 
     public List<Comment> getHealthCommentsByPatientId(Long patientId, Integer page, Integer size) {
+        validator.validatePatient(patientId);
         PageRequest pageRequest = PageRequest.of(page, size);
         List<HealthCommentWithAuthorProjection> healthComments = healthRepository.getHealthCommentsWithAutorByPatientId(patientId, pageRequest).getContent();
 

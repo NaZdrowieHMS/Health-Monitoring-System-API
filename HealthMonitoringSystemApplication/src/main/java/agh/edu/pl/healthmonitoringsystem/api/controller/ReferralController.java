@@ -1,6 +1,5 @@
 package agh.edu.pl.healthmonitoringsystem.api.controller;
 
-
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.DeleteRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralRequest;
@@ -48,7 +47,6 @@ public class ReferralController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
             },
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(),
             tags = {"Referral"}
     )
     public ResponseEntity<Referral> getReferralById(@Parameter(description = "Referral ID") @PathVariable("referralId") Long referralId) {
@@ -64,6 +62,8 @@ public class ReferralController {
                     @ApiResponse(responseCode = "201", description = "Referral created successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Referral.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Not found",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
@@ -87,6 +87,8 @@ public class ReferralController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "403", description = "Forbidden",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Not found",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
             },
@@ -99,12 +101,11 @@ public class ReferralController {
         return ResponseEntity.ok(referral);
     }
 
-
     @DeleteMapping
     @Operation(
             summary = "Delete referral by referral ID.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Result unselected successfully",
+                    @ApiResponse(responseCode = "204", description = "Result unselected successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
                     @ApiResponse(responseCode = "404", description = "Not found",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
@@ -116,7 +117,7 @@ public class ReferralController {
     public ResponseEntity<Void> deleteReferral(@Parameter(description = "Unselect result request") @RequestBody @Valid DeleteRequest referralDeleteRequest) {
 
         referralService.deleteReferral(referralDeleteRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
 

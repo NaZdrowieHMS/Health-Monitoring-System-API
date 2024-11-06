@@ -67,4 +67,8 @@ public class RequestValidator {
     public void validatePatient(Long patientId) {
         entityValidator.validatePatient(patientId);
     }
+
+    public void validateDoctor(Long doctorId) {
+        entityValidator.validatePatient(doctorId);
+    }
 }

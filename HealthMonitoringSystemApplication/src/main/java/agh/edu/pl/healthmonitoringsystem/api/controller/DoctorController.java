@@ -83,7 +83,6 @@ public class DoctorController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(),
             tags = {"Doctor"}
     )
     public ResponseEntity<Doctor> getDoctorById(@Parameter(description = "Doctor ID") @PathVariable("doctorId") Long doctorId) {

@@ -14,7 +14,7 @@ public class FormEntryRequest {
     @NotBlank(message = "Key is required")
     private String key;
 
-    @NotBlank(message = "value is required")
+    @NotBlank(message = "Value is required")
     private String value;
 
     public FormEntryRequest(@JsonProperty("key") String key,
