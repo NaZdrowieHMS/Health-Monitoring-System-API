@@ -57,8 +57,9 @@ public class FormService {
     }
 
     public List<Form> getPatientHealthForms(Long patientId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+        validator.validatePatient(patientId);
 
+        Pageable pageable = PageRequest.of(page, size);
         List<FormEntity> formEntities = formRepository.findByPatientId(patientId, pageable);
 
         return formEntities.stream()
@@ -70,7 +71,11 @@ public class FormService {
     }
 
     public Form getPatientLatestHealthForm(Long patientId) {
+        validator.validatePatient(patientId);
+
         FormEntity latestFormEntity = formRepository.findTopByPatientIdOrderByCreatedDateDesc(patientId);
+        if (latestFormEntity == null) {return null;}
+
         List<FormEntryEntity> entries = formEntryRepository.findByFormId(latestFormEntity.getId());
 
         return modelMapper.mapFormEntityToForm(latestFormEntity, entries);

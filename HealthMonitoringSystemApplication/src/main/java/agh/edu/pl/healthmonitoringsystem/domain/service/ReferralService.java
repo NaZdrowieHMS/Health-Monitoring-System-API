@@ -7,7 +7,6 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
-import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
@@ -26,22 +25,18 @@ import static agh.edu.pl.healthmonitoringsystem.domain.component.UpdateUtil.upda
 public class ReferralService {
 
     private final ReferralRepository referralRepository;
-    private final PatientRepository patientRepository;
     private final RequestValidator validator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ReferralService(ReferralRepository referralRepository, PatientRepository patientRepository,
-                           RequestValidator validator, ModelMapper modelMapper) {
+    public ReferralService(ReferralRepository referralRepository, RequestValidator validator, ModelMapper modelMapper) {
         this.referralRepository = referralRepository;
-        this.patientRepository = patientRepository;
         this.validator = validator;
         this.modelMapper = modelMapper;
     }
 
     public List<Referral> getPatientReferralsByPatientId(Long patientId, Integer page, Integer size) {
-        patientRepository.findById(patientId)
-                .orElseThrow(() -> new EntityNotFoundException("Patient with id " + patientId + " not found"));
+        validator.validatePatient(patientId);
 
         PageRequest pageRequest = PageRequest.of(page, size);
         List<PatientReferralWithCommentProjection> referrals = referralRepository.getPatientReferralsByPatientId(patientId, pageRequest).getContent();

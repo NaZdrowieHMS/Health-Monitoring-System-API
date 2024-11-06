@@ -2,7 +2,11 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientDataProjection;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
@@ -31,6 +35,7 @@ public class ResultService {
     }
 
     public List<Result> getPatientResultsByPatientId(Long patientId, Integer page, Integer size) {
+        validator.validatePatient(patientId);
         PageRequest pageRequest = PageRequest.of(page, size);
         List<ResultEntity> results = resultRepository.getPatientResultsByPatientId(patientId, pageRequest).getContent();
 
@@ -58,6 +63,27 @@ public class ResultService {
 
     private Result saveAndMapResultEntity(ResultEntity resultEntity) {
         ResultEntity savedResultEntity = resultRepository.save(resultEntity);
+
         return modelMapper.mapResultEntityToResult(savedResultEntity);
+    }
+
+    public List<ResultForDoctorView> getDoctorPatientResultWithAiSelectedAndViewed(Long doctorId, Long patientId) {
+        validator.validate(doctorId, patientId);
+
+        List<ResultWithAiSelectedAndViewedProjection> results = resultRepository.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId);
+
+        return results.stream()
+                .map(modelMapper::mapProjectionToResultForDoctorView)
+                .collect(Collectors.toList());
+    }
+
+    public List<ResultWithPatientData> getDoctorUnviewedResults(Long doctorId) {
+        validator.validateDoctor(doctorId);
+
+        List<ResultWithPatientDataProjection> results = resultRepository.getDoctorUnviewedResults(doctorId);
+
+        return results.stream()
+                .map(modelMapper::mapProjectionToResultWithPatientData)
+                .collect(Collectors.toList());
     }
 }

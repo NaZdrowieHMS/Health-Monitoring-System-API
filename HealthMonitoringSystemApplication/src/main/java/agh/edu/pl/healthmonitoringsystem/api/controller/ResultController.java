@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/results")
 @CrossOrigin
 public class ResultController {
 
@@ -30,12 +30,11 @@ public class ResultController {
         this.resultService = resultService;
     }
 
-
-    @PostMapping(path = "/results")
+    @PostMapping
     @Operation(
             summary = "Upload medical result for a specific patient",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Successful operation",
+                    @ApiResponse(responseCode = "201", description = "Medical result uploaded successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Result.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),

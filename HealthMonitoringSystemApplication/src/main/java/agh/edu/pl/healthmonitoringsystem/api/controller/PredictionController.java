@@ -40,10 +40,6 @@ public class PredictionController {
                     @ApiResponse(responseCode = "500", description = "Server error",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
             },
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true, content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PredictionRequest.class))),
             tags = {"AI Prediction"}
     )
     public ResponseEntity<Prediction> testPrediction(@Parameter(description = "Test prediction request")
