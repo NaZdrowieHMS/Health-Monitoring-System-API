@@ -160,7 +160,8 @@
 		<dependency>
 			<groupId>agh.edu.pl.healthmonitoringsystem</groupId>
 			<artifactId>healthmonitoringsystem-shared</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.6-SNAPSHOT</version>
+			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>

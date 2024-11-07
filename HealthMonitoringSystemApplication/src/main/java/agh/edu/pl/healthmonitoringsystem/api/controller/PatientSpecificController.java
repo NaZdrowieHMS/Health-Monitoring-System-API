@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Form;
+import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.service.FormService;
 import agh.edu.pl.healthmonitoringsystem.domain.service.HealthService;

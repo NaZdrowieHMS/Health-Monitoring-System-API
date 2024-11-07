@@ -1,8 +1,9 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.FormRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Form;
+import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.FormEntryRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
@@ -31,6 +32,15 @@ public class FormService {
         this.formEntryRepository = formEntryRepository;
         this.validator = validator;
         this.modelMapper = modelMapper;
+    }
+
+    public Form getFormById(Long formId) {
+        FormEntity frmEntity = formRepository.findById(formId)
+                .orElseThrow(() -> new EntityNotFoundException("Form with id " + formId + " not found"));
+
+        List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(frmEntity.getId());
+
+        return modelMapper.mapFormEntityToForm(frmEntity, formEntries);
     }
 
     public Form uploadHealthForm(FormRequest formRequest) {
@@ -64,8 +74,8 @@ public class FormService {
 
         return formEntities.stream()
                 .map(formEntity -> {
-                    List<FormEntryEntity> entries = formEntryRepository.findByFormId(formEntity.getId());
-                    return modelMapper.mapFormEntityToForm(formEntity, entries);
+                    List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(formEntity.getId());
+                    return modelMapper.mapFormEntityToForm(formEntity, formEntries);
                 })
                 .toList();
     }
