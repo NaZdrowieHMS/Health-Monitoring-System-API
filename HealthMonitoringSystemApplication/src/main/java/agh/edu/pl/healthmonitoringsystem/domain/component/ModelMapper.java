@@ -3,6 +3,8 @@ package agh.edu.pl.healthmonitoringsystem.domain.component;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Doctor;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Author;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiFormAnalysisEntity;
+import agh.edu.pl.healthmonitoringsystem.response.AiFormAnalysis;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.response.FormEntry;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
@@ -30,8 +32,11 @@ import java.util.List;
 
 @Component
 public class ModelMapper {
+    private final JsonConverter jsonConverter;
 
-    public ModelMapper() {}
+    public ModelMapper(JsonConverter jsonConverter) {
+        this.jsonConverter = jsonConverter;
+    }
 
     public Patient mapPatientEntityToPatient(PatientEntity patient) {
         if (patient == null) { return null; }
@@ -115,5 +120,14 @@ public class ModelMapper {
     public Relation mapRelationEntityToRelation(DoctorPatientEntity relation) {
         if (relation == null) { return null; }
         return new Relation(relation.getPatientId(), relation.getDoctorId());
+    }
+
+    public AiFormAnalysis mapAiAnalysisEntityToAiFormAnalysis(AiFormAnalysisEntity aiAnalysis) {
+        if (aiAnalysis == null) { return null; }
+        List<String> diagnoses = jsonConverter.convertToEntityAttribute(aiAnalysis.getDiagnoses());
+        List<String> recommendations = jsonConverter.convertToEntityAttribute(aiAnalysis.getRecommendations());
+
+        return new AiFormAnalysis(aiAnalysis.getId(), aiAnalysis.getPatientId(), aiAnalysis.getFormId(),
+                diagnoses, recommendations, aiAnalysis.getCreatedDate());
     }
 }

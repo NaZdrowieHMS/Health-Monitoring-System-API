@@ -1,5 +1,8 @@
 package agh.edu.pl.healthmonitoringsystem.api.controller;
 
+import agh.edu.pl.healthmonitoringsystem.domain.service.FormAnalysisService;
+import agh.edu.pl.healthmonitoringsystem.request.AiFormAnalysisRequest;
+import agh.edu.pl.healthmonitoringsystem.response.AiFormAnalysis;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.FormRequest;
@@ -27,9 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class FormController {
     private final FormService formService;
+    private final FormAnalysisService formAnalysisService;
 
-    public FormController(FormService formService) {
+    public FormController(FormService formService, FormAnalysisService formAnalysisService) {
         this.formService = formService;
+        this.formAnalysisService = formAnalysisService;
     }
 
     @PostMapping
@@ -71,5 +76,44 @@ public class FormController {
 
         Form healthform = formService.getFormById(formId);
         return ResponseEntity.ok(healthform);
+    }
+
+    @GetMapping("/{formId}/analysis")
+    @Operation(
+            summary = "Get the ai analysis for a specific form by form ID.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation",
+                            content = @Content(schema = @Schema(implementation = AiFormAnalysis.class))),
+                    @ApiResponse(responseCode = "404", description = "Not found",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"Health Form"}
+    )
+    public ResponseEntity<AiFormAnalysis> getFormAiAnalysisByFormId(@Parameter(description = "Form ID") @PathVariable("formId") Long formId) {
+
+        AiFormAnalysis doctor = formAnalysisService.getFormAiAnalysisById(formId);
+        return ResponseEntity.ok(doctor);
+    }
+
+    @PostMapping("/analysis")
+    @Operation(
+            summary = "Save a form ai analysis.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Ai form analysis created successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AiFormAnalysis.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class)))
+            },
+            tags = {"Health Form"}
+    )
+    public ResponseEntity<AiFormAnalysis> saveFormAiAnalysis(@Parameter(description = "Ai form analysis to be saved request")
+                                                             @RequestBody @Valid AiFormAnalysisRequest aiFormAnalysisRequest) {
+
+        AiFormAnalysis doctor = formAnalysisService.saveFormAiAnalysis(aiFormAnalysisRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(doctor);
     }
 }

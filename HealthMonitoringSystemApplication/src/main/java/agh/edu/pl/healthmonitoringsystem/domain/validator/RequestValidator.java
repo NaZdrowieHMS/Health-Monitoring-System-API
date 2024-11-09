@@ -9,6 +9,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.HealthCommentEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
+import agh.edu.pl.healthmonitoringsystem.request.AiFormAnalysisRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,10 @@ public class RequestValidator {
         entityValidator.validateDoctor(doctorId);
     }
 
+    public void validate(AiFormAnalysisRequest request) {
+        entityValidator.validateForm(request.getFormId());
+        entityValidator.validatePatient(request.getPatientId());
+    }
 
     public void validate(ResultRequest request) {
         entityValidator.validateResult(request.getResultId());
