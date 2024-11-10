@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,5 +52,26 @@ public class ResultController {
 
         Result result = resultService.uploadResult(resultRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @DeleteMapping(path = "/{resultId}")
+    @Operation(
+            summary = "Delete a specific result",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Successful operation",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Not found",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"Result"}
+    )
+    public ResponseEntity<Void> deleteResult(@Parameter(description = "Result ID") @PathVariable Long resultId) {
+
+        resultService.deleteResult(resultId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -8,7 +8,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.HealthRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.HealthCommentEntity;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthCommentWithAuthorProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -53,7 +53,7 @@ public class HealthService {
     public Comment updateHealthComment(CommentUpdateRequest healthCommentRequest) {
         HealthCommentEntity healthCommentEntity = healthRepository.findById(healthCommentRequest.getCommentId())
                 .orElseThrow(() -> new EntityNotFoundException("Health comment with id " + healthCommentRequest.getCommentId() + " does not exist"));
-        validator.validateUpdateRequest(healthCommentRequest, healthCommentEntity);
+        validator.validateCommentUpdateRequest(healthCommentRequest, healthCommentEntity.getDoctorId());
 
         updateField(Optional.ofNullable(healthCommentRequest.getContent()), healthCommentEntity::setContent);
         healthCommentEntity.setModifiedDate(LocalDateTime.now());
@@ -76,16 +76,16 @@ public class HealthService {
     public List<Comment> getHealthCommentsByPatientId(Long patientId, Integer page, Integer size) {
         validator.validatePatient(patientId);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
-        List<HealthCommentWithAuthorProjection> healthComments = healthRepository.getHealthCommentsWithAutorByPatientId(patientId, pageRequest).getContent();
+        List<CommentWithAuthorProjection> healthCommentsWithDoctorData = healthRepository.getHealthCommentsWithAutorByPatientId(patientId, pageRequest).getContent();
 
-        return healthComments.stream()
-                .map(modelMapper::mapProjectionToHealth)
+        return healthCommentsWithDoctorData.stream()
+                .map(modelMapper::mapProjectionToComment)
                 .collect(Collectors.toList());
     }
 
     private Comment mapHealthComment(HealthCommentEntity healthCommentEntity) {
-        HealthCommentWithAuthorProjection healthCommentProjection = healthRepository.getHealthCommentWithAutorByPatientId(healthCommentEntity.getId());
-        return modelMapper.mapProjectionToHealth(healthCommentProjection);
+        CommentWithAuthorProjection healthCommentWithAuthorProjection = healthRepository.getHealthCommentWithAutorByCommentId(healthCommentEntity.getId()).orElse(null);
+        return modelMapper.mapProjectionToComment(healthCommentWithAuthorProjection);
     }
 
     private Comment saveAndMapHealthComment(HealthCommentEntity healthCommentEntity) {

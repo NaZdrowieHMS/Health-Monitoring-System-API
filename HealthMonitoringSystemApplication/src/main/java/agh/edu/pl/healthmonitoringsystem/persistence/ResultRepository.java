@@ -10,13 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
-
-    @Override
-    Optional<ResultEntity> findById(Long id);
 
     @Query(value = "SELECT r FROM ResultEntity r WHERE r.patientId = :patientId")
     Page<ResultEntity> getPatientResultsByPatientId(@Param("patientId") Long patientId, Pageable pageable);

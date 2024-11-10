@@ -1,6 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
@@ -88,5 +89,11 @@ public class ResultService {
         return results.stream()
                 .map(modelMapper::mapProjectionToResultWithPatientData)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteResult(Long resultId) {
+        ResultEntity entity = resultRepository.findById(resultId)
+                .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+        resultRepository.delete(entity);
     }
 }
