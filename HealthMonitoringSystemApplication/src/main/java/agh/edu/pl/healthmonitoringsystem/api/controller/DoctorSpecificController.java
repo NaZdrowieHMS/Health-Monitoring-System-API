@@ -65,12 +65,35 @@ public class DoctorSpecificController {
             },
             tags = {"Doctor"}
     )
-    public ResponseEntity<List<Patient>> getDoctorPatient(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+    public ResponseEntity<List<Patient>> getDoctorPatients(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                            @Parameter(description = "Number of patients per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
                                                            @Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
 
         List<Patient> doctorPatients = patientService.getPatientsByDoctorId(doctorId, startIndex, pageSize);
         return ResponseEntity.ok(doctorPatients);
+    }
+
+    @GetMapping(path = "/{doctorId}/patients/unassigned")
+    @Operation(
+            summary = "Get list of patients not assigned to the doctor",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation",
+                            content = @Content(schema = @Schema(type = "array", implementation = Patient.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Not found",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"Doctor"}
+    )
+    public ResponseEntity<List<Patient>> getDoctorNewPatients(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                           @Parameter(description = "Number of patients per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                           @Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
+
+        List<Patient> unassignedPatients = patientService.getUnassignedPatientsByDoctorId(doctorId, startIndex, pageSize);
+        return ResponseEntity.ok(unassignedPatients );
     }
 
     @PutMapping("/patients/relation")
