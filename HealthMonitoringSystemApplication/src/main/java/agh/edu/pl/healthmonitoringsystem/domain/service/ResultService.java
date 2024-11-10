@@ -1,6 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
@@ -12,6 +13,7 @@ import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,7 +38,7 @@ public class ResultService {
 
     public List<Result> getPatientResultsByPatientId(Long patientId, Integer page, Integer size) {
         validator.validatePatient(patientId);
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
         List<ResultEntity> results = resultRepository.getPatientResultsByPatientId(patientId, pageRequest).getContent();
 
         return results.stream()
@@ -67,23 +69,31 @@ public class ResultService {
         return modelMapper.mapResultEntityToResult(savedResultEntity);
     }
 
-    public List<ResultForDoctorView> getDoctorPatientResultWithAiSelectedAndViewed(Long doctorId, Long patientId) {
+    public List<ResultForDoctorView> getDoctorPatientResultWithAiSelectedAndViewed(Long doctorId, Long patientId, Integer page, Integer size) {
         validator.validate(doctorId, patientId);
 
-        List<ResultWithAiSelectedAndViewedProjection> results = resultRepository.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        List<ResultWithAiSelectedAndViewedProjection> results = resultRepository.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId, pageRequest).getContent();
 
         return results.stream()
                 .map(modelMapper::mapProjectionToResultForDoctorView)
                 .collect(Collectors.toList());
     }
 
-    public List<ResultWithPatientData> getDoctorUnviewedResults(Long doctorId) {
+    public List<ResultWithPatientData> getDoctorUnviewedResults(Long doctorId, Integer page, Integer size) {
         validator.validateDoctor(doctorId);
 
-        List<ResultWithPatientDataProjection> results = resultRepository.getDoctorUnviewedResults(doctorId);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        List<ResultWithPatientDataProjection> results = resultRepository.getDoctorUnviewedResults(doctorId, pageRequest).getContent();
 
         return results.stream()
                 .map(modelMapper::mapProjectionToResultWithPatientData)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteResult(Long resultId) {
+        ResultEntity entity = resultRepository.findById(resultId)
+                .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+        resultRepository.delete(entity);
     }
 }

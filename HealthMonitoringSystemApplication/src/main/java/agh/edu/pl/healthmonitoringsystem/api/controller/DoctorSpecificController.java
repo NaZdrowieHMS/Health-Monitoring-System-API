@@ -155,10 +155,12 @@ public class DoctorSpecificController {
             },
             tags = {"Doctor"}
     )
-    public ResponseEntity<List<ResultForDoctorView>> getDoctorPatientResultWithAiSelectedAndViewed(@Parameter(description = "Doctor ID") @PathVariable Long doctorId,
+    public ResponseEntity<List<ResultForDoctorView>> getDoctorPatientResultWithAiSelectedAndViewed(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                                                                   @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
+                                                                                                   @Parameter(description = "Doctor ID") @PathVariable Long doctorId,
                                                                                                    @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 
-        List<ResultForDoctorView> doctorPatientResults = resultService.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId);
+        List<ResultForDoctorView> doctorPatientResults = resultService.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId, startIndex, pageSize);
         return ResponseEntity.ok(doctorPatientResults);
     }
 
@@ -177,9 +179,11 @@ public class DoctorSpecificController {
             },
             tags = {"Doctor"}
     )
-    public ResponseEntity<List<ResultWithPatientData>> getDoctorUnviewedResults(@Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
+    public ResponseEntity<List<ResultWithPatientData>> getDoctorUnviewedResults(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                                                @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
+                                                                                @Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
 
-        List<ResultWithPatientData> doctorPatientsResults = resultService.getDoctorUnviewedResults(doctorId);
+        List<ResultWithPatientData> doctorPatientsResults = resultService.getDoctorUnviewedResults(doctorId, startIndex, pageSize);
         return ResponseEntity.ok(doctorPatientsResults);
     }
 }

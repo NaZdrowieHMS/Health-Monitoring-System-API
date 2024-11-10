@@ -1,9 +1,9 @@
 package agh.edu.pl.healthmonitoringsystem.persistence;
 
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.HealthCommentEntity;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthCommentWithAuthorProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,19 +14,19 @@ import java.util.Optional;
 @Repository
 public interface HealthRepository extends JpaRepository<HealthCommentEntity, Long> {
 
-    @Override
-    Optional<HealthCommentEntity> findById(Long id);
+    @Query("""
+            SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
+            h.id, h.content, h.modifiedDate, d.id, d.name, d.surname) \
+            FROM HealthCommentEntity h \
+            JOIN DoctorEntity d ON h.doctorId = d.id \
+            WHERE h.patientId = :patientId""")
+    Page<CommentWithAuthorProjection> getHealthCommentsWithAutorByPatientId(@Param("patientId") Long patientId, Pageable pageable);
 
-    @Query(value = "SELECT h.health_comment_id AS healthCommentId, h.patient_id AS patientId, h.content AS content," +
-            " h.modified_date AS modifiedDate, h.doctor_id AS doctorId, h.doctor_name AS doctorName, h.doctor_surname " +
-            "FROM health_comment_with_autor_data_view h WHERE h.patient_id = :patientId",
-            countQuery = "SELECT COUNT(*) FROM health_comment_with_autor_data_view h WHERE h.patient_id = :patientId",
-            nativeQuery = true)
-    Page<HealthCommentWithAuthorProjection> getHealthCommentsWithAutorByPatientId(@Param("patientId") Long patientId, PageRequest pageRequest);
-
-    @Query(value = "SELECT h.health_comment_id AS healthCommentId, h.patient_id AS patientId, h.content AS content, " +
-            "h.modified_date AS modifiedDate, h.doctor_id AS doctorId, h.doctor_name AS doctorName, h.doctor_surname " +
-            "FROM health_comment_with_autor_data_view h WHERE h.health_comment_id = :commentId",
-            nativeQuery = true)
-    HealthCommentWithAuthorProjection getHealthCommentWithAutorByPatientId(@Param("commentId") Long commentId);
+    @Query("""
+            SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
+            h.id, h.content, h.modifiedDate, d.id, d.name, d.surname) \
+            FROM HealthCommentEntity h \
+            JOIN DoctorEntity d ON h.doctorId = d.id \
+            WHERE h.id = :commentId""")
+    Optional<CommentWithAuthorProjection> getHealthCommentWithAutorByCommentId(@Param("commentId") Long commentId);
 }

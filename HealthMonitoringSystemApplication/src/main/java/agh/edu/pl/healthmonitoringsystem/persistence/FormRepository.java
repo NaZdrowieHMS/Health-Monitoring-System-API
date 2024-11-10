@@ -9,7 +9,4 @@ import java.util.List;
 @Repository
 public interface FormRepository extends JpaRepository<FormEntity, Long> {
 
-    List<FormEntity> findByPatientId(Long patientId, Pageable pageable);
-
-    FormEntity findTopByPatientIdOrderByCreatedDateDesc(Long patientId);
-}
+    List<FormEntity> findByPatientId(Long patientId, Pageable pageable);}

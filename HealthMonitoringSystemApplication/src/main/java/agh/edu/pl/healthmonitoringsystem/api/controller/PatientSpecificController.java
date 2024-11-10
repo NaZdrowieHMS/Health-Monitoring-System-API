@@ -133,7 +133,7 @@ public class PatientSpecificController {
             tags = {"Patient"}
     )
     public ResponseEntity<List<Form>> getPatientHealthForms(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                            @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                            @Parameter(description = "Number of forms per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
                                                             @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 
         List<Form> patientHealthForms = formService.getPatientHealthForms(patientId, startIndex, pageSize);
