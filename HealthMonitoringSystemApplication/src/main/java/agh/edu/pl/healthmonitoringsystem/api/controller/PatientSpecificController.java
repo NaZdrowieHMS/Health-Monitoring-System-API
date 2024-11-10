@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Form;
+import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.service.FormService;
 import agh.edu.pl.healthmonitoringsystem.domain.service.HealthService;
@@ -110,7 +110,7 @@ public class PatientSpecificController {
             tags = {"Patient"}
     )
     public ResponseEntity<List<Result>> getPatientResults(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                          @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                          @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
                                                           @Parameter(description = "Patient ID") @PathVariable Long patientId) {
 
         List<Result> patientResults = resultService.getPatientResultsByPatientId(patientId, startIndex, pageSize);
@@ -139,25 +139,5 @@ public class PatientSpecificController {
         List<Form> patientHealthForms = formService.getPatientHealthForms(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientHealthForms);
     }
-
-    @GetMapping(path = "/{patientId}/forms/latest")
-    @Operation(
-            summary = "Get list of health forms for a specific patient",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = Form.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Patient"}
-    )
-    public ResponseEntity<Form> getPatientLatestHealthForm(@Parameter(description = "Patient ID") @PathVariable Long patientId) {
-
-        Form healthform = formService.getPatientLatestHealthForm(patientId);
-        return ResponseEntity.ok(healthform);
-    }
 }
+

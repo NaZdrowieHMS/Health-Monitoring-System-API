@@ -1,6 +1,5 @@
 package agh.edu.pl.healthmonitoringsystem.api.controller;
 
-
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ReadinessCheck;
 import io.swagger.v3.oas.annotations.Operation;

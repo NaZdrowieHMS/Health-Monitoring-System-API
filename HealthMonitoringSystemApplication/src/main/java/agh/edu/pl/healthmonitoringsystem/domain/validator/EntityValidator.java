@@ -2,6 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.persistence.DoctorRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
@@ -14,14 +15,16 @@ public class EntityValidator {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
     private final ReferralRepository referralRepository;
+    private final FormRepository formRepository;
 
     @Autowired
     public EntityValidator(ResultRepository resultRepository, PatientRepository patientRepository,
-                           DoctorRepository doctorRepository, ReferralRepository referralRepository) {
+                           DoctorRepository doctorRepository, ReferralRepository referralRepository, FormRepository formRepository) {
         this.resultRepository = resultRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.referralRepository = referralRepository;
+        this.formRepository = formRepository;
     }
 
     public void validateDoctor(Long doctorId) {
@@ -37,6 +40,11 @@ public class EntityValidator {
     public void validateResult(Long resultId) {
         resultRepository.findById(resultId)
                 .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+    }
+
+    public void validateForm(Long formId) {
+        formRepository.findById(formId)
+                .orElseThrow(() -> new EntityNotFoundException("Form with id " + formId + " does not exist"));
     }
 
     public void validateReferral(Long referralId) {
