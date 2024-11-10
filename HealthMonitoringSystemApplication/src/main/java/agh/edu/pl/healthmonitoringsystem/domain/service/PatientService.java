@@ -71,4 +71,15 @@ public class PatientService {
                 .map(modelMapper::mapPatientEntityToPatient)
                 .collect(Collectors.toList());
     }
+
+    public List<Patient> getUnassignedPatientsByDoctorId(Long doctorId, Integer page, Integer size) {
+        validator.validateDoctor(doctorId);
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<PatientEntity> patients = patientRepository.findUnassignedPatientsByDoctorId(doctorId, pageRequest).getContent();
+
+        return patients.stream()
+                .map(modelMapper::mapPatientEntityToPatient)
+                .collect(Collectors.toList());
+    }
 }
