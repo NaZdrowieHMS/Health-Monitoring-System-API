@@ -12,6 +12,7 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntryEntit
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -69,7 +70,7 @@ public class FormService {
     public List<Form> getPatientHealthForms(Long patientId, Integer page, Integer size) {
         validator.validatePatient(patientId);
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         List<FormEntity> formEntities = formRepository.findByPatientId(patientId, pageable);
 
         return formEntities.stream()
@@ -78,16 +79,5 @@ public class FormService {
                     return modelMapper.mapFormEntityToForm(formEntity, formEntries);
                 })
                 .toList();
-    }
-
-    public Form getPatientLatestHealthForm(Long patientId) {
-        validator.validatePatient(patientId);
-
-        FormEntity latestFormEntity = formRepository.findTopByPatientIdOrderByCreatedDateDesc(patientId);
-        if (latestFormEntity == null) {return null;}
-
-        List<FormEntryEntity> entries = formEntryRepository.findByFormId(latestFormEntity.getId());
-
-        return modelMapper.mapFormEntityToForm(latestFormEntity, entries);
     }
 }

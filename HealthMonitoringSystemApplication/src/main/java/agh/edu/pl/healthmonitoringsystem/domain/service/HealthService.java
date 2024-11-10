@@ -11,6 +11,7 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.HealthCommentE
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthCommentWithAuthorProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -74,7 +75,7 @@ public class HealthService {
 
     public List<Comment> getHealthCommentsByPatientId(Long patientId, Integer page, Integer size) {
         validator.validatePatient(patientId);
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
         List<HealthCommentWithAuthorProjection> healthComments = healthRepository.getHealthCommentsWithAutorByPatientId(patientId, pageRequest).getContent();
 
         return healthComments.stream()
