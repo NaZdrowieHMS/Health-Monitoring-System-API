@@ -1,5 +1,13 @@
-package agh.edu.pl.healthmonitoringsystem.domain.exception;
+package agh.edu.pl.healthmonitoringsystem.api.controller;
 
+import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.BadRequestException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.InvalidImageException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.ModelLoadingException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.PredictionException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.ResourceNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,7 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Slf4j
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class ControllerAdvisor {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(ResourceNotFoundException ex) {

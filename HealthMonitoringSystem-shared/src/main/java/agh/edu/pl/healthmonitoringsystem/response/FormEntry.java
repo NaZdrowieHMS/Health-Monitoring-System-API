@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystem.domain.model.response;
+package agh.edu.pl.healthmonitoringsystem.response;
 
 public record FormEntry (
         String key,
