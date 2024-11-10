@@ -4,6 +4,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.Doctor;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Author;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiFormAnalysisEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
 import agh.edu.pl.healthmonitoringsystem.response.AiFormAnalysis;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.response.FormEntry;
@@ -22,7 +23,6 @@ import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.HealthCommentWithAuthorProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataType;
 import org.springframework.stereotype.Component;
@@ -91,10 +91,10 @@ public class ModelMapper {
                 referral.getCreatedDate());
     }
 
-    public Comment mapProjectionToHealth(HealthCommentWithAuthorProjection healthComment) {
+    public Comment mapProjectionToComment(CommentWithAuthorProjection healthComment) {
         if (healthComment == null) { return null; }
-        Author doctor = new Author(healthComment.getDoctorId(), healthComment.getDoctorName(), healthComment.getDoctorSurname());
-        return new Comment(healthComment.getHealthCommentId(), doctor, healthComment.getModifiedDate(), healthComment.getContent());
+        Author doctor = new Author(healthComment.doctorId(), healthComment.doctorName(), healthComment.doctorSurname());
+        return new Comment(healthComment.commentId(), doctor, healthComment.modifiedDate(), healthComment.content());
     }
 
     public ResultForDoctorView mapProjectionToResultForDoctorView(ResultWithAiSelectedAndViewedProjection result) {

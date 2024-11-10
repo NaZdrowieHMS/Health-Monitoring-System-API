@@ -3,7 +3,7 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
-import agh.edu.pl.healthmonitoringsystem.domain.validator.EntityValidator;
+import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PatientRequest;
@@ -22,10 +22,10 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
     private final ModelMapper modelMapper;
-    private final EntityValidator validator;
+    private final RequestValidator validator;
 
     @Autowired
-    public PatientService(PatientRepository patientRepository, ModelMapper modelMapper, EntityValidator validator) {
+    public PatientService(PatientRepository patientRepository, ModelMapper modelMapper, RequestValidator validator) {
         this.patientRepository = patientRepository;
         this.modelMapper = modelMapper;
         this.validator = validator;

@@ -8,10 +8,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CommentUpdateRequest {
+public class ResultCommentRequest {
 
-    @NotNull(message = "Comment Id is required")
-    private Long commentId;
+    @NotNull(message = "result Id is required")
+    private Long resultId;
 
     @NotNull(message = "Doctor Id is required")
     private Long doctorId;
@@ -19,10 +19,10 @@ public class CommentUpdateRequest {
     @NotBlank(message = "Content is required")
     private String content;
 
-    public CommentUpdateRequest(@JsonProperty("commentId") Long commentId,
-                          @JsonProperty("doctorId") Long doctorId,
-                          @JsonProperty("content") String content) {
-        this.commentId = commentId;
+    public ResultCommentRequest(@JsonProperty("resultId") Long resultId,
+                                @JsonProperty("doctorId") Long doctorId,
+                                @JsonProperty("content") String content) {
+        this.resultId = resultId;
         this.doctorId = doctorId;
         this.content = content;
     }
