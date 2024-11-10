@@ -9,6 +9,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.DoctorRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class DoctorService {
     }
 
     public List<Doctor> getDoctors(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
         List<DoctorEntity> doctors = doctorRepository.findAll(pageable).getContent();
 
         return doctors.stream()

@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,10 +18,7 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
     @Override
     Optional<ResultEntity> findById(Long id);
 
-    @Query(value = """
-        SELECT r FROM ResultEntity r
-        WHERE r.patientId = :patientId
-        """)
+    @Query(value = "SELECT r FROM ResultEntity r WHERE r.patientId = :patientId")
     Page<ResultEntity> getPatientResultsByPatientId(@Param("patientId") Long patientId, Pageable pageable);
 
     @Query(value = "SELECT r.id AS id, r.test_type AS testType, r.data, r.data_type as dataType, " +
@@ -32,9 +28,9 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
             "LEFT JOIN result_viewed rv ON r.id = rv.result_id AND rv.patient_id = :patientId AND rv.doctor_id = :doctorId " +
             "WHERE r.patient_id = :patientId",
             nativeQuery = true)
-    List<ResultWithAiSelectedAndViewedProjection> getDoctorPatientResultWithAiSelectedAndViewed(
+    Page<ResultWithAiSelectedAndViewedProjection> getDoctorPatientResultWithAiSelectedAndViewed(
             @Param("doctorId") Long doctorId,
-            @Param("patientId") Long patientId);
+            @Param("patientId") Long patientId, Pageable pageable);
 
     @Query(value = "SELECT r.id, r.patient_id AS patientId, r.name, r.surname, r.email, r.pesel, " +
             "r.test_type AS testType, r.data, r.data_type as dataType, r.created_date AS createdDate " +
@@ -42,5 +38,5 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
             "JOIN result_with_patient_data r ON rv.result_id = r.id " +
             "WHERE rv.doctor_id = :doctorId",
             nativeQuery = true)
-    List<ResultWithPatientDataProjection> getDoctorUnviewedResults(@Param("doctorId") Long doctorId);
+    Page<ResultWithPatientDataProjection> getDoctorUnviewedResults(@Param("doctorId") Long doctorId, Pageable pageable);
 }
