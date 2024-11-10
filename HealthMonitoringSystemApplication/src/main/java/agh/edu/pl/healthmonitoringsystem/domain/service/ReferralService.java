@@ -12,7 +12,6 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,7 +38,7 @@ public class ReferralService {
     public List<Referral> getPatientReferralsByPatientId(Long patientId, Integer page, Integer size) {
         validator.validatePatient(patientId);
 
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        PageRequest pageRequest = PageRequest.of(page, size);
         List<PatientReferralWithCommentProjection> referrals = referralRepository.getPatientReferralsByPatientId(patientId, pageRequest).getContent();
 
         return referrals.stream()
@@ -99,7 +98,7 @@ public class ReferralService {
     }
 
     private Referral mapReferral(ReferralEntity referralEntity) {
-        PatientReferralWithCommentProjection referral = referralRepository.getPatientReferralWithAllData(referralEntity.getId());
+        PatientReferralWithCommentProjection referral = referralRepository.getPatientReferralWithAllData(referralEntity.getId()).orElse(null);
         return modelMapper.mapProjectionToReferral(referral);
     }
 
