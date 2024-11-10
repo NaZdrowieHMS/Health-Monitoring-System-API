@@ -9,13 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface ReferralRepository extends JpaRepository<ReferralEntity, Long> {
-
-    @Override
-    Optional<ReferralEntity> findById(Long id);
 
     @Query(value = "SELECT r.id, r.patient_id AS patientId, r.test_type AS testType, " +
             "r.number AS referralNumber, r.completed, r.doctor_id AS doctorId, r.name AS doctorName, " +

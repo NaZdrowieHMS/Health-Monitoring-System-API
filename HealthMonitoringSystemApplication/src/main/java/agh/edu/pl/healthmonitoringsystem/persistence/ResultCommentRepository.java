@@ -14,9 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ResultCommentRepository extends JpaRepository<ResultCommentEntity, Long> {
 
-    @Override
-    Optional<ResultCommentEntity> findById(Long id);
-
     @Query("""
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             r.id, r.content, r.modifiedDate, d.id, d.name, d.surname) \

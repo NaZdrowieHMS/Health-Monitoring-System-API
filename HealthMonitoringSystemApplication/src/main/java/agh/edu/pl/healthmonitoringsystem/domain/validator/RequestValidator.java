@@ -13,7 +13,6 @@ import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.HealthCommentEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
 import agh.edu.pl.healthmonitoringsystem.request.AiFormAnalysisRequest;
 import lombok.extern.slf4j.Slf4j;
