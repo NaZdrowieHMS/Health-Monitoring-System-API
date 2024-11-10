@@ -139,25 +139,5 @@ public class PatientSpecificController {
         List<Form> patientHealthForms = formService.getPatientHealthForms(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientHealthForms);
     }
-
-    @GetMapping(path = "/{patientId}/forms/latest")
-    @Operation(
-            summary = "Get list of health forms for a specific patient",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = Form.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Patient"}
-    )
-    public ResponseEntity<Form> getPatientLatestHealthForm(@Parameter(description = "Patient ID") @PathVariable Long patientId) {
-
-        Form healthform = formService.getPatientLatestHealthForm(patientId);
-        return ResponseEntity.ok(healthform);
-    }
 }
+
