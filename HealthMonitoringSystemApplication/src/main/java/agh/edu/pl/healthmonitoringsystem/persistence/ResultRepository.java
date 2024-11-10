@@ -19,9 +19,10 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
     @Override
     Optional<ResultEntity> findById(Long id);
 
-    @Query(value = "SELECT * FROM result r WHERE r.patient_id = :patientId",
-            countQuery = "SELECT COUNT(*) FROM result r WHERE r.patient_id = :patientId",
-            nativeQuery = true)
+    @Query(value = """
+        SELECT r FROM ResultEntity r
+        WHERE r.patientId = :patientId
+        """)
     Page<ResultEntity> getPatientResultsByPatientId(@Param("patientId") Long patientId, Pageable pageable);
 
     @Query(value = "SELECT r.id AS id, r.test_type AS testType, r.data, r.data_type as dataType, " +
