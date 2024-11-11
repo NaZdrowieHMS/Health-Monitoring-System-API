@@ -5,6 +5,9 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Author;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiFormAnalysisEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientProjection;
 import agh.edu.pl.healthmonitoringsystem.response.AiFormAnalysis;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.response.FormEntry;
@@ -16,14 +19,11 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatient
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorPatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntryEntity;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientDataProjection;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataType;
 import org.springframework.stereotype.Component;
 
@@ -78,17 +78,17 @@ public class ModelMapper {
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
         if (referral == null) { return null; }
-        Author doctor = new Author(referral.getDoctorId(), referral.getDoctorName(), referral.getDoctorSurname());
-        Comment comment = referral.getComment() != null ? new Comment(referral.getId(), doctor, referral.getModifiedDate(), referral.getComment()) : null;
+        Author doctor = new Author(referral.doctorId(), referral.doctorName(), referral.doctorSurname());
+        Comment comment = referral.comment() != null ? new Comment(referral.id(), doctor, referral.modifiedDate(), referral.comment()) : null;
         return new Referral(
-                referral.getId(),
-                referral.getPatientId(),
-                referral.getTestType(),
-                referral.getReferralNumber(),
-                referral.getCompleted(),
+                referral.id(),
+                referral.patientId(),
+                referral.testType(),
+                referral.referralNumber(),
+                referral.completed(),
                 doctor,
                 comment,
-                referral.getCreatedDate());
+                referral.createdDate());
     }
 
     public Comment mapProjectionToComment(CommentWithAuthorProjection healthComment) {
@@ -100,21 +100,21 @@ public class ModelMapper {
     public ResultForDoctorView mapProjectionToResultForDoctorView(ResultWithAiSelectedAndViewedProjection result) {
         if (result == null) { return null; }
         return new ResultForDoctorView(
-                result.getId(),
-                result.getTestType(),
-                new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()),
-                result.getAiSelected(),
-                result.getViewed(),
-                result.getCreatedDate());
+                result.id(),
+                result.testType(),
+                new ResultDataContent(ResultDataType.fromString(result.dataType()), result.data()),
+                result.aiSelected(),
+                result.viewed(),
+                result.createdDate());
     }
 
-    public ResultWithPatientData mapProjectionToResultWithPatientData(ResultWithPatientDataProjection result) {
+    public ResultWithPatientData mapProjectionToResultWithPatientData(ResultWithPatientProjection result) {
         if (result == null) { return null; }
-        return new ResultWithPatientData(result.getId(),
-                new Patient(result.getId(), result.getName(), result.getSurname(), result.getEmail(), result.getPesel()),
-                result.getTestType(),
-                new ResultDataContent(ResultDataType.fromString(result.getDataType()), result.getData()),
-                result.getCreatedDate());
+        return new ResultWithPatientData(result.id(),
+                new Patient(result.id(), result.name(), result.surname(), result.email(), result.pesel()),
+                result.testType(),
+                new ResultDataContent(ResultDataType.fromString(result.dataType()), result.data()),
+                result.createdDate());
     }
 
     public Relation mapRelationEntityToRelation(DoctorPatientEntity relation) {
