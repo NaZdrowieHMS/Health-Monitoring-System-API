@@ -7,7 +7,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorVi
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientDataProjection;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientProjection;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
@@ -84,7 +84,7 @@ public class ResultService {
         validator.validateDoctor(doctorId);
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        List<ResultWithPatientDataProjection> results = resultRepository.getDoctorUnviewedResults(doctorId, pageRequest).getContent();
+        List<ResultWithPatientProjection> results = resultRepository.getDoctorUnviewedResults(doctorId, pageRequest).getContent();
 
         return results.stream()
                 .map(modelMapper::mapProjectionToResultWithPatientData)

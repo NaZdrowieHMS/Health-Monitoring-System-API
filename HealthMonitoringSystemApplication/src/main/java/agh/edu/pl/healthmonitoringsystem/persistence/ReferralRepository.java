@@ -9,21 +9,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ReferralRepository extends JpaRepository<ReferralEntity, Long> {
-
-    @Query(value = "SELECT r.id, r.patient_id AS patientId, r.test_type AS testType, " +
-            "r.number AS referralNumber, r.completed, r.doctor_id AS doctorId, r.name AS doctorName, " +
-            "r.surname AS doctorSurname, r.comment, r.modified_date AS modifiedDate, r.created_date AS createdDate " +
-            "FROM referral_with_comment_view r WHERE r.patient_id = :patientId",
-            countQuery = "SELECT COUNT(*) FROM referral_with_comment_view r WHERE r.patient_id = :patientId",
-            nativeQuery = true)
+    @Query("""
+            SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection(\
+            r.id, r.patientId, r.testType, r.number, r.completed, d.id, d.name, d.surname, r.comment, \
+            r.modifiedDate, r.createdDate) \
+            FROM ReferralEntity r JOIN DoctorEntity d ON r.doctorId = d.id \
+            WHERE r.patientId = :patientId \
+            ORDER BY r.completed ASC, r.createdDate DESC""")
     Page<PatientReferralWithCommentProjection> getPatientReferralsByPatientId(@Param("patientId") Long patientId, Pageable pageable);
 
-    @Query(value = "SELECT r.id, r.patient_id AS patientId, r.test_type AS testType, " +
-            "r.number AS referralNumber, r.completed, r.doctor_id AS doctorId, r.name AS doctorName, " +
-            "r.surname AS doctorSurname, r.comment, r.modified_date AS modifiedDate, r.created_date AS createdDate " +
-            "FROM referral_with_comment_view r WHERE r.id = :referralId",
-            nativeQuery = true)
-    PatientReferralWithCommentProjection getPatientReferralWithAllData(@Param("referralId") Long referralId);
+    @Query("""
+            SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection(\
+            r.id, r.patientId, r.testType, r.number, r.completed, d.id, d.name, d.surname, r.comment, \
+            r.modifiedDate, r.createdDate) \
+            FROM ReferralEntity r JOIN DoctorEntity d ON r.doctorId = d.id WHERE r.id = :referralId""")
+    Optional<PatientReferralWithCommentProjection> getPatientReferralWithAllData(@Param("referralId") Long referralId);
 }
