@@ -83,6 +83,28 @@ public class HealthService {
                 .collect(Collectors.toList());
     }
 
+    public List<Comment> getPatientHealthCommentsAuthoredBySpecificDoctor(Long doctorId, Long patientId, Integer page, Integer size) {
+        validator.validatePatient(patientId);
+        validator.validateDoctor(doctorId);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
+        List<CommentWithAuthorProjection> healthComments = healthRepository.getPatientHealthCommentsAuthoredBySpecificDoctor(doctorId, patientId, pageRequest).getContent();
+
+        return healthComments.stream()
+                .map(modelMapper::mapProjectionToComment)
+                .collect(Collectors.toList());
+    }
+
+    public List<Comment> getPatientHealthCommentsAuthoredByOtherDoctors(Long doctorId, Long patientId, Integer page, Integer size) {
+        validator.validatePatient(patientId);
+        validator.validateDoctor(doctorId);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
+        List<CommentWithAuthorProjection> healthComments = healthRepository.getPatientHealthCommentsAuthoredByOtherDoctors(doctorId, patientId, pageRequest).getContent();
+
+        return healthComments.stream()
+                .map(modelMapper::mapProjectionToComment)
+                .collect(Collectors.toList());
+    }
+
     private Comment mapHealthComment(HealthCommentEntity healthCommentEntity) {
         CommentWithAuthorProjection healthCommentWithAuthorProjection = healthRepository.getHealthCommentWithAutorByCommentId(healthCommentEntity.getId()).orElse(null);
         return modelMapper.mapProjectionToComment(healthCommentWithAuthorProjection);
