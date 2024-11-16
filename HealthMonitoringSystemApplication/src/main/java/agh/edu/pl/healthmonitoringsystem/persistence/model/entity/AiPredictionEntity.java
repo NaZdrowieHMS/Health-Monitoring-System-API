@@ -23,28 +23,31 @@ public class AiPredictionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long doctorId;
-    private Long patientId;
-    private String content;
+    private String prediction;
+    private Long resultId;
+    private float confidence;
     private LocalDateTime createdDate;
 
     public AiPredictionEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public AiPredictionEntity(Long id, Long doctorId, Long patientId, String content, LocalDateTime createdDate) {
+    public AiPredictionEntity(Long id, Long doctorId, String prediction, Long resultId, float confidence, LocalDateTime createdDate) {
         this.id = id;
         this.doctorId = doctorId;
-        this.patientId = patientId;
-        this.content = content;
+        this.resultId = resultId;
+        this.prediction = prediction;
+        this.confidence = confidence;
         this.createdDate = createdDate;
     }
 
     public static final class Builder {
         public AiPredictionEntity build(){
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
-            checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
-            checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
+            checkNotNull(resultId, () -> new RequestValidationException("Result Id cannot be null"));
+            checkNotNull(prediction, () -> new RequestValidationException("Prediction cannot be null"));
+            checkNotNull(confidence, () -> new RequestValidationException("Confidence cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
-            return new AiPredictionEntity(id, doctorId, patientId, content, createdDate);
+            return new AiPredictionEntity(id, doctorId, prediction, resultId, confidence, createdDate);
         }
     }
 }

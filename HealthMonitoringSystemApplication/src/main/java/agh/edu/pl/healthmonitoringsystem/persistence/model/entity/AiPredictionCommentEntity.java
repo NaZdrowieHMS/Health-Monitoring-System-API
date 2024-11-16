@@ -21,8 +21,8 @@ public class AiPredictionCommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long predictionId;
     private Long doctorId;
-    private Long patientId;
     private String content;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -30,22 +30,22 @@ public class AiPredictionCommentEntity {
     public AiPredictionCommentEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public AiPredictionCommentEntity(Long id, Long doctorId, Long patientId, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public AiPredictionCommentEntity(Long id, Long doctorId, Long predictionId, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
             this.id = id;
+            this.predictionId = predictionId;
             this.doctorId = doctorId;
-            this.patientId = patientId;
             this.content = content;
             this.createdDate = createdDate;
             this.modifiedDate = modifiedDate;
     }
     public static final class Builder {
         public AiPredictionCommentEntity build(){
+            checkNotNull(predictionId, () -> new RequestValidationException("Prediction Id cannot be null"));
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
-            checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
             checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
-            return new AiPredictionCommentEntity(id, doctorId, patientId, content, createdDate, modifiedDate);
+            return new AiPredictionCommentEntity(id, doctorId, predictionId, content, createdDate, modifiedDate);
         }
     }
 }
