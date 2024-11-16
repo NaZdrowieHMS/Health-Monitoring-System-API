@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/results")
 @CrossOrigin
@@ -58,9 +60,9 @@ public class ResultOperationController {
 
     @PutMapping(value = "/ai-selected")
     @Operation(
-            summary = "Select result for AI Prediction.",
+            summary = "Select results for AI Prediction.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Result selected successfully",
+                    @ApiResponse(responseCode = "200", description = "Results selected successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
@@ -71,17 +73,17 @@ public class ResultOperationController {
             },
             tags = {"Result"}
     )
-    public ResponseEntity<Void> selectResult(@Parameter(description = "Select result request") @RequestBody @Valid ResultRequest resultRequest) {
+    public ResponseEntity<Void> selectResults(@Parameter(description = "Select results request") @RequestBody @Valid List<ResultRequest> resultRequests) {
 
-        resultService.selectResult(resultRequest);
+        resultService.selectResult(resultRequests);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping(value = "/ai-selected")
     @Operation(
-            summary = "Unselect result for AI Prediction.",
+            summary = "Unselect results for AI Prediction.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Result unselected successfully",
+                    @ApiResponse(responseCode = "200", description = "Results unselected successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
@@ -92,9 +94,9 @@ public class ResultOperationController {
             },
             tags = {"Result"}
     )
-    public ResponseEntity<Void> unselectResult(@Parameter(description = "Unselect result request") @RequestBody @Valid ResultRequest resultRequest) {
+    public ResponseEntity<Void> unselectResults(@Parameter(description = "Unselect results request") @RequestBody @Valid List<ResultRequest> resultRequests) {
 
-        resultService.unselectResult(resultRequest);
+        resultService.unselectResult(resultRequests);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
