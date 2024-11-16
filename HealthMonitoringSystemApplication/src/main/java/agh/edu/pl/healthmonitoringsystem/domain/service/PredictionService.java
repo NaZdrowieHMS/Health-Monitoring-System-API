@@ -1,64 +1,88 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
+import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.NotPredictedException;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.BatchPredictionUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Prediction;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.component.ai_model.ModelPredictor;
-import agh.edu.pl.healthmonitoringsystem.domain.component.image.ImageDecoder;
-import agh.edu.pl.healthmonitoringsystem.domain.component.image.ImagePreprocessor;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
-import lombok.extern.slf4j.Slf4j;
+import agh.edu.pl.healthmonitoringsystem.persistence.PredictionRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiPredictionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.tensorflow.Tensor;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import java.awt.image.BufferedImage;
 
-@Slf4j
 @Service
 public class PredictionService {
 
-    private final ImageDecoder imageDecoder;
-    private final ImagePreprocessor imagePreprocessor;
-    private final ModelPredictor modelPredictor;
+    private final PredictionRepository predictionRepository;
+    private final ModelMapper modelMapper;
     private final RequestValidator validator;
 
-    private final String[] MODEL_CLASSES = {"benign", "malignant", "normal"};
-
     @Autowired
-    public PredictionService(ImageDecoder imageDecoder, ImagePreprocessor imagePreprocessor, ModelPredictor modelPredictor,
-                             RequestValidator validator) {
-        this.imageDecoder = imageDecoder;
-        this.imagePreprocessor = imagePreprocessor;
-        this.modelPredictor = modelPredictor;
+    public PredictionService(PredictionRepository predictionRepository, ModelMapper modelMapper, RequestValidator validator) {
+        this.predictionRepository = predictionRepository;
+        this.modelMapper = modelMapper;
         this.validator = validator;
     }
 
-    public Prediction predict(PredictionRequest request) {
-        log.info("Received a test prediction request");
-        validator.validate(request);
+    public Prediction getPredictionByResultId(Long resultId) {
+        validator.validateResult(resultId);
+        AiPredictionEntity entity = predictionRepository.findByResultId(resultId)
+                .orElseThrow(() -> new NotPredictedException("Prediction for result with id " + resultId + " not found"));
 
-        BufferedImage image = imageDecoder.decodeBase64Image(request.getImageBase64());
-        Tensor inputTensor = imagePreprocessor.preprocessImage(image);
-        float[] predictions = modelPredictor.predict(inputTensor);
-
-        int predictedClass = argMax(predictions);
-        String predictionLabel = MODEL_CLASSES[predictedClass];
-
-        return Prediction.builder()
-                .success(true)
-                .prediction(predictionLabel)
-                .confidence(predictions[predictedClass])
-                .build();
+        return modelMapper.mapPredictionEntityToPrediction(entity);
     }
 
-    private int argMax(float[] array) {
-        int maxIndex = 0;
-        for (int i = 1; i < array.length; i++) {
-            if (array[i] > array[maxIndex]) {
-                maxIndex = i;
-            }
-        }
-        return maxIndex;
+    public Prediction uploadPrediction(PredictionUploadRequest predictionRequest) {
+        validator.validate(predictionRequest);
+
+        AiPredictionEntity predictionEntity  = AiPredictionEntity.builder()
+                .doctorId(predictionRequest.getDoctorId())
+                .resultId(predictionRequest.getResultId())
+                .confidence(predictionRequest.getConfidence())
+                .prediction(predictionRequest.getPrediction())
+                .createdDate(LocalDateTime.now())
+                .build();
+
+        return saveAndMapPrediction(predictionEntity);
+    }
+
+    public List<Prediction> batchUploadPredictions(BatchPredictionUploadRequest predictionRequest) {
+        validator.validate(predictionRequest);
+
+        List<AiPredictionEntity> predictionEntities = predictionRequest.getPredictions().stream()
+                .map(request -> AiPredictionEntity.builder()
+                        .doctorId(request.getDoctorId())
+                        .resultId(request.getResultId())
+                        .confidence(request.getConfidence())
+                        .prediction(request.getPrediction())
+                        .createdDate(LocalDateTime.now())
+                        .build())
+                .toList();
+
+        List<AiPredictionEntity> savedEntities = predictionRepository.saveAll(predictionEntities);
+
+        return savedEntities.stream()
+                .map(modelMapper::mapPredictionEntityToPrediction)
+                .toList();
+    }
+
+
+    public void deletePrediction(Long predictionId) {
+        validator.validatePrediction(predictionId);
+
+        AiPredictionEntity entity = predictionRepository.findById(predictionId)
+                .orElseThrow(() -> new EntityNotFoundException("AI Prediction with id " + predictionId + " does not exist"));
+        predictionRepository.delete(entity);
+    }
+
+    private Prediction saveAndMapPrediction(AiPredictionEntity entity) {
+        AiPredictionEntity savedEntity = predictionRepository.save(entity);
+        return modelMapper.mapPredictionEntityToPrediction(savedEntity);
     }
 }

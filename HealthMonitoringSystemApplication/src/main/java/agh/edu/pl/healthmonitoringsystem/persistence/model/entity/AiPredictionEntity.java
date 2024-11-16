@@ -23,20 +23,20 @@ public class AiPredictionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long doctorId;
-    private String prediction;
     private Long resultId;
-    private float confidence;
+    private Double confidence;
+    private String prediction;
     private LocalDateTime createdDate;
 
     public AiPredictionEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public AiPredictionEntity(Long id, Long doctorId, String prediction, Long resultId, float confidence, LocalDateTime createdDate) {
+    public AiPredictionEntity(Long id, Long doctorId, Long resultId, Double confidence, String prediction, LocalDateTime createdDate) {
         this.id = id;
         this.doctorId = doctorId;
         this.resultId = resultId;
-        this.prediction = prediction;
         this.confidence = confidence;
+        this.prediction = prediction;
         this.createdDate = createdDate;
     }
 
@@ -44,10 +44,13 @@ public class AiPredictionEntity {
         public AiPredictionEntity build(){
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
             checkNotNull(resultId, () -> new RequestValidationException("Result Id cannot be null"));
-            checkNotNull(prediction, () -> new RequestValidationException("Prediction cannot be null"));
             checkNotNull(confidence, () -> new RequestValidationException("Confidence cannot be null"));
+            if (confidence < 0 || confidence > 1){
+                throw new RequestValidationException("Confidence must be in the range from 0 to 1");
+            }
+            checkNotNull(prediction, () -> new RequestValidationException("Prediction cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
-            return new AiPredictionEntity(id, doctorId, prediction, resultId, confidence, createdDate);
+            return new AiPredictionEntity(id, doctorId, resultId, confidence, prediction, createdDate);
         }
     }
 }
