@@ -3,7 +3,9 @@ package agh.edu.pl.healthmonitoringsystem.domain.component;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Doctor;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Author;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiFormAnalysisEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiPredictionEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
@@ -129,5 +131,11 @@ public class ModelMapper {
 
         return new AiFormAnalysis(aiAnalysis.getId(), aiAnalysis.getPatientId(), aiAnalysis.getFormId(),
                 diagnoses, recommendations, aiAnalysis.getCreatedDate());
+    }
+
+    public Prediction mapPredictionEntityToPrediction(AiPredictionEntity aiPrediction) {
+        if (aiPrediction == null) { return null; }
+        return new Prediction(aiPrediction.getId(), aiPrediction.getResultId(), aiPrediction.getPrediction(),
+                aiPrediction.getConfidence(), aiPrediction.getCreatedDate());
     }
 }

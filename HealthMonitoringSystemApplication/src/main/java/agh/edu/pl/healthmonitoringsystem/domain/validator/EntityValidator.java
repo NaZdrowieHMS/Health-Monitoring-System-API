@@ -4,6 +4,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundExceptio
 import agh.edu.pl.healthmonitoringsystem.persistence.DoctorRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.PredictionRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,17 @@ public class EntityValidator {
     private final DoctorRepository doctorRepository;
     private final ReferralRepository referralRepository;
     private final FormRepository formRepository;
+    private final PredictionRepository predictionRepository;
 
     @Autowired
-    public EntityValidator(ResultRepository resultRepository, PatientRepository patientRepository,
-                           DoctorRepository doctorRepository, ReferralRepository referralRepository, FormRepository formRepository) {
+    public EntityValidator(ResultRepository resultRepository, PatientRepository patientRepository, DoctorRepository doctorRepository,
+                           ReferralRepository referralRepository, FormRepository formRepository, PredictionRepository predictionRepository) {
         this.resultRepository = resultRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.referralRepository = referralRepository;
         this.formRepository = formRepository;
+        this.predictionRepository = predictionRepository;
     }
 
     public void validateDoctor(Long doctorId) {
@@ -40,6 +43,11 @@ public class EntityValidator {
     public void validateResult(Long resultId) {
         resultRepository.findById(resultId)
                 .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+    }
+
+    public void validatePrediction(Long predictionId) {
+        predictionRepository.findById(predictionId)
+                .orElseThrow(() -> new EntityNotFoundException("Prediction with id " + predictionId + " does not exist"));
     }
 
     public void validateForm(Long formId) {

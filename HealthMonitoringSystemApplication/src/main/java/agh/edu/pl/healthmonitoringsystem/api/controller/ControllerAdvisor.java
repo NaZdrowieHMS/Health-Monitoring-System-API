@@ -5,6 +5,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.exception.BadRequestException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.InvalidImageException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.ModelLoadingException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.NotPredictedException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.PredictionException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.ResourceNotFoundException;
@@ -22,10 +23,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ControllerAdvisor {
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequestException(ResourceNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException ex) {
         log.error("A ResourceNotFoundException occurred: {}", ex.getMessage(), ex);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotPredictedException.class)
+    public ResponseEntity<ErrorResponse> handleNotPredictedException(NotPredictedException ex) {
+        log.error("A NotPredictedException occurred: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

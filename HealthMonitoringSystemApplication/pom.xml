@@ -24,16 +24,6 @@
 		<maven.compiler.target>21</maven.compiler.target>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>tensorflow-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<!-- Spring Web for REST API -->
 		<dependency>
@@ -91,13 +81,6 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
-		</dependency>
-
-		<!-- TensorFlow Java API -->
-		<dependency>
-			<groupId>org.tensorflow</groupId>
-			<artifactId>tensorflow-core-platform</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Lombok for reducing boilerplate code -->
