@@ -21,8 +21,8 @@ public class AiPredictionCommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long doctorId;
     private Long predictionId;
+    private Long doctorId;
     private String content;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -32,16 +32,16 @@ public class AiPredictionCommentEntity {
     @lombok.Builder(builderClassName = "Builder")
     public AiPredictionCommentEntity(Long id, Long predictionId, Long doctorId, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
             this.id = id;
-            this.doctorId = doctorId;
             this.predictionId = predictionId;
+            this.doctorId = doctorId;
             this.content = content;
             this.createdDate = createdDate;
             this.modifiedDate = modifiedDate;
     }
     public static final class Builder {
         public AiPredictionCommentEntity build(){
-            checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
             checkNotNull(predictionId, () -> new RequestValidationException("Prediction Id cannot be null"));
+            checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
             checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));

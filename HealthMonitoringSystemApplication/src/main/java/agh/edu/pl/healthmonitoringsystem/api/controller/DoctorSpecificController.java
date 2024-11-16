@@ -187,6 +187,7 @@ public class DoctorSpecificController {
         return ResponseEntity.ok(doctorPatientsResults);
     }
 
+
     @GetMapping(path = "/{doctorId}/patient/{patientId}/health")
     @Operation(
             summary = "Get list of health comment with author data for a specific patient, created by given doctor",
