@@ -2,8 +2,11 @@ package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.InvalidImageException;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.BatchPredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionCommentRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionRequest;
+import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultCommentRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultRequest;
@@ -11,6 +14,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadReques
 import agh.edu.pl.healthmonitoringsystem.persistence.DoctorRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.PredictionRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
@@ -22,8 +26,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class RequestValidator extends EntityValidator {
 
-    public RequestValidator(ResultRepository resultRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, ReferralRepository referralRepository, FormRepository formRepository) {
-        super(resultRepository, patientRepository, doctorRepository, referralRepository, formRepository);
+    public RequestValidator(ResultRepository resultRepository, PatientRepository patientRepository, DoctorRepository doctorRepository,
+                            ReferralRepository referralRepository, FormRepository formRepository, PredictionRepository predictionRepository) {
+        super(resultRepository, patientRepository, doctorRepository, referralRepository, formRepository, predictionRepository);
     }
 
     public void validate(PredictionRequest request) {
@@ -31,6 +36,15 @@ public class RequestValidator extends EntityValidator {
             log.error("Validation for prediction request failed");
             throw new InvalidImageException("No image provided");
         }
+    }
+
+    public void validate(PredictionUploadRequest request) {
+        validateResult(request.getResultId());
+        validateDoctor(request.getDoctorId());
+    }
+
+    public void validate(BatchPredictionUploadRequest predictionRequest) {
+        predictionRequest.getPredictions().forEach(this::validate);
     }
 
     public void validate(ResultUploadRequest request) {
@@ -52,6 +66,11 @@ public class RequestValidator extends EntityValidator {
 
     public void validate(ResultCommentRequest request) {
         validateResult(request.getResultId());
+        validateDoctor(request.getDoctorId());
+    }
+
+    public void validate(PredictionCommentRequest request) {
+        validatePrediction(request.getPredictionId());
         validateDoctor(request.getDoctorId());
     }
 

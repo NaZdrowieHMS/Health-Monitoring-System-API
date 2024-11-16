@@ -30,7 +30,7 @@ public class AiPredictionCommentEntity {
     public AiPredictionCommentEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public AiPredictionCommentEntity(Long id, Long doctorId, Long predictionId, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public AiPredictionCommentEntity(Long id, Long predictionId, Long doctorId, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
             this.id = id;
             this.predictionId = predictionId;
             this.doctorId = doctorId;
@@ -45,7 +45,7 @@ public class AiPredictionCommentEntity {
             checkNotNull(content, () -> new RequestValidationException("Content cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
-            return new AiPredictionCommentEntity(id, doctorId, predictionId, content, createdDate, modifiedDate);
+            return new AiPredictionCommentEntity(id, predictionId, doctorId, content, createdDate, modifiedDate);
         }
     }
 }
