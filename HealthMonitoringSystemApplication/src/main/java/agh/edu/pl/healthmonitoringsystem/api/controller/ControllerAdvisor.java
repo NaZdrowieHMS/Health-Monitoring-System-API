@@ -3,10 +3,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.BadRequestException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
-import agh.edu.pl.healthmonitoringsystem.domain.exception.InvalidImageException;
-import agh.edu.pl.healthmonitoringsystem.domain.exception.ModelLoadingException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.NotPredictedException;
-import agh.edu.pl.healthmonitoringsystem.domain.exception.PredictionException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.ResourceNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
@@ -41,27 +38,6 @@ public class ControllerAdvisor {
         log.error("A ResourceNotFoundException occurred: {}", ex.getMessage(), ex);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(ModelLoadingException.class)
-    public ResponseEntity<ErrorResponse> handleModelLoadingException(ModelLoadingException ex) {
-        log.error("A ModelLoadingException occurred: {}", ex.getMessage(), ex);
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(PredictionException.class)
-    public ResponseEntity<ErrorResponse> handlePredictionException(PredictionException ex) {
-        log.error("A PredictionException occurred: {}", ex.getMessage(), ex);
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(InvalidImageException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidImageException(InvalidImageException ex) {
-        log.error("A InvalidImageException occurred: {}", ex.getMessage(), ex);
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

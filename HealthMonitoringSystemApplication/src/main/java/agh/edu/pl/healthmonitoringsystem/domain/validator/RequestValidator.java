@@ -1,7 +1,6 @@
 package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
-import agh.edu.pl.healthmonitoringsystem.domain.exception.InvalidImageException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.BatchPredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionCommentRequest;
@@ -29,13 +28,6 @@ public class RequestValidator extends EntityValidator {
     public RequestValidator(ResultRepository resultRepository, PatientRepository patientRepository, DoctorRepository doctorRepository,
                             ReferralRepository referralRepository, FormRepository formRepository, PredictionRepository predictionRepository) {
         super(resultRepository, patientRepository, doctorRepository, referralRepository, formRepository, predictionRepository);
-    }
-
-    public void validate(PredictionRequest request) {
-        if (request.getImageBase64() == null || request.getImageBase64().isEmpty()) {
-            log.error("Validation for prediction request failed");
-            throw new InvalidImageException("No image provided");
-        }
     }
 
     public void validate(PredictionUploadRequest request) {
