@@ -2,11 +2,9 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.DoctorPatientRelationRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Relation;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.*;
 import agh.edu.pl.healthmonitoringsystem.domain.service.DoctorPatientService;
+import agh.edu.pl.healthmonitoringsystem.domain.service.HealthService;
 import agh.edu.pl.healthmonitoringsystem.domain.service.PatientService;
 import agh.edu.pl.healthmonitoringsystem.domain.service.ResultService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,11 +40,13 @@ import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.START_INDEX
 public class DoctorSpecificController {
     private final DoctorPatientService doctorPatientService;
     private final PatientService patientService;
+    private final HealthService healthService;
     private final ResultService resultService;
 
-    public DoctorSpecificController(DoctorPatientService doctorPatientService, PatientService patientService, ResultService resultService) {
+    public DoctorSpecificController(DoctorPatientService doctorPatientService, PatientService patientService, HealthService healthService, ResultService resultService) {
         this.doctorPatientService = doctorPatientService;
         this.patientService = patientService;
+        this.healthService = healthService;
         this.resultService = resultService;
     }
 
@@ -185,5 +185,36 @@ public class DoctorSpecificController {
 
         List<ResultWithPatientData> doctorPatientsResults = resultService.getDoctorUnviewedResults(doctorId, startIndex, pageSize);
         return ResponseEntity.ok(doctorPatientsResults);
+    }
+
+    @GetMapping(path = "/doctors/{doctorId}/patient/{patientId}/health")
+    @Operation(
+            summary = "Get list of health comment with author data for a specific patient, created by given doctor",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation",
+                            content = @Content(schema = @Schema(type = "array", implementation = Comment.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"Doctor"}
+    )
+
+    public ResponseEntity<List<Comment>> getPatientHealthComments(
+            @Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+            @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+            @Parameter(description = "Doctor ID") @PathVariable Long doctorId,
+            @Parameter(description = "Patient ID") @PathVariable Long patientId,
+            @Parameter(description = "Filter type: 'specific' (authored by the doctor) or 'others' (authored by other doctors)")
+            @RequestParam(name = "filter") String filter) {
+
+        List<Comment> patientHealthComments = switch (filter.toLowerCase()) {
+            case "specific" -> healthService.getPatientHealthCommentsAuthoredBySpecificDoctor(doctorId, patientId, startIndex, pageSize);
+            case "others" -> healthService.getPatientHealthCommentsAuthoredByOtherDoctors(doctorId, patientId, startIndex, pageSize);
+            default -> throw new IllegalArgumentException("Invalid filter value. Use 'specific' or 'others'.");
+        };
+
+        return ResponseEntity.ok(patientHealthComments);
     }
 }
