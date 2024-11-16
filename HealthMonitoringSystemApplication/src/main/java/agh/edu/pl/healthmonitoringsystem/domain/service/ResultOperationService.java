@@ -10,7 +10,10 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultViewedEn
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,34 +31,38 @@ public class ResultOperationService {
         this.validator = validator;
     }
 
-    public void selectResult(ResultRequest resultRequest) {
-        validator.validate(resultRequest);
+    public void selectResult(List<ResultRequest> resultRequests) {
+        List<ResultAiSelectedEntity> resultAiSelectedEntities = resultRequests.stream()
+                .peek(validator::validate)
+                .filter(resultRequest -> resultAiSelectedRepository
+                        .findByResultIdAndPatientIdAndDoctorId(
+                                resultRequest.getResultId(),
+                                resultRequest.getPatientId(),
+                                resultRequest.getDoctorId()
+                        ).isEmpty())
+                .map(resultRequest -> ResultAiSelectedEntity.builder()
+                        .resultId(resultRequest.getResultId())
+                        .patientId(resultRequest.getPatientId())
+                        .doctorId(resultRequest.getDoctorId())
+                        .build())
+                .collect(Collectors.toList());
 
-        Optional<ResultAiSelectedEntity> entity = resultAiSelectedRepository.findByResultIdAndPatientIdAndDoctorId(
-                resultRequest.getResultId(),
-                resultRequest.getPatientId(),
-                resultRequest.getDoctorId()
-        );
-
-        if (entity.isEmpty()) {
-            ResultAiSelectedEntity resultAiSelectedEntity = ResultAiSelectedEntity.builder()
-                    .resultId(resultRequest.getResultId())
-                    .patientId(resultRequest.getPatientId())
-                    .doctorId(resultRequest.getDoctorId())
-                    .build();
-            resultAiSelectedRepository.save(resultAiSelectedEntity);
-        }
+        resultAiSelectedRepository.saveAll(resultAiSelectedEntities);
     }
 
-    public void unselectResult(ResultRequest resultRequest) {
-        validator.validate(resultRequest);
+    public void unselectResult(List<ResultRequest> resultRequests) {
+        List<ResultAiSelectedEntity> resultAiUnselectedEntities = resultRequests.stream()
+                .peek(validator::validate)
+                .map(resultRequest -> resultAiSelectedRepository.findByResultIdAndPatientIdAndDoctorId(
+                        resultRequest.getResultId(),
+                        resultRequest.getPatientId(),
+                        resultRequest.getDoctorId()
+                ))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
 
-        Optional<ResultAiSelectedEntity> entity = resultAiSelectedRepository.findByResultIdAndPatientIdAndDoctorId(
-                resultRequest.getResultId(),
-                resultRequest.getPatientId(),
-                resultRequest.getDoctorId()
-        );
-        entity.ifPresent(resultAiSelectedRepository::delete);
+        resultAiSelectedRepository.deleteAll(resultAiUnselectedEntities);
     }
 
     public void viewResult(ResultRequest resultRequest) {
