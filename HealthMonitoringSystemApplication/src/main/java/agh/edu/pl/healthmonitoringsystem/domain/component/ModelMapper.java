@@ -3,7 +3,10 @@ package agh.edu.pl.healthmonitoringsystem.domain.component;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Doctor;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Author;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Prediction;
+import agh.edu.pl.healthmonitoringsystem.enums.PredictionRequestStatus;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiPredictionSummaryEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiPredictionSummaryEntryEntity;
+import agh.edu.pl.healthmonitoringsystem.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiFormAnalysisEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiPredictionEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
@@ -21,12 +24,13 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatient
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorPatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntryEntity;
+import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.DoctorEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
-import agh.edu.pl.healthmonitoringsystem.response.ResultDataType;
+import agh.edu.pl.healthmonitoringsystem.enums.ResultDataType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -63,9 +67,9 @@ public class ModelMapper {
     }
 
 
-    public Form mapFormEntityToForm(FormEntity formEntity, List<FormEntryEntity> formEntityEntities) {
-        if (formEntity == null || formEntityEntities == null) { return null; }
-        List<FormEntry> formEntries = formEntityEntities
+    public Form mapFormEntityToForm(FormEntity formEntity, List<FormEntryEntity> formEntities) {
+        if (formEntity == null || formEntities == null) { return null; }
+        List<FormEntry> formEntries = formEntities
                 .stream()
                 .map(this::mapFormEntryEntityToFormEntry)
                 .toList();
@@ -77,6 +81,16 @@ public class ModelMapper {
         return new FormEntry(formEntryEntity.getHealthParam(), formEntryEntity.getValue());
     }
 
+    public PredictionSummary mapPredictionSummaryEntityToPredictionSummary(AiPredictionSummaryEntity predictionEntity, List<AiPredictionSummaryEntryEntity> entities) {
+        if (predictionEntity == null || entities == null) { return null; }
+        List<Long> resultIds = entities.stream()
+                .map(AiPredictionSummaryEntryEntity::getResultId)
+                .toList();
+
+        return new PredictionSummary(predictionEntity.getId(), PredictionRequestStatus.valueOf(predictionEntity.getStatus()),
+                predictionEntity.getPatientId(), predictionEntity.getDoctorId(), resultIds, predictionEntity.getPrediction(),
+                predictionEntity.getConfidence(), predictionEntity.getCreatedDate(), predictionEntity.getModifiedDate());
+    }
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
         if (referral == null) { return null; }

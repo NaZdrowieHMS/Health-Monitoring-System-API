@@ -1,11 +1,10 @@
 package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.BatchPredictionUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.request.BatchPredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionCommentRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.request.PredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultCommentRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultRequest;
