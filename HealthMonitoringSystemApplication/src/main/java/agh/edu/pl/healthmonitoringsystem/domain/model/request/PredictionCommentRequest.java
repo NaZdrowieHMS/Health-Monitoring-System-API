@@ -11,7 +11,7 @@ import lombok.Data;
 @Builder
 public class PredictionCommentRequest {
 
-    @NotNull(message = "Prediction Id is required")
+    @NotNull(message = "Prediction (Summary) Id is required")
     private Long predictionId;
 
     @NotNull(message = "Doctor Id is required")
