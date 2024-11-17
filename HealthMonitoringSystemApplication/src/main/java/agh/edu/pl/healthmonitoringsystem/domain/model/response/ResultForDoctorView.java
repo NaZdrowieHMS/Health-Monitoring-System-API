@@ -8,7 +8,7 @@ public record ResultForDoctorView(
         Long id,
         String testType,
         ResultDataContent content,
-        Boolean ai_selected,
+        Boolean aiSelected,
         Boolean viewed,
         LocalDateTime createdDate
 ) {}
