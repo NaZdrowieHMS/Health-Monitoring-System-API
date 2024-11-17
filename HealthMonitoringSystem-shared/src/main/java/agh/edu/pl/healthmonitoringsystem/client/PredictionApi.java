@@ -22,7 +22,7 @@ public interface PredictionApi {
     Call<PredictionSummary> createPredictionRequest(@Body PredictionSummaryRequest predictionSummaryRequest);
 
     @PUT("/api/predictions/request")
-    Call<PredictionSummary> updatePredictionRequest(@Body PredictionSummaryUpdateRequest predictionSummaryRequest);
+    Call<Void> updatePredictionRequest(@Body PredictionSummaryUpdateRequest predictionSummaryRequest);
 
     @GET("/api/predictions/request/{requestId}")
     Call<PredictionSummary> getPredictionSummaryRequestById(@Path("requestId") Long requestId);

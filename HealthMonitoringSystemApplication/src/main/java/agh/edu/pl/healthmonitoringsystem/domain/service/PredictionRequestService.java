@@ -48,7 +48,6 @@ public class PredictionRequestService {
         return modelMapper.mapPredictionSummaryEntityToPredictionSummary(entity, entries);
     }
 
-
     public PredictionSummary createPredictionRequest(PredictionSummaryRequest predictionSummaryRequest) {
         validator.validate(predictionSummaryRequest);
 
@@ -74,7 +73,7 @@ public class PredictionRequestService {
         return modelMapper.mapPredictionSummaryEntityToPredictionSummary(entity, entries);
     }
 
-    public PredictionSummary updatePredictionRequest(PredictionSummaryUpdateRequest updateRequest) {
+    public void updatePredictionRequest(PredictionSummaryUpdateRequest updateRequest) {
         AiPredictionSummaryEntity predictionSummaryEntity = predictionRepository.findById(updateRequest.getRequestId())
                 .orElseThrow(() -> new EntityNotFoundException("Prediction summary request with id " + updateRequest.getRequestId() + " does not exist"));
 
@@ -83,9 +82,7 @@ public class PredictionRequestService {
         updateField(Optional.ofNullable(updateRequest.getConfidence()), predictionSummaryEntity::setConfidence);
         predictionSummaryEntity.setModifiedDate(LocalDateTime.now());
 
-        AiPredictionSummaryEntity savedEntity = predictionRepository.save(predictionSummaryEntity);
-
-        return null; //TODO: after fully defined PredictionSummary return it!
+        predictionRepository.save(predictionSummaryEntity);
     }
 
     public List<PredictionSummary> getPatientPredictions(Long patientId, Integer page, Integer size) {

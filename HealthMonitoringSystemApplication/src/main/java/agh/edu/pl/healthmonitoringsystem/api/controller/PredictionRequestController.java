@@ -58,7 +58,7 @@ public class PredictionRequestController {
     @Operation(
             summary = "Update a specific prediction request.",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Prediction request updated successfully",
+                    @ApiResponse(responseCode = "204", description = "Prediction request updated successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PredictionSummary.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
@@ -67,11 +67,11 @@ public class PredictionRequestController {
             },
             tags = {"AI Prediction"}
     )
-    public ResponseEntity<PredictionSummary> updatePredictionRequest(@Parameter(description = "Prediction Summary to be updated request")
+    public ResponseEntity<Void> updatePredictionRequest(@Parameter(description = "Prediction Summary to be updated request")
                                                                      @RequestBody @Valid PredictionSummaryUpdateRequest predictionSummaryRequest) {
 
-        PredictionSummary predictionSummary = predictionRequestService.updatePredictionRequest(predictionSummaryRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(predictionSummary);
+        predictionRequestService.updatePredictionRequest(predictionSummaryRequest);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/{requestId}")

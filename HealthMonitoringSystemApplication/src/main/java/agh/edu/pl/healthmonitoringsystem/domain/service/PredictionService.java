@@ -34,11 +34,7 @@ public class PredictionService {
     public Prediction getPredictionByResultId(Long resultId) {
         validator.validateResult(resultId);
         Optional<AiPredictionEntity> entity = predictionRepository.findByResultId(resultId);
-//                .orElseThrow(() -> new NotPredictedException("Prediction for result with id " + resultId + " not found"));
-        if(!entity.isPresent()){
-            return null;
-        }
-        return modelMapper.mapPredictionEntityToPrediction(entity.get());
+        return entity.map(modelMapper::mapPredictionEntityToPrediction).orElse(null);
     }
 
     public Prediction uploadPrediction(PredictionUploadRequest predictionRequest) {
