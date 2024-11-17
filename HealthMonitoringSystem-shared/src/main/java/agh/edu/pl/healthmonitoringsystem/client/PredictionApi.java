@@ -6,6 +6,7 @@ import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.request.PredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -31,4 +32,11 @@ public interface PredictionApi {
 
     @POST("/api/predictions/batch")
     Call<List<Prediction>> batchUploadPredictions(@Body BatchPredictionUploadRequest predictionRequest);
+
+    @GET("/api/results/{resultId}/prediction")
+    Call<Prediction> getPredictionForResult(@Path("resultId") Long resultId);
+
+    @GET("/api/results/{resultId}/data")
+    Call<ResultDataContent> getPredictionDataFromResult(@Path("resultId") Long resultId);
+
 }

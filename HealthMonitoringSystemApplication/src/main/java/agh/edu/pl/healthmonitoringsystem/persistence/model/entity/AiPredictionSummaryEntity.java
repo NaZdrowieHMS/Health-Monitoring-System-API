@@ -24,7 +24,7 @@ public class AiPredictionSummaryEntity {
     private Long patientId;
     private Long doctorId;
     private String status;
-    private String prediction = null;
+    private String prediction = "";
     private Double confidence = null;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -49,11 +49,11 @@ public class AiPredictionSummaryEntity {
             checkNotNull(patientId, () -> new RequestValidationException("Patient ID cannot be null"));
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor ID cannot be null"));
             checkNotNull(status, () -> new RequestValidationException("Status cannot be null"));
-            checkNotNull(prediction, () -> new RequestValidationException("Prediction cannot be null"));
-            checkNotNull(confidence, () -> new RequestValidationException("Confidence cannot be null"));
-            if (confidence < 0 || confidence > 1){
-                throw new RequestValidationException("Confidence must be in the range from 0 to 1");
-            }
+//            checkNotNull(prediction, () -> new RequestValidationException("Prediction cannot be null"));
+//            checkNotNull(confidence, () -> new RequestValidationException("Confidence cannot be null"));
+//            if (confidence < 0 || confidence > 1){
+//                throw new RequestValidationException("Confidence must be in the range from 0 to 1");
+//            }
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modified date cannot be null"));
             return new AiPredictionSummaryEntity(id, patientId, doctorId, status, prediction, confidence, createdDate, modifiedDate);

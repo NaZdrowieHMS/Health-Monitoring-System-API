@@ -50,12 +50,11 @@ public class PredictionRequestService {
 
 
     public PredictionSummary createPredictionRequest(PredictionSummaryRequest predictionSummaryRequest) {
-        validator.validate(predictionSummaryRequest.doctorId(), predictionSummaryRequest.patientId());
+        validator.validate(predictionSummaryRequest);
 
         LocalDateTime now = LocalDateTime.now();
         AiPredictionSummaryEntity entity = AiPredictionSummaryEntity.builder()
                 .patientId(predictionSummaryRequest.patientId())
-                .doctorId(predictionSummaryRequest.doctorId())
                 .doctorId(predictionSummaryRequest.doctorId())
                 .status(IN_PROGRESS.toString())
                 .createdDate(now)

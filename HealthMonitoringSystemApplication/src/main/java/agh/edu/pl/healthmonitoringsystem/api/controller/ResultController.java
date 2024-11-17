@@ -4,6 +4,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.service.ResultService;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,5 +75,26 @@ public class ResultController {
 
         resultService.deleteResult(resultId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping(path = "/{resultId}/data")
+    @Operation(
+            summary = "Get a specific result data",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ResultDataContent.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Not found",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"Result"}
+    )
+    public ResponseEntity<ResultDataContent> getPredictionDataFromResult(@Parameter(description = "Result ID") @PathVariable Long resultId) {
+
+        ResultDataContent resultData = resultService.getPredictionDataFromResult(resultId);
+        return ResponseEntity.ok(resultData);
     }
 }

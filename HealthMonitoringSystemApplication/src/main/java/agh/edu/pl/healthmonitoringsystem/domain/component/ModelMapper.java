@@ -87,7 +87,7 @@ public class ModelMapper {
                 .map(AiPredictionSummaryEntryEntity::getResultId)
                 .toList();
 
-        return new PredictionSummary(predictionEntity.getId(), PredictionRequestStatus.valueOf(predictionEntity.getStatus()),
+        return new PredictionSummary(predictionEntity.getId(), PredictionRequestStatus.fromString(predictionEntity.getStatus()),
                 predictionEntity.getPatientId(), predictionEntity.getDoctorId(), resultIds, predictionEntity.getPrediction(),
                 predictionEntity.getConfidence(), predictionEntity.getCreatedDate(), predictionEntity.getModifiedDate());
     }

@@ -6,11 +6,13 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadReques
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
+import agh.edu.pl.healthmonitoringsystem.enums.ResultDataType;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientProjection;
 import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
+import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -95,5 +97,11 @@ public class ResultService {
         ResultEntity entity = resultRepository.findById(resultId)
                 .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
         resultRepository.delete(entity);
+    }
+
+    public ResultDataContent getPredictionDataFromResult(Long resultId) {
+        ResultEntity entity = resultRepository.findById(resultId)
+                .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+        return new ResultDataContent(ResultDataType.fromString(entity.getDataType()), entity.getData());
     }
 }

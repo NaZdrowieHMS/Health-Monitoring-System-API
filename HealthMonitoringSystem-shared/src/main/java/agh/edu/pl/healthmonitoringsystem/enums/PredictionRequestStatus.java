@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum PredictionRequestStatus {
-    IN_PROGRESS("in progress"),
-    COMPLETED("completed"),
-    FAILED("failed");
+    IN_PROGRESS("IN PROGRESS"),
+    COMPLETED("COMPLETED"),
+    FAILED("FAILED");
 
     public final String value;
 

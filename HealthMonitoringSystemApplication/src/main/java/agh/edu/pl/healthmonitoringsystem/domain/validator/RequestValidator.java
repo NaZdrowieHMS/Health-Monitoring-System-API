@@ -4,6 +4,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
 import agh.edu.pl.healthmonitoringsystem.request.BatchPredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionCommentRequest;
+import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryRequest;
 import agh.edu.pl.healthmonitoringsystem.request.PredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultCommentRequest;
@@ -36,6 +37,12 @@ public class RequestValidator extends EntityValidator {
 
     public void validate(BatchPredictionUploadRequest predictionRequest) {
         predictionRequest.getPredictions().forEach(this::validate);
+    }
+
+    public void validate(PredictionSummaryRequest predictionRequest) {
+        validatePatient(predictionRequest.patientId());
+        validateDoctor(predictionRequest.doctorId());
+        predictionRequest.resultIds().forEach(resultId -> validateResultForPatient(resultId, predictionRequest.patientId()));
     }
 
     public void validate(ResultUploadRequest request) {

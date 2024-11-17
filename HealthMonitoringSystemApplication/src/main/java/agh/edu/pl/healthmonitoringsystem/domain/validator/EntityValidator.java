@@ -1,12 +1,14 @@
 package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
 import agh.edu.pl.healthmonitoringsystem.persistence.DoctorRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +45,15 @@ public class EntityValidator {
     public void validateResult(Long resultId) {
         resultRepository.findById(resultId)
                 .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+    }
+
+
+    public void validateResultForPatient(Long resultId, Long patientId) {
+        ResultEntity resultEntity = resultRepository.findById(resultId)
+                .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+        if (!resultEntity.getPatientId().equals(patientId)) {
+            throw new RequestValidationException("Result with id " + resultId + " does not belong to patient with id " + patientId);
+        }
     }
 
     public void validatePrediction(Long predictionId) {
