@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystem.domain.model.request;
+package agh.edu.pl.healthmonitoringsystem.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

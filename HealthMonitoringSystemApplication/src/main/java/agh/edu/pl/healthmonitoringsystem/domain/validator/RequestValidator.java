@@ -1,12 +1,11 @@
 package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
-import agh.edu.pl.healthmonitoringsystem.domain.exception.InvalidImageException;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.BatchPredictionUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.request.BatchPredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionCommentRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryRequest;
+import agh.edu.pl.healthmonitoringsystem.request.PredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultCommentRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultRequest;
@@ -31,13 +30,6 @@ public class RequestValidator extends EntityValidator {
         super(resultRepository, patientRepository, doctorRepository, referralRepository, formRepository, predictionRepository);
     }
 
-    public void validate(PredictionRequest request) {
-        if (request.getImageBase64() == null || request.getImageBase64().isEmpty()) {
-            log.error("Validation for prediction request failed");
-            throw new InvalidImageException("No image provided");
-        }
-    }
-
     public void validate(PredictionUploadRequest request) {
         validateResult(request.getResultId());
         validateDoctor(request.getDoctorId());
@@ -45,6 +37,12 @@ public class RequestValidator extends EntityValidator {
 
     public void validate(BatchPredictionUploadRequest predictionRequest) {
         predictionRequest.getPredictions().forEach(this::validate);
+    }
+
+    public void validate(PredictionSummaryRequest predictionRequest) {
+        validatePatient(predictionRequest.patientId());
+        validateDoctor(predictionRequest.doctorId());
+        predictionRequest.resultIds().forEach(resultId -> validateResultForPatient(resultId, predictionRequest.patientId()));
     }
 
     public void validate(ResultUploadRequest request) {

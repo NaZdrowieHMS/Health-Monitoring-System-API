@@ -2,7 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Prediction;
+import agh.edu.pl.healthmonitoringsystem.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.domain.service.PredictionService;
 import agh.edu.pl.healthmonitoringsystem.domain.service.ResultOperationService;
 import io.swagger.v3.oas.annotations.Operation;
