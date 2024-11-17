@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -32,10 +33,12 @@ public class PredictionService {
 
     public Prediction getPredictionByResultId(Long resultId) {
         validator.validateResult(resultId);
-        AiPredictionEntity entity = predictionRepository.findByResultId(resultId)
-                .orElseThrow(() -> new NotPredictedException("Prediction for result with id " + resultId + " not found"));
-
-        return modelMapper.mapPredictionEntityToPrediction(entity);
+        Optional<AiPredictionEntity> entity = predictionRepository.findByResultId(resultId);
+//                .orElseThrow(() -> new NotPredictedException("Prediction for result with id " + resultId + " not found"));
+        if(!entity.isPresent()){
+            return null;
+        }
+        return modelMapper.mapPredictionEntityToPrediction(entity.get());
     }
 
     public Prediction uploadPrediction(PredictionUploadRequest predictionRequest) {
