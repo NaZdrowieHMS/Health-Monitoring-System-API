@@ -19,7 +19,7 @@ public interface PredictionCommentRepository extends JpaRepository<AiPredictionC
             p.id, p.content, p.modifiedDate, d.id, d.name, d.surname) \
             FROM AiPredictionCommentEntity p \
             JOIN DoctorEntity d ON p.doctorId = d.id \
-            WHERE p.predictionId = :predictionId""")
+            WHERE p.predictionSummaryId = :predictionId""")
     Page<CommentWithAuthorProjection> getPredictionCommentsWithAutorByPredictionId(@Param("predictionId") Long predictionId, Pageable pageable);
 
     @Query("""

@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystem.domain.model.request;
 
-import agh.edu.pl.healthmonitoringsystem.response.ResultDataType;
+import agh.edu.pl.healthmonitoringsystem.enums.ResultDataType;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

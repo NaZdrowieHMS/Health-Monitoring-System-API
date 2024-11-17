@@ -36,12 +36,12 @@ public class FormService {
     }
 
     public Form getFormById(Long formId) {
-        FormEntity frmEntity = formRepository.findById(formId)
+        FormEntity formEntity = formRepository.findById(formId)
                 .orElseThrow(() -> new EntityNotFoundException("Form with id " + formId + " not found"));
 
-        List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(frmEntity.getId());
+        List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(formEntity.getId());
 
-        return modelMapper.mapFormEntityToForm(frmEntity, formEntries);
+        return modelMapper.mapFormEntityToForm(formEntity, formEntries);
     }
 
     public Form uploadHealthForm(FormRequest formRequest) {

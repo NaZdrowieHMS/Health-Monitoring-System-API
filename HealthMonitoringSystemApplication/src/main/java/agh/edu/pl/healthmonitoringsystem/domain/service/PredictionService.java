@@ -3,9 +3,9 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.NotPredictedException;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.BatchPredictionUploadRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionUploadRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.Prediction;
+import agh.edu.pl.healthmonitoringsystem.request.BatchPredictionUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.request.PredictionUploadRequest;
+import agh.edu.pl.healthmonitoringsystem.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiPredictionEntity;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -32,10 +33,8 @@ public class PredictionService {
 
     public Prediction getPredictionByResultId(Long resultId) {
         validator.validateResult(resultId);
-        AiPredictionEntity entity = predictionRepository.findByResultId(resultId)
-                .orElseThrow(() -> new NotPredictedException("Prediction for result with id " + resultId + " not found"));
-
-        return modelMapper.mapPredictionEntityToPrediction(entity);
+        Optional<AiPredictionEntity> entity = predictionRepository.findByResultId(resultId);
+        return entity.map(modelMapper::mapPredictionEntityToPrediction).orElse(null);
     }
 
     public Prediction uploadPrediction(PredictionUploadRequest predictionRequest) {

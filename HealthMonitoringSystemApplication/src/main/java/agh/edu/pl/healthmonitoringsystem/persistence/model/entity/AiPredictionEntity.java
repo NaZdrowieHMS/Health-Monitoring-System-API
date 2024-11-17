@@ -45,9 +45,6 @@ public class AiPredictionEntity {
             checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
             checkNotNull(resultId, () -> new RequestValidationException("Result Id cannot be null"));
             checkNotNull(confidence, () -> new RequestValidationException("Confidence cannot be null"));
-            if (confidence < 0 || confidence > 1){
-                throw new RequestValidationException("Confidence must be in the range from 0 to 1");
-            }
             checkNotNull(prediction, () -> new RequestValidationException("Prediction cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             return new AiPredictionEntity(id, doctorId, resultId, confidence, prediction, createdDate);

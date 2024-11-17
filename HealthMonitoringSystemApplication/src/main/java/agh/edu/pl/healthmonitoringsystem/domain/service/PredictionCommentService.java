@@ -37,7 +37,7 @@ public class PredictionCommentService {
     }
 
     public List<Comment> getPredictionComments(Long predictionId, Integer page, Integer size) {
-        validator.validatePrediction(predictionId);
+        validator.validatePredictionSummary(predictionId);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
         List<CommentWithAuthorProjection> resultComments = predictionCommentRepository.getPredictionCommentsWithAutorByPredictionId(predictionId, pageRequest).getContent();
 
@@ -52,7 +52,7 @@ public class PredictionCommentService {
         LocalDateTime now = LocalDateTime.now();
         AiPredictionCommentEntity aiPredictionCommentEntity = AiPredictionCommentEntity.builder()
                 .doctorId(predictionCommentRequest.getDoctorId())
-                .predictionId(predictionCommentRequest.getPredictionId())
+                .predictionSummaryId(predictionCommentRequest.getPredictionId())
                 .content(predictionCommentRequest.getContent())
                 .createdDate(now)
                 .modifiedDate(now).build();

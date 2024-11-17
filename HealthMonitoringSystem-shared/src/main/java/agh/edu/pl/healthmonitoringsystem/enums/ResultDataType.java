@@ -1,4 +1,4 @@
-package agh.edu.pl.healthmonitoringsystem.response;
+package agh.edu.pl.healthmonitoringsystem.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

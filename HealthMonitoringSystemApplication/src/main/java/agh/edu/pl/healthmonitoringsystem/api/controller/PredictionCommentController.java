@@ -59,7 +59,7 @@ public class PredictionCommentController {
     )
     public ResponseEntity<List<Comment>> getPredictionComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                            @Parameter(description = "Number of prediction comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                           @Parameter(description = "Prediction ID") @PathVariable Long predictionId) {
+                                                           @Parameter(description = "Prediction (Summary) ID") @PathVariable Long predictionId) {
 
         List<Comment> predictionComments = predictionCommentService.getPredictionComments(predictionId, startIndex, pageSize);
         return ResponseEntity.ok(predictionComments);
