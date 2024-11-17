@@ -1,6 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
+import agh.edu.pl.healthmonitoringsystem.persistence.PredictionSummaryRepository;
 import agh.edu.pl.healthmonitoringsystem.request.BatchPredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionCommentRequest;
@@ -26,8 +27,9 @@ import org.springframework.stereotype.Component;
 public class RequestValidator extends EntityValidator {
 
     public RequestValidator(ResultRepository resultRepository, PatientRepository patientRepository, DoctorRepository doctorRepository,
-                            ReferralRepository referralRepository, FormRepository formRepository, PredictionRepository predictionRepository) {
-        super(resultRepository, patientRepository, doctorRepository, referralRepository, formRepository, predictionRepository);
+                            ReferralRepository referralRepository, FormRepository formRepository, PredictionRepository predictionRepository,
+                            PredictionSummaryRepository predictionSummaryRepository) {
+        super(resultRepository, patientRepository, doctorRepository, referralRepository, formRepository, predictionRepository, predictionSummaryRepository);
     }
 
     public void validate(PredictionUploadRequest request) {
@@ -68,7 +70,7 @@ public class RequestValidator extends EntityValidator {
     }
 
     public void validate(PredictionCommentRequest request) {
-        validatePrediction(request.getPredictionId());
+        validatePredictionSummary(request.getPredictionId());
         validateDoctor(request.getDoctorId());
     }
 
