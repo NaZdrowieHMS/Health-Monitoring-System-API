@@ -11,17 +11,12 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# Copy the AI model into the app's resource directory
-# COPY src/main/resources/models/ai_model /app/src/main/resources/models/ai_model
-
+# Copy settings.xml template and replace placeholders
 COPY src/main/resources/settings.xml.template /root/.m2/settings.xml.template
 
 RUN sed "s/\${GITHUB_USERNAME}/$GITHUB_USERNAME/g; s/\${GITHUB_TOKEN}/$GITHUB_TOKEN/g" /root/.m2/settings.xml.template > /root/.m2/settings.xml
 
 RUN ls -l /root/.m2/settings.xml && cat /root/.m2/settings.xml
-
-# Check if the model files are copied correctly (optional)
-# RUN ls -la /app/src/main/resources/models/ai_model
 
 # Build the application and package it as a JAR file
 RUN mvn clean package -DskipTests
@@ -35,17 +30,11 @@ WORKDIR /app
 # Copy the JAR file from the build stage
 COPY --from=build /app/target/HealthMonitoringSystemApplication-0.0.1-SNAPSHOT.jar app.jar
 
-# Copy the AI model from the build stage
-# COPY --from=build /app/src/main/resources/models/ai_model /app/models/ai_model
-
 # Diagnostic step to ensure that the model is correctly copied (optional)
 RUN ls -R /app
 
 # Set Java environment variable
 ENV JAVA_OPTS=""
-
-# Disable oneDNN operations in TensorFlow for consistent results
-ENV TF_ENABLE_ONEDNN_OPTS=0
 
 # Set database-related environment variables
 ENV DATABASE_URL=""
