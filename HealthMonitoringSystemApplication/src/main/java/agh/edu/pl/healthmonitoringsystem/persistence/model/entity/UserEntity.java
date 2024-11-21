@@ -1,27 +1,26 @@
 package agh.edu.pl.healthmonitoringsystem.persistence.model.entity;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-import lombok.Setter;
 
 import static agh.edu.pl.healthmonitoringsystem.domain.validator.PreconditionValidator.checkLength;
 import static agh.edu.pl.healthmonitoringsystem.domain.validator.PreconditionValidator.checkNotNull;
 
-@Entity
-@Table(name = "doctor")
-@Getter
 @Setter
-public class DoctorEntity {
+@Getter
+@Table(name = "user")
+@Entity
+public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private String name;
     private String surname;
     private String email;
@@ -30,12 +29,13 @@ public class DoctorEntity {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    public DoctorEntity() {}
+    public UserEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public DoctorEntity(Long id, String name, String surname, String email, String pesel, String pwz,
+    public UserEntity(Long id, Role role, String name, String surname, String email, String pesel, String pwz,
                         LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
+        this.role = role;
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -46,17 +46,16 @@ public class DoctorEntity {
     }
 
     public static final class Builder {
-        public DoctorEntity build(){
+        public UserEntity build(){
             checkNotNull(name, () -> new RequestValidationException("Name cannot be null"));
+            checkNotNull(role, () -> new RequestValidationException("Role cannot be null"));
             checkNotNull(surname, () -> new RequestValidationException("Surname cannot be null"));
             checkNotNull(email, () -> new RequestValidationException("Email cannot be null"));
             checkNotNull(pesel, () -> new RequestValidationException("PESEL cannot be null"));
             checkLength(pesel, 11, () -> new RequestValidationException("PESEL must be 11 characters"));
-            checkNotNull(pwz, () -> new RequestValidationException("PWZ number cannot be null"));
-            checkLength(pwz, 7, () -> new RequestValidationException("PWZ number must be 7 characters"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
-            return new DoctorEntity(id, name, surname, email, pesel, pwz, createdDate, modifiedDate);
+            return new UserEntity(id, role, name, surname, email, pesel, pwz, createdDate, modifiedDate);
         }
     }
 }

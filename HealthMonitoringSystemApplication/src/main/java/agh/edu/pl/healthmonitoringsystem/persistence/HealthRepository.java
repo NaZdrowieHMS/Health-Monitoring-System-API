@@ -18,23 +18,23 @@ public interface HealthRepository extends JpaRepository<HealthCommentEntity, Lon
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             h.id, h.content, h.modifiedDate, d.id, d.name, d.surname) \
             FROM HealthCommentEntity h \
-            JOIN DoctorEntity d ON h.doctorId = d.id \
+            JOIN UserEntity d ON h.doctorId = d.id \
             WHERE h.patientId = :patientId""")
-    Page<CommentWithAuthorProjection> getHealthCommentsWithAutorByPatientId(@Param("patientId") Long patientId, Pageable pageable);
+    Page<CommentWithAuthorProjection> getHealthCommentsWithAuthorByPatientId(@Param("patientId") Long patientId, Pageable pageable);
 
     @Query("""
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             h.id, h.content, h.modifiedDate, d.id, d.name, d.surname) \
             FROM HealthCommentEntity h \
-            JOIN DoctorEntity d ON h.doctorId = d.id \
+            JOIN UserEntity d ON h.doctorId = d.id \
             WHERE h.id = :commentId""")
-    Optional<CommentWithAuthorProjection> getHealthCommentWithAutorByCommentId(@Param("commentId") Long commentId);
+    Optional<CommentWithAuthorProjection> getHealthCommentWithAuthorByCommentId(@Param("commentId") Long commentId);
 
     @Query("""
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             h.id, h.content, h.modifiedDate, d.id, d.name, d.surname) \
             FROM HealthCommentEntity h \
-            JOIN DoctorEntity d ON h.doctorId = d.id \
+            JOIN UserEntity d ON h.doctorId = d.id \
             WHERE h.patientId = :patientId AND h.doctorId = :doctorId""")
     Page<CommentWithAuthorProjection> getPatientHealthCommentsAuthoredBySpecificDoctor(@Param("doctorId") Long doctorId, @Param("patientId") Long patientId, Pageable pageable);
 
@@ -42,7 +42,7 @@ public interface HealthRepository extends JpaRepository<HealthCommentEntity, Lon
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             h.id, h.content, h.modifiedDate, d.id, d.name, d.surname) \
             FROM HealthCommentEntity h \
-            JOIN DoctorEntity d ON h.doctorId = d.id \
+            JOIN UserEntity d ON h.doctorId = d.id \
             WHERE h.patientId = :patientId AND h.doctorId <> :doctorId""")
     Page<CommentWithAuthorProjection> getPatientHealthCommentsAuthoredByOtherDoctors(@Param("doctorId") Long doctorId, @Param("patientId") Long patientId, Pageable pageable);
 }

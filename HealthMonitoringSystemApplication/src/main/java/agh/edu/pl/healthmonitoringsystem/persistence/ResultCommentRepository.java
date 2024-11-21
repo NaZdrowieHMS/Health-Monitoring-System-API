@@ -18,15 +18,15 @@ public interface ResultCommentRepository extends JpaRepository<ResultCommentEnti
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             r.id, r.content, r.modifiedDate, d.id, d.name, d.surname) \
             FROM ResultCommentEntity r \
-            JOIN DoctorEntity d ON r.doctorId = d.id \
+            JOIN UserEntity d ON r.doctorId = d.id \
             WHERE r.resultId = :resultId""")
-    Page<CommentWithAuthorProjection> getResultCommentsWithAutorByResultId(@Param("resultId") Long resultId, Pageable pageable);
+    Page<CommentWithAuthorProjection> getResultCommentsWithAuthorByResultId(@Param("resultId") Long resultId, Pageable pageable);
 
     @Query("""
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             r.id, r.content, r.modifiedDate, d.id, d.name, d.surname) \
             FROM ResultCommentEntity r \
-            JOIN DoctorEntity d ON r.doctorId = d.id \
+            JOIN UserEntity d ON r.doctorId = d.id \
             WHERE r.id = :commentId""")
-    Optional<CommentWithAuthorProjection> getResultCommentWithAutorByCommentId(@Param("commentId") Long commentId);
+    Optional<CommentWithAuthorProjection> getResultCommentWithAuthorByCommentId(@Param("commentId") Long commentId);
 }

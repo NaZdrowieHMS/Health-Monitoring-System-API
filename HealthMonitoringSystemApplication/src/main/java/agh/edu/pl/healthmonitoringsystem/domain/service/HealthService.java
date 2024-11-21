@@ -76,7 +76,7 @@ public class HealthService {
     public List<Comment> getHealthCommentsByPatientId(Long patientId, Integer page, Integer size) {
         validator.validatePatient(patientId);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
-        List<CommentWithAuthorProjection> healthCommentsWithDoctorData = healthRepository.getHealthCommentsWithAutorByPatientId(patientId, pageRequest).getContent();
+        List<CommentWithAuthorProjection> healthCommentsWithDoctorData = healthRepository.getHealthCommentsWithAuthorByPatientId(patientId, pageRequest).getContent();
 
         return healthCommentsWithDoctorData.stream()
                 .map(modelMapper::mapProjectionToComment)
@@ -106,7 +106,7 @@ public class HealthService {
     }
 
     private Comment mapHealthComment(HealthCommentEntity healthCommentEntity) {
-        CommentWithAuthorProjection healthCommentWithAuthorProjection = healthRepository.getHealthCommentWithAutorByCommentId(healthCommentEntity.getId()).orElse(null);
+        CommentWithAuthorProjection healthCommentWithAuthorProjection = healthRepository.getHealthCommentWithAuthorByCommentId(healthCommentEntity.getId()).orElse(null);
         return modelMapper.mapProjectionToComment(healthCommentWithAuthorProjection);
     }
 

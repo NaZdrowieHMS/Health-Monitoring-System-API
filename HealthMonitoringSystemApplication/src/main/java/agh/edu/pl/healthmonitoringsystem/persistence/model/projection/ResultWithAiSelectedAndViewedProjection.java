@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public record ResultWithAiSelectedAndViewedProjection(
     Long id,
+    Long patientId,
     String testType,
     String dataType,
     String data,
