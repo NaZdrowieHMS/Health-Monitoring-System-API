@@ -2,13 +2,12 @@ package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.RequestValidationException;
-import agh.edu.pl.healthmonitoringsystem.persistence.DoctorRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
-import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionSummaryRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,20 +15,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntityValidator {
     private final ResultRepository resultRepository;
-    private final PatientRepository patientRepository;
-    private final DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
     private final ReferralRepository referralRepository;
     private final FormRepository formRepository;
     private final PredictionRepository predictionRepository;
     private final PredictionSummaryRepository predictionSummaryRepository;
 
     @Autowired
-    public EntityValidator(ResultRepository resultRepository, PatientRepository patientRepository, DoctorRepository doctorRepository,
+    public EntityValidator(ResultRepository resultRepository, UserRepository userRepository,
                            ReferralRepository referralRepository, FormRepository formRepository, PredictionRepository predictionRepository,
                            PredictionSummaryRepository predictionSummaryRepository) {
         this.resultRepository = resultRepository;
-        this.patientRepository = patientRepository;
-        this.doctorRepository = doctorRepository;
+        this.userRepository = userRepository;
         this.referralRepository = referralRepository;
         this.formRepository = formRepository;
         this.predictionRepository = predictionRepository;
@@ -37,12 +34,12 @@ public class EntityValidator {
     }
 
     public void validateDoctor(Long doctorId) {
-        doctorRepository.findById(doctorId)
+        userRepository.findDoctorById(doctorId)
                 .orElseThrow(() -> new EntityNotFoundException("Doctor with id " + doctorId + " does not exist"));
     }
 
     public void validatePatient(Long patientId) {
-        patientRepository.findById(patientId)
+        userRepository.findPatientById(patientId)
                 .orElseThrow(() -> new EntityNotFoundException("Patient with id " + patientId + " does not exist"));
     }
 

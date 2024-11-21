@@ -18,15 +18,15 @@ public interface PredictionCommentRepository extends JpaRepository<AiPredictionC
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             p.id, p.content, p.modifiedDate, d.id, d.name, d.surname) \
             FROM AiPredictionCommentEntity p \
-            JOIN DoctorEntity d ON p.doctorId = d.id \
+            JOIN UserEntity d ON p.doctorId = d.id \
             WHERE p.predictionSummaryId = :predictionId""")
-    Page<CommentWithAuthorProjection> getPredictionCommentsWithAutorByPredictionId(@Param("predictionId") Long predictionId, Pageable pageable);
+    Page<CommentWithAuthorProjection> getPredictionCommentsWithAuthorByPredictionId(@Param("predictionId") Long predictionId, Pageable pageable);
 
     @Query("""
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
             p.id, p.content, p.modifiedDate, d.id, d.name, d.surname) \
             FROM AiPredictionCommentEntity p \
-            JOIN DoctorEntity d ON p.doctorId = d.id \
+            JOIN UserEntity d ON p.doctorId = d.id \
             WHERE p.id = :commentId""")
-    Optional<CommentWithAuthorProjection> getPredictionCommentWithAutorByCommentId(@Param("commentId") Long commentId);
+    Optional<CommentWithAuthorProjection> getPredictionCommentWithAuthorByCommentId(@Param("commentId") Long commentId);
 }

@@ -39,7 +39,7 @@ public class PredictionCommentService {
     public List<Comment> getPredictionComments(Long predictionId, Integer page, Integer size) {
         validator.validatePredictionSummary(predictionId);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
-        List<CommentWithAuthorProjection> resultComments = predictionCommentRepository.getPredictionCommentsWithAutorByPredictionId(predictionId, pageRequest).getContent();
+        List<CommentWithAuthorProjection> resultComments = predictionCommentRepository.getPredictionCommentsWithAuthorByPredictionId(predictionId, pageRequest).getContent();
 
         return resultComments.stream()
                 .map(modelMapper::mapProjectionToComment)
@@ -84,7 +84,7 @@ public class PredictionCommentService {
     }
 
     private Comment mapPredictionComment(AiPredictionCommentEntity predictionCommentEntity) {
-        CommentWithAuthorProjection resultCommentProjection = predictionCommentRepository.getPredictionCommentWithAutorByCommentId(predictionCommentEntity.getId()).orElse(null);
+        CommentWithAuthorProjection resultCommentProjection = predictionCommentRepository.getPredictionCommentWithAuthorByCommentId(predictionCommentEntity.getId()).orElse(null);
         return modelMapper.mapProjectionToComment(resultCommentProjection);
     }
 
