@@ -2,11 +2,12 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
+import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Patient;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
-import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PatientEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PatientRequest;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,29 +21,30 @@ import java.util.stream.Collectors;
 @Service
 public class PatientService {
 
-    private final PatientRepository patientRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final RequestValidator validator;
 
     @Autowired
-    public PatientService(PatientRepository patientRepository, ModelMapper modelMapper, RequestValidator validator) {
-        this.patientRepository = patientRepository;
+    public PatientService(UserRepository userRepository, ModelMapper modelMapper, RequestValidator validator) {
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.validator = validator;
     }
 
     public List<Patient> getPatients(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
-        List<PatientEntity> patients = patientRepository.findAll(pageable).getContent();
+        List<UserEntity> patients = userRepository.findAllPatients(pageable).getContent();
 
         return patients.stream()
-                .map(modelMapper::mapPatientEntityToPatient)
+                .map(modelMapper::mapUserEntityToPatient)
                 .collect(Collectors.toList());
     }
 
     public Patient createPatient(PatientRequest patientRequest) {
         LocalDateTime now = LocalDateTime.now();
-        PatientEntity patientEntity = PatientEntity.builder()
+        UserEntity patientEntity = UserEntity.builder()
+                .role(Role.PATIENT)
                 .name(patientRequest.getName())
                 .surname(patientRequest.getSurname())
                 .email(patientRequest.getEmail())
@@ -50,26 +52,26 @@ public class PatientService {
                 .createdDate(now)
                 .modifiedDate(now)
                 .build();
-        PatientEntity savedPatientEntity = patientRepository.save(patientEntity);
+        UserEntity savedPatientEntity = userRepository.save(patientEntity);
 
-        return modelMapper.mapPatientEntityToPatient(savedPatientEntity);
+        return modelMapper.mapUserEntityToPatient(savedPatientEntity);
     }
 
     public Patient getPatientById(Long id) {
-        PatientEntity patientEntity = patientRepository.findById(id)
+        UserEntity patientEntity = userRepository.findPatientById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Patient with id " + id + " not found"));
 
-        return modelMapper.mapPatientEntityToPatient(patientEntity);
+        return modelMapper.mapUserEntityToPatient(patientEntity);
     }
 
     public List<Patient> getPatientsByDoctorId(Long doctorId, Integer page, Integer size) {
         validator.validateDoctor(doctorId);
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<PatientEntity> patients = patientRepository.findPatientsByDoctorId(doctorId, pageRequest).getContent();
+        List<UserEntity> patients = userRepository.findPatientsByDoctorId(doctorId, pageRequest).getContent();
 
         return patients.stream()
-                .map(modelMapper::mapPatientEntityToPatient)
+                .map(modelMapper::mapUserEntityToPatient)
                 .collect(Collectors.toList());
     }
 
@@ -77,10 +79,10 @@ public class PatientService {
         validator.validateDoctor(doctorId);
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<PatientEntity> patients = patientRepository.findUnassignedPatientsByDoctorId(doctorId, pageRequest).getContent();
+        List<UserEntity> patients = userRepository.findUnassignedPatientsByDoctorId(doctorId, pageRequest).getContent();
 
         return patients.stream()
-                .map(modelMapper::mapPatientEntityToPatient)
+                .map(modelMapper::mapUserEntityToPatient)
                 .collect(Collectors.toList());
     }
 }

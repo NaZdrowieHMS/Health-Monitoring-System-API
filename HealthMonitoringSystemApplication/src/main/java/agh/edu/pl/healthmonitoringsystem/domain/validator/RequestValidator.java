@@ -2,6 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionSummaryRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.request.BatchPredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionCommentRequest;
@@ -11,9 +12,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequ
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultCommentRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
-import agh.edu.pl.healthmonitoringsystem.persistence.DoctorRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
-import agh.edu.pl.healthmonitoringsystem.persistence.PatientRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
@@ -26,10 +25,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class RequestValidator extends EntityValidator {
 
-    public RequestValidator(ResultRepository resultRepository, PatientRepository patientRepository, DoctorRepository doctorRepository,
+    public RequestValidator(ResultRepository resultRepository, UserRepository userRepository,
                             ReferralRepository referralRepository, FormRepository formRepository, PredictionRepository predictionRepository,
                             PredictionSummaryRepository predictionSummaryRepository) {
-        super(resultRepository, patientRepository, doctorRepository, referralRepository, formRepository, predictionRepository, predictionSummaryRepository);
+        super(resultRepository, userRepository, referralRepository, formRepository, predictionRepository, predictionSummaryRepository);
     }
 
     public void validate(PredictionUploadRequest request) {
