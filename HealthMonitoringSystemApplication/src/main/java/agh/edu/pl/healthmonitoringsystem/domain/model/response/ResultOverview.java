@@ -9,22 +9,25 @@ public record ResultOverview(
         Long id,
         Long patientId,
         String testType,
+        LocalDateTime createdDate,
         Optional<Boolean> aiSelected
 ) {
     public ResultOverview(
             Long id,
             Long patientId,
             String testType,
+            LocalDateTime createdDate,
             Boolean aiSelected
     ) {
-        this(id, patientId, testType, Optional.ofNullable(aiSelected));
+        this(id, patientId, testType, createdDate, Optional.ofNullable(aiSelected));
     }
 
     public ResultOverview(
             Long id,
             Long patientId,
-            String testType
+            String testType,
+            LocalDateTime createdDate
     ) {
-        this(id, patientId, testType, Optional.empty());
+        this(id, patientId, testType, createdDate, Optional.empty());
     }
 }

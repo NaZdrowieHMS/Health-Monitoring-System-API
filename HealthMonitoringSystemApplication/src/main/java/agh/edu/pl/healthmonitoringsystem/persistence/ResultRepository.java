@@ -21,7 +21,7 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
 
     @Query("""
         SELECT new agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultOverview(
-        r.id, r.patientId, r.testType,
+        r.id, r.patientId, r.testType, r.createdDate,
         CASE WHEN ras.id IS NOT NULL THEN true ELSE false END)
         FROM ResultEntity r
         LEFT JOIN ResultAiSelectedEntity ras ON r.id = ras.resultId AND ras.patientId = :patientId AND ras.doctorId = :doctorId
@@ -44,7 +44,7 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
 
     @Query("""
             SELECT new agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultOverview(
-            r.id, r.patientId, r.testType,
+            r.id, r.patientId, r.testType, r.createdDate,
             CASE WHEN ras.id IS NOT NULL THEN true ELSE false END)
             FROM ResultEntity r
             LEFT JOIN ResultAiSelectedEntity ras ON r.id = ras.resultId
