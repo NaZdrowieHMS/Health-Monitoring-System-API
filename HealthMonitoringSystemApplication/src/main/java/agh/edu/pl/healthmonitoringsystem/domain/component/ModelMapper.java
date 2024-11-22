@@ -58,7 +58,8 @@ public class ModelMapper {
         return new ResultOverview(
                 result.getId(),
                 result.getPatientId(),
-                result.getTestType()
+                result.getTestType(),
+                result.getCreatedDate()
         );
     }
 
