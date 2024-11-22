@@ -10,7 +10,6 @@ import agh.edu.pl.healthmonitoringsystem.domain.service.HealthService;
 import agh.edu.pl.healthmonitoringsystem.domain.service.ReferralService;
 import agh.edu.pl.healthmonitoringsystem.domain.service.ResultService;
 import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
-import agh.edu.pl.healthmonitoringsystem.response.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -96,29 +95,6 @@ public class PatientSpecificController {
 
         List<Referral> patientReferrals = referralService.getPatientReferralsByPatientId(patientId, startIndex, pageSize);
         return ResponseEntity.ok(patientReferrals);
-    }
-
-    @GetMapping(path = "/{patientId}/results")
-    @Operation(
-            summary = "Get list of results for a specific patient",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = Result.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Patient"}
-    )
-    public ResponseEntity<List<Result>> getPatientResults(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                          @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
-                                                          @Parameter(description = "Patient ID") @PathVariable Long patientId) {
-
-        List<Result> patientResults = resultService.getPatientResultsByPatientId(patientId, startIndex, pageSize);
-        return ResponseEntity.ok(patientResults);
     }
 
     @GetMapping(path = "/{patientId}/forms")

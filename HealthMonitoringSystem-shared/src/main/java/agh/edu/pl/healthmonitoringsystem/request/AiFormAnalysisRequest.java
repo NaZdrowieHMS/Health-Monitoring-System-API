@@ -6,11 +6,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
 @Data
 @Builder
+@Getter
 public class AiFormAnalysisRequest {
 
     @NotNull(message = "Patient Id is required")
