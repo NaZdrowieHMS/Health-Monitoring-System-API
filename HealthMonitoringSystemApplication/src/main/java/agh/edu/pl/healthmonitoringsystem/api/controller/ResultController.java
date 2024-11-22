@@ -119,7 +119,7 @@ public class ResultController {
     )
     public ResponseEntity<List<ResultOverview>> getAllResultsByPatientId(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                                                               @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
-                                                                                              @Parameter(description = "User ID") @RequestHeader(name = "user_id") Long userId,
+                                                                                              @Parameter(description = "User ID") @RequestHeader(name = "userId") Long userId,
                                                                                               @Parameter(description = "Patient ID") @RequestParam Long patientId) throws IllegalAccessException {
 
         List<ResultOverview> results = resultService.getAllResultsByPatientId(userId, patientId, startIndex, pageSize);
@@ -141,7 +141,7 @@ public class ResultController {
             },
             tags = {"Result"}
     )
-    public ResponseEntity<DetailedResult> getResultByResultId(@Parameter(description = "User ID") @RequestHeader(name = "user_id") Long userId,
+    public ResponseEntity<DetailedResult> getResultByResultId(@Parameter(description = "User ID") @RequestHeader(name = "userId") Long userId,
                                                               @Parameter(description = "Result ID") @PathVariable Long resultId) throws IllegalAccessException {
 
         DetailedResult result = resultService.getResultByResultId(userId, resultId);
@@ -165,7 +165,7 @@ public class ResultController {
     )
     public ResponseEntity<List<ResultOverview>> getAllUnviewedResults(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                                          @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
-                                                                         @Parameter(description = "User ID") @RequestHeader(name = "user_id") Long userId) throws IllegalAccessException {
+                                                                         @Parameter(description = "User ID") @RequestHeader(name = "userId") Long userId) throws IllegalAccessException {
 
         List<ResultOverview> results = resultService.getUnviewedResults(userId, startIndex, pageSize);
         return ResponseEntity.ok(results);
