@@ -4,17 +4,13 @@ import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.DetailedResult;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
+import agh.edu.pl.healthmonitoringsystem.response.DetailedResult;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultOverview;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultWithPatientData;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.enums.ResultDataType;
 import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.UserEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientProjection;
-import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
@@ -26,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,73 +40,6 @@ public class ResultService {
         this.referralService = referralService;
         this.validator = validator;
         this.modelMapper = modelMapper;
-    }
-
-    public List<Result> getPatientResultsByPatientId(Long patientId, Integer page, Integer size) {
-        validator.validatePatient(patientId);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        List<ResultEntity> results = resultRepository.getPatientResultsByPatientId(patientId, pageRequest).getContent();
-
-        return results.stream()
-                .map(modelMapper::mapResultEntityToResult)
-                .collect(Collectors.toList());
-    }
-
-    public Result uploadResult(ResultUploadRequest resultRequest) {
-        validator.validate(resultRequest);
-        if(resultRequest.getReferralId() != null){
-            referralService.completeReferral(resultRequest.getReferralId());
-        }
-
-        LocalDateTime now = LocalDateTime.now();
-        ResultEntity resultEntity = ResultEntity.builder()
-                .patientId(resultRequest.getPatientId())
-                .testType(resultRequest.getTestType())
-                .dataType(String.valueOf(resultRequest.getContent().getType()))
-                .data(resultRequest.getContent().getData())
-                .createdDate(now)
-                .modifiedDate(now).build();
-        return saveAndMapResultEntity(resultEntity);
-    }
-
-    private Result saveAndMapResultEntity(ResultEntity resultEntity) {
-        ResultEntity savedResultEntity = resultRepository.save(resultEntity);
-
-        return modelMapper.mapResultEntityToResult(savedResultEntity);
-    }
-
-    public List<ResultForDoctorView> getDoctorPatientResultWithAiSelectedAndViewed(Long doctorId, Long patientId, Integer page, Integer size) {
-        validator.validate(doctorId, patientId);
-
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        List<ResultWithAiSelectedAndViewedProjection> results = resultRepository.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId, pageRequest).getContent();
-
-        return results.stream()
-                .map(modelMapper::mapProjectionToResultForDoctorView)
-                .collect(Collectors.toList());
-    }
-
-    public List<ResultWithPatientData> getDoctorUnviewedResults(Long doctorId, Integer page, Integer size) {
-        validator.validateDoctor(doctorId);
-
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        List<ResultWithPatientProjection> results = resultRepository.getDoctorUnviewedResults(doctorId, pageRequest).getContent();
-
-        return results.stream()
-                .map(modelMapper::mapProjectionToResultWithPatientData)
-                .collect(Collectors.toList());
-    }
-
-    public void deleteResult(Long resultId) {
-        ResultEntity entity = resultRepository.findById(resultId)
-                .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
-        resultRepository.delete(entity);
-    }
-
-    public ResultDataContent getPredictionDataFromResult(Long resultId) {
-        ResultEntity entity = resultRepository.findById(resultId)
-                .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
-        return new ResultDataContent(ResultDataType.fromString(entity.getDataType()), entity.getData());
     }
 
     public List<ResultOverview> getAllResultsByPatientId(Long userId, Long patientId, Integer page, Integer size) throws IllegalAccessException {
@@ -153,5 +81,52 @@ public class ResultService {
         }
 
         throw new IllegalAccessException("Patient " + userId + " is not allowed to see unviewed results");
+    }
+
+    public DetailedResult uploadResult(Long userId, ResultUploadRequest resultRequest) {
+        validator.validate(resultRequest);
+        if(resultRequest.getReferralId() != null){
+            referralService.completeReferral(resultRequest.getReferralId());
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        ResultEntity resultEntity = ResultEntity.builder()
+                .patientId(resultRequest.getPatientId())
+                .testType(resultRequest.getTestType())
+                .dataType(String.valueOf(resultRequest.getContent().getType()))
+                .data(resultRequest.getContent().getData())
+                .createdDate(now)
+                .modifiedDate(now).build();
+
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
+        if (user.getRole().equals(Role.DOCTOR)) {
+            return saveAndMapResultEntity(false, false, resultEntity);
+        }
+
+        return saveAndMapResultEntity(resultEntity);
+    }
+
+    private DetailedResult saveAndMapResultEntity(ResultEntity resultEntity) {
+        ResultEntity savedResultEntity = resultRepository.save(resultEntity);
+
+        return modelMapper.mapResultEntityToDetailedResult(savedResultEntity);
+    }
+
+    private DetailedResult saveAndMapResultEntity(Boolean aiSelected, Boolean viewed, ResultEntity resultEntity) {
+        ResultEntity savedResultEntity = resultRepository.save(resultEntity);
+
+        return modelMapper.mapResultEntityToDetailedResult(aiSelected, viewed, savedResultEntity);
+    }
+
+    public void deleteResult(Long resultId) {
+        ResultEntity entity = resultRepository.findById(resultId)
+                .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+        resultRepository.delete(entity);
+    }
+
+    public ResultDataContent getPredictionDataFromResult(Long resultId) {
+        ResultEntity entity = resultRepository.findById(resultId)
+                .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
+        return new ResultDataContent(ResultDataType.fromString(entity.getDataType()), entity.getData());
     }
 }

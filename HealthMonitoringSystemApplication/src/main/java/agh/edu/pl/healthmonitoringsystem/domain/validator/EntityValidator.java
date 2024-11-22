@@ -33,6 +33,11 @@ public class EntityValidator {
         this.predictionSummaryRepository = predictionSummaryRepository;
     }
 
+    public void validateUser(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
+    }
+
     public void validateDoctor(Long doctorId) {
         userRepository.findDoctorById(doctorId)
                 .orElseThrow(() -> new EntityNotFoundException("Doctor with id " + doctorId + " does not exist"));
