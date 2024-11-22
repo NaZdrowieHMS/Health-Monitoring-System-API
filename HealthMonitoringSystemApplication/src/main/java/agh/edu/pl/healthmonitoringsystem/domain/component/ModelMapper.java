@@ -7,17 +7,14 @@ import agh.edu.pl.healthmonitoringsystem.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithPatientProjection;
+import agh.edu.pl.healthmonitoringsystem.response.DetailedResult;
 import agh.edu.pl.healthmonitoringsystem.response.AiFormAnalysis;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.response.FormEntry;
 import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
-import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
-import agh.edu.pl.healthmonitoringsystem.enums.ResultDataType;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static agh.edu.pl.healthmonitoringsystem.enums.ResultDataType.fromString;
@@ -43,16 +40,6 @@ public class ModelMapper {
                 doctor.getEmail(), doctor.getPesel(), doctor.getPwz());
     }
 
-    public Result mapResultEntityToResult(ResultEntity result) {
-        if (result == null) { return null; }
-        return new Result(
-                result.getId(),
-                result.getPatientId(),
-                result.getTestType(),
-                result.getCreatedDate(),
-                new ResultDataContent(fromString(result.getDataType()), result.getData()));
-    }
-
     public ResultOverview mapResultEntityToResultOverview(ResultEntity result) {
         if (result == null) { return null; }
         return new ResultOverview(
@@ -71,6 +58,19 @@ public class ModelMapper {
                 result.getTestType(),
                 new ResultDataContent(fromString(result.getDataType()), result.getData()),
                 result.getCreatedDate()
+        );
+    }
+
+    public DetailedResult mapResultEntityToDetailedResult(Boolean aiSelected, Boolean viewed, ResultEntity result) {
+        if (result == null) { return null; }
+        return new DetailedResult(
+                result.getId(),
+                result.getPatientId(),
+                result.getTestType(),
+                new ResultDataContent(fromString(result.getDataType()), result.getData()),
+                result.getCreatedDate(),
+                aiSelected,
+                viewed
         );
     }
 
@@ -118,26 +118,6 @@ public class ModelMapper {
         if (healthComment == null) { return null; }
         Author doctor = new Author(healthComment.doctorId(), healthComment.doctorName(), healthComment.doctorSurname());
         return new Comment(healthComment.commentId(), doctor, healthComment.modifiedDate(), healthComment.content());
-    }
-
-    public ResultForDoctorView mapProjectionToResultForDoctorView(ResultWithAiSelectedAndViewedProjection result) {
-        if (result == null) { return null; }
-        return new ResultForDoctorView(
-                result.id(),
-                result.testType(),
-                new ResultDataContent(fromString(result.dataType()), result.data()),
-                result.aiSelected(),
-                result.viewed(),
-                result.createdDate());
-    }
-
-    public ResultWithPatientData mapProjectionToResultWithPatientData(ResultWithPatientProjection result) {
-        if (result == null) { return null; }
-        return new ResultWithPatientData(result.id(),
-                new Patient(result.id(), result.name(), result.surname(), result.email(), result.pesel()),
-                result.testType(),
-                new ResultDataContent(fromString(result.dataType()), result.data()),
-                result.createdDate());
     }
 
     public DetailedResult mapProjectionToDetailedResult(ResultWithAiSelectedAndViewedProjection result) {

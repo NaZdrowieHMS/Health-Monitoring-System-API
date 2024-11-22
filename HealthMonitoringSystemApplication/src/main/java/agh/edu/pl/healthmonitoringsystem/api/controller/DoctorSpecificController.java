@@ -140,54 +140,6 @@ public class DoctorSpecificController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping(path = "/{doctorId}/patients/{patientId}/results")
-    @Operation(
-            summary = "Get patient results for a specific doctor view",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = ResultForDoctorView.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Doctor"}
-    )
-    public ResponseEntity<List<ResultForDoctorView>> getDoctorPatientResultWithAiSelectedAndViewed(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                                                                   @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
-                                                                                                   @Parameter(description = "Doctor ID") @PathVariable Long doctorId,
-                                                                                                   @Parameter(description = "Patient ID") @PathVariable Long patientId) {
-
-        List<ResultForDoctorView> doctorPatientResults = resultService.getDoctorPatientResultWithAiSelectedAndViewed(doctorId, patientId, startIndex, pageSize);
-        return ResponseEntity.ok(doctorPatientResults);
-    }
-
-    @GetMapping(path = "/{doctorId}/results/unviewed")
-    @Operation(
-            summary = "Get unviewed results for a specific doctor view",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = ResultWithPatientData.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Doctor"}
-    )
-    public ResponseEntity<List<ResultWithPatientData>> getDoctorUnviewedResults(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                                                @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
-                                                                                @Parameter(description = "Doctor ID") @PathVariable Long doctorId) {
-
-        List<ResultWithPatientData> doctorPatientsResults = resultService.getDoctorUnviewedResults(doctorId, startIndex, pageSize);
-        return ResponseEntity.ok(doctorPatientsResults);
-    }
-
-
     @GetMapping(path = "/{doctorId}/patient/{patientId}/health")
     @Operation(
             summary = "Get list of health comment with author data for a specific patient, created by given doctor",

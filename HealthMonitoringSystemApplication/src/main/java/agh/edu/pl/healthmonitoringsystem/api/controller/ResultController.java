@@ -2,11 +2,9 @@ package agh.edu.pl.healthmonitoringsystem.api.controller;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.DetailedResult;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultForDoctorView;
+import agh.edu.pl.healthmonitoringsystem.response.DetailedResult;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultOverview;
 import agh.edu.pl.healthmonitoringsystem.domain.service.ResultService;
-import agh.edu.pl.healthmonitoringsystem.response.Result;
 import agh.edu.pl.healthmonitoringsystem.response.ResultDataContent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import retrofit2.http.Header;
 
 import java.util.List;
 
@@ -43,7 +40,7 @@ public class ResultController {
             summary = "Upload medical result for a specific patient",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Medical result uploaded successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Result.class))),
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = DetailedResult.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "404", description = "Not found",
@@ -53,10 +50,11 @@ public class ResultController {
             },
             tags = {"Result"}
     )
-    public ResponseEntity<Result> uploadResult(@Parameter(description = "Result upload request")
+    public ResponseEntity<DetailedResult> uploadResult(@Parameter(description = "User ID") @RequestHeader(name = "userId") Long userId,
+                                                       @Parameter(description = "Result upload request")
                                                        @RequestBody @Valid ResultUploadRequest resultRequest) {
 
-        Result result = resultService.uploadResult(resultRequest);
+        DetailedResult result = resultService.uploadResult(userId, resultRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 

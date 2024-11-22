@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
 @Data
 @Builder
+@Getter
 public class BatchPredictionUploadRequest {
 
     @NotEmpty(message = "Predictions are required")

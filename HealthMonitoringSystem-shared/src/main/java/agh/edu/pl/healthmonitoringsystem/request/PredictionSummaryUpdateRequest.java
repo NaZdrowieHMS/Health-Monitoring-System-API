@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @Builder
+@Getter
 public class PredictionSummaryUpdateRequest {
 
     @NotNull(message = "Request Id is required")
