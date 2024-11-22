@@ -10,7 +10,6 @@ import lombok.Getter;
 
 @Data
 @Builder
-@Getter
 public class PredictionSummaryUpdateRequest {
 
     @NotNull(message = "Request Id is required")
