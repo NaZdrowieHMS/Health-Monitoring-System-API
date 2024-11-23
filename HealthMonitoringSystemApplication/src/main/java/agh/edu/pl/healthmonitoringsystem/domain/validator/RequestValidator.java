@@ -1,8 +1,10 @@
 package agh.edu.pl.healthmonitoringsystem.domain.validator;
 
 import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
+import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionSummaryRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.UserEntity;
 import agh.edu.pl.healthmonitoringsystem.request.BatchPredictionUploadRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.PredictionCommentRequest;
@@ -20,6 +22,8 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity
 import agh.edu.pl.healthmonitoringsystem.request.AiFormAnalysisRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -94,6 +98,16 @@ public class RequestValidator extends EntityValidator {
         if (!referralEntity.getDoctorId().equals(request.getDoctorId())){
             throw new AccessDeniedException(String.format("Only the author of the referral can edit it. " +
                     "Author id: %s. Current editor id: %s.", referralEntity.getDoctorId(), request.getDoctorId()));
+        }
+    }
+
+    public void validateAccessToPatientData(UserEntity user, Long patientId) {
+        if (user.getRole().equals(Role.DOCTOR)) {
+            return;
+        }
+
+        if (!Objects.equals(patientId, user.getId())) {
+            throw new AccessDeniedException("Patient " + user.getId() + " is not allowed to see patient " + patientId + " data");
         }
     }
 }

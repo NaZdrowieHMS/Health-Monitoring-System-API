@@ -37,15 +37,13 @@ import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.START_INDEX
 public class PatientSpecificController {
 
     private final ReferralService referralService;
-    private final ResultService resultService;
     private final HealthService healthService;
     private final FormService formService;
     private final PredictionRequestService predictionRequestService;
 
-    public PatientSpecificController(ReferralService referralService, ResultService resultService, HealthService healthService,
+    public PatientSpecificController(ReferralService referralService, HealthService healthService,
                                      FormService formService, PredictionRequestService predictionRequestService) {
         this.referralService = referralService;
-        this.resultService = resultService;
         this.healthService = healthService;
         this.formService = formService;
         this.predictionRequestService = predictionRequestService;
@@ -53,7 +51,7 @@ public class PatientSpecificController {
 
     @GetMapping(path = "/{patientId}/health")
     @Operation(
-            summary = "Get list of health comment with autor data for a specific patient",
+            summary = "DEPRECATED",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
                             content = @Content(schema = @Schema(type = "array", implementation = Comment.class))),
@@ -76,7 +74,7 @@ public class PatientSpecificController {
 
     @GetMapping(path = "/{patientId}/referrals")
     @Operation(
-            summary = "Get list of referrals comment for a specific patient",
+            summary = "DEPRECATED",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
                             content = @Content(schema = @Schema(type = "array", implementation = Referral.class))),
@@ -99,7 +97,7 @@ public class PatientSpecificController {
 
     @GetMapping(path = "/{patientId}/forms")
     @Operation(
-            summary = "Get list of health forms for a specific patient",
+            summary = "DEPRECATED",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
                             content = @Content(schema = @Schema(type = "array", implementation = Form.class))),

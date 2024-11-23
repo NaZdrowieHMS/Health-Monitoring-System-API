@@ -26,6 +26,14 @@ public interface ReferralRepository extends JpaRepository<ReferralEntity, Long> 
             SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection(\
             r.id, r.patientId, r.testType, r.number, r.completed, d.id, d.name, d.surname, r.comment, \
             r.modifiedDate, r.createdDate) \
+            FROM ReferralEntity r JOIN UserEntity d ON r.doctorId = d.id \
+            ORDER BY r.completed ASC, r.createdDate DESC""")
+    Page<PatientReferralWithCommentProjection> getAllReferrals(Pageable pageable);
+
+    @Query("""
+            SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection(\
+            r.id, r.patientId, r.testType, r.number, r.completed, d.id, d.name, d.surname, r.comment, \
+            r.modifiedDate, r.createdDate) \
             FROM ReferralEntity r JOIN UserEntity d ON r.doctorId = d.id WHERE r.id = :referralId""")
     Optional<PatientReferralWithCommentProjection> getPatientReferralWithAllData(@Param("referralId") Long referralId);
 }
