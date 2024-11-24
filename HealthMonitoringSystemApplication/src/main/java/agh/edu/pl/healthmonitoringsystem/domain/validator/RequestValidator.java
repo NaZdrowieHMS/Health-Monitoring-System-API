@@ -103,6 +103,7 @@ public class RequestValidator extends EntityValidator {
 
     public void validateAccessToPatientData(UserEntity user, Long patientId) {
         if (user.getRole().equals(Role.DOCTOR)) {
+            validatePatient(patientId);
             return;
         }
 

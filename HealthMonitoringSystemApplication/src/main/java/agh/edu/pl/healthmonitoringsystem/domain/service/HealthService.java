@@ -110,7 +110,7 @@ public class HealthService {
             return switch (filter.toLowerCase()) {
                 case "specific" -> getPatientHealthCommentsAuthoredBySpecificDoctor(userId, patientId, pageRequest);
                 case "others" -> getPatientHealthCommentsAuthoredByOtherDoctors(userId, patientId, pageRequest);
-                default -> fetchAllHealthCommentsForPatient(patientId, pageRequest);
+                default -> throw new IllegalArgumentException("Invalid filter value. Use 'specific' or 'others'.");
             };
         }
 
