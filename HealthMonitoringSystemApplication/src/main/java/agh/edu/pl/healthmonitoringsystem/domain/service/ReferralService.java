@@ -2,6 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
+import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.DeleteRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequest;
@@ -55,11 +56,20 @@ public class ReferralService {
         PageRequest pageRequest = PageRequest.of(page, size);
 
         List<PatientReferralWithCommentProjection> referrals =
-                (patientId == null) ? referralRepository.getAllReferrals(pageRequest).getContent() : getReferralsByPatientId(userId, patientId, pageRequest);
+                (patientId == null) ? getAllReferrals(userId, pageRequest) : getReferralsByPatientId(userId, patientId, pageRequest);
 
         return referrals.stream()
                 .map(modelMapper::mapProjectionToReferral)
                 .collect(Collectors.toList());
+    }
+
+    private List<PatientReferralWithCommentProjection> getAllReferrals(Long userId, PageRequest pageRequest) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
+
+        if(user.getRole().equals(Role.PATIENT)) return referralRepository.getPatientReferralsByPatientId(userId, pageRequest).getContent();
+
+        return referralRepository.getAllReferrals(pageRequest).getContent();
     }
 
     private List<PatientReferralWithCommentProjection> getReferralsByPatientId(Long userId, Long patientId, PageRequest pageRequest) {

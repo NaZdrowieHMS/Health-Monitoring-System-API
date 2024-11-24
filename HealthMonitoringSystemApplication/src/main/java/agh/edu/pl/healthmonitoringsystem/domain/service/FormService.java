@@ -2,6 +2,7 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
+import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.FormRequest;
 import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.UserEntity;
@@ -76,7 +77,7 @@ public class FormService {
         validator.validatePatient(patientId);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        List<FormEntity> formEntities = formRepository.findByPatientId(patientId, pageable);
+        Page<FormEntity> formEntities = formRepository.findByPatientId(patientId, pageable);
 
         return formEntities.stream()
                 .map(formEntity -> {
@@ -89,28 +90,32 @@ public class FormService {
     public List<Form> getAllHealthForms(Long userId, Long patientId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        if(patientId == null) {
-            Page<FormEntity> formEntities = formRepository.findAll(pageable);
-            return formEntities.stream()
-                    .map(formEntity -> {
-                        List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(formEntity.getId());
-                        return modelMapper.mapFormEntityToForm(formEntity, formEntries);
-                    })
-                    .toList();
-        }
-
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
 
-        validator.validateAccessToPatientData(user, patientId);
-
-        List<FormEntity> formEntities = formRepository.findByPatientId(patientId, pageable);
+        Page<FormEntity> formEntities = (patientId == null)
+                ? fetchFormsForUserRole(user, pageable)
+                : fetchFormsForPatient(user, patientId, pageable);
 
         return formEntities.stream()
-                .map(formEntity -> {
-                    List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(formEntity.getId());
-                    return modelMapper.mapFormEntityToForm(formEntity, formEntries);
-                })
+                .map(this::mapFormWithEntries)
                 .toList();
+    }
+
+    private Page<FormEntity> fetchFormsForUserRole(UserEntity user, Pageable pageable) {
+        if (user.getRole().equals(Role.PATIENT)) {
+            return formRepository.findByPatientId(user.getId(), pageable);
+        }
+        return formRepository.findAll(pageable);
+    }
+
+    private Page<FormEntity> fetchFormsForPatient(UserEntity user, Long patientId, Pageable pageable) {
+        validator.validateAccessToPatientData(user, patientId);
+        return formRepository.findByPatientId(patientId, pageable);
+    }
+
+    private Form mapFormWithEntries(FormEntity formEntity) {
+        List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(formEntity.getId());
+        return modelMapper.mapFormEntityToForm(formEntity, formEntries);
     }
 }
