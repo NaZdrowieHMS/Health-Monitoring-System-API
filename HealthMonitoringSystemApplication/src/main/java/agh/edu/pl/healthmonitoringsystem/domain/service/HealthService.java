@@ -91,6 +91,7 @@ public class HealthService {
 
     public List<Comment> getAllHealthComments(Long userId, Long patientId, String filter, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
+
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
 
@@ -98,7 +99,6 @@ public class HealthService {
             if(user.getRole().equals(Role.PATIENT)) return fetchAllHealthCommentsForPatient(userId, pageRequest);
             return getAllHealthCommentsForUser(userId, pageRequest);
         }
-
         validator.validateAccessToPatientData(user, patientId);
 
         return fetchHealthCommentsByRole(userId, user.getRole(), patientId, filter, pageRequest);
