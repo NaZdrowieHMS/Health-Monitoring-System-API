@@ -1,6 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
+import agh.edu.pl.healthmonitoringsystem.domain.exception.AccessDeniedException;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.ResultUploadRequest;
@@ -45,19 +46,19 @@ public class ResultService {
     public List<ResultOverview> getAllResults(Long userId, Long patientId, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        if (patientId == null) {
-            return getAllResultsForUser(userId, pageRequest);
-        }
-
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
+
+        if (patientId == null) {
+            return user.getRole().equals(Role.PATIENT) ? fetchResultsByRole(userId, Role.PATIENT, userId, pageRequest) : getAllResults(userId, pageRequest);
+        }
 
         validator.validateAccessToPatientData(user, patientId);
 
         return fetchResultsByRole(userId, user.getRole(), patientId, pageRequest);
     }
 
-    private List<ResultOverview> getAllResultsForUser(Long userId, PageRequest pageRequest) {
+    private List<ResultOverview> getAllResults(Long userId, PageRequest pageRequest) {
         validator.validateUser(userId);
         return resultRepository.findAll(pageRequest).stream()
                 .map(modelMapper::mapResultEntityToResultOverview)
@@ -74,7 +75,7 @@ public class ResultService {
                 .collect(Collectors.toList());
     }
 
-    public DetailedResult getResultByResultId(Long userId, Long resultId) throws IllegalAccessException {
+    public DetailedResult getResultByResultId(Long userId, Long resultId) {
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
         if (user.getRole().equals(Role.DOCTOR)) {
             ResultWithAiSelectedAndViewedProjection entity = resultRepository.getResultByIdWithAiSelectedAndViewed(resultId).orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
@@ -84,12 +85,12 @@ public class ResultService {
         ResultEntity entity = resultRepository.findById(resultId)
                 .orElseThrow(() -> new EntityNotFoundException("Result with id " + resultId + " does not exist"));
 
-        if(!Objects.equals(entity.getPatientId(), userId)) throw new IllegalAccessException("Patient " + userId + " is not allowed to see patient " + entity.getPatientId() + " results");
+        if(!Objects.equals(entity.getPatientId(), userId)) throw new AccessDeniedException("Patient " + userId + " is not allowed to see patient " + entity.getPatientId() + " results");
 
         return modelMapper.mapResultEntityToDetailedResult(entity);
     }
 
-    public List<ResultOverview> getUnviewedResults(Long userId, Integer page, Integer size) throws IllegalAccessException {
+    public List<ResultOverview> getUnviewedResults(Long userId, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
@@ -97,7 +98,7 @@ public class ResultService {
             return resultRepository.getUnviewedResults(userId, pageRequest).stream().toList();
         }
 
-        throw new IllegalAccessException("Patient " + userId + " is not allowed to see unviewed results");
+        throw new AccessDeniedException("Patient " + userId + " is not allowed to see unviewed results");
     }
 
     public DetailedResult uploadResult(Long userId, ResultUploadRequest resultRequest) {
