@@ -102,7 +102,7 @@ public class ResultController {
 
     @GetMapping
     @Operation(
-            summary = "Get all results filtered by patient ID",
+            summary = "Get all results, option to filter by patientId",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
                             content = @Content(schema = @Schema(type = "array", implementation = ResultOverview.class))),
@@ -115,12 +115,12 @@ public class ResultController {
             },
             tags = {"Result"}
     )
-    public ResponseEntity<List<ResultOverview>> getAllResultsByPatientId(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+    public ResponseEntity<List<ResultOverview>> getAllResults(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
                                                                                               @Parameter(description = "Number of results per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "10") @Max(100) Integer pageSize,
                                                                                               @Parameter(description = "User ID") @RequestHeader(name = "userId") Long userId,
-                                                                                              @Parameter(description = "Patient ID") @RequestParam Long patientId) throws IllegalAccessException {
+                                                                                              @Parameter(description = "Filter by Patient ID") @RequestParam(required = false) Long patientId) {
 
-        List<ResultOverview> results = resultService.getAllResultsByPatientId(userId, patientId, startIndex, pageSize);
+        List<ResultOverview> results = resultService.getAllResults(userId, patientId, startIndex, pageSize);
         return ResponseEntity.ok(results);
     }
 

@@ -27,6 +27,14 @@ public interface HealthRepository extends JpaRepository<HealthCommentEntity, Lon
             h.id, h.content, h.modifiedDate, d.id, d.name, d.surname) \
             FROM HealthCommentEntity h \
             JOIN UserEntity d ON h.doctorId = d.id \
+            """)
+    Page<CommentWithAuthorProjection> getAllHealthCommentsWithAuthor(Pageable pageable);
+
+    @Query("""
+            SELECT new agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection(\
+            h.id, h.content, h.modifiedDate, d.id, d.name, d.surname) \
+            FROM HealthCommentEntity h \
+            JOIN UserEntity d ON h.doctorId = d.id \
             WHERE h.id = :commentId""")
     Optional<CommentWithAuthorProjection> getHealthCommentWithAuthorByCommentId(@Param("commentId") Long commentId);
 

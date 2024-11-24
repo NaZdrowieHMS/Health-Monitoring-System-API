@@ -8,7 +8,9 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.request.ReferralUpdateRequ
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Referral;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.ReferralRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ReferralEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.UserEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,12 +27,14 @@ import static agh.edu.pl.healthmonitoringsystem.domain.component.UpdateUtil.upda
 public class ReferralService {
 
     private final ReferralRepository referralRepository;
+    private final UserRepository userRepository;
     private final RequestValidator validator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ReferralService(ReferralRepository referralRepository, RequestValidator validator, ModelMapper modelMapper) {
+    public ReferralService(ReferralRepository referralRepository, UserRepository userRepository, RequestValidator validator, ModelMapper modelMapper) {
         this.referralRepository = referralRepository;
+        this.userRepository = userRepository;
         this.validator = validator;
         this.modelMapper = modelMapper;
     }
@@ -44,6 +48,26 @@ public class ReferralService {
         return referrals.stream()
                 .map(modelMapper::mapProjectionToReferral)
                 .collect(Collectors.toList());
+    }
+
+    public List<Referral> getAllReferrals(Long userId, Long patientId, Integer page, Integer size) {
+        validator.validateUser(userId);
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        List<PatientReferralWithCommentProjection> referrals =
+                (patientId == null) ? referralRepository.getAllReferrals(pageRequest).getContent() : getReferralsByPatientId(userId, patientId, pageRequest);
+
+        return referrals.stream()
+                .map(modelMapper::mapProjectionToReferral)
+                .collect(Collectors.toList());
+    }
+
+    private List<PatientReferralWithCommentProjection> getReferralsByPatientId(Long userId, Long patientId, PageRequest pageRequest) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
+
+        validator.validateAccessToPatientData(user, patientId);
+        return referralRepository.getPatientReferralsByPatientId(patientId, pageRequest).getContent();
     }
 
     public Referral createReferral(ReferralRequest referralRequest) {

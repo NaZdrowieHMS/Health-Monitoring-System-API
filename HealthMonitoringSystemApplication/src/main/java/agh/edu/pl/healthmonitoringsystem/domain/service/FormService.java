@@ -3,6 +3,8 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.FormRequest;
+import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.UserEntity;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.FormEntryRepository;
@@ -10,6 +12,7 @@ import agh.edu.pl.healthmonitoringsystem.persistence.FormRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.FormEntryEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,14 +25,16 @@ import java.util.List;
 public class FormService {
 
     private final FormRepository formRepository;
+    private final UserRepository userRepository;
     private final FormEntryRepository formEntryRepository;
     private final RequestValidator validator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public FormService(FormRepository formRepository, FormEntryRepository formEntryRepository, RequestValidator validator,
+    public FormService(FormRepository formRepository, UserRepository userRepository, FormEntryRepository formEntryRepository, RequestValidator validator,
                        ModelMapper modelMapper) {
         this.formRepository = formRepository;
+        this.userRepository = userRepository;
         this.formEntryRepository = formEntryRepository;
         this.validator = validator;
         this.modelMapper = modelMapper;
@@ -71,6 +76,34 @@ public class FormService {
         validator.validatePatient(patientId);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        List<FormEntity> formEntities = formRepository.findByPatientId(patientId, pageable);
+
+        return formEntities.stream()
+                .map(formEntity -> {
+                    List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(formEntity.getId());
+                    return modelMapper.mapFormEntityToForm(formEntity, formEntries);
+                })
+                .toList();
+    }
+
+    public List<Form> getAllHealthForms(Long userId, Long patientId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        if(patientId == null) {
+            Page<FormEntity> formEntities = formRepository.findAll(pageable);
+            return formEntities.stream()
+                    .map(formEntity -> {
+                        List<FormEntryEntity> formEntries = formEntryRepository.findByFormId(formEntity.getId());
+                        return modelMapper.mapFormEntityToForm(formEntity, formEntries);
+                    })
+                    .toList();
+        }
+
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
+
+        validator.validateAccessToPatientData(user, patientId);
+
         List<FormEntity> formEntities = formRepository.findByPatientId(patientId, pageable);
 
         return formEntities.stream()

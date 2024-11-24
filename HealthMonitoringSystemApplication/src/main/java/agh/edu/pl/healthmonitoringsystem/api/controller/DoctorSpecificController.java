@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,13 +43,11 @@ public class DoctorSpecificController {
     private final DoctorPatientService doctorPatientService;
     private final PatientService patientService;
     private final HealthService healthService;
-    private final ResultService resultService;
 
-    public DoctorSpecificController(DoctorPatientService doctorPatientService, PatientService patientService, HealthService healthService, ResultService resultService) {
+    public DoctorSpecificController(DoctorPatientService doctorPatientService, PatientService patientService, HealthService healthService) {
         this.doctorPatientService = doctorPatientService;
         this.patientService = patientService;
         this.healthService = healthService;
-        this.resultService = resultService;
     }
 
     @GetMapping(path = "/{doctorId}/patients")
@@ -142,7 +142,7 @@ public class DoctorSpecificController {
 
     @GetMapping(path = "/{doctorId}/patient/{patientId}/health")
     @Operation(
-            summary = "Get list of health comment with author data for a specific patient, created by given doctor",
+            summary = "DEPRECATED",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
                             content = @Content(schema = @Schema(type = "array", implementation = Comment.class))),
@@ -162,9 +162,10 @@ public class DoctorSpecificController {
             @Parameter(description = "Filter type: 'specific' (authored by the doctor) or 'others' (authored by other doctors)")
             @RequestParam(name = "filter") String filter) {
 
+        PageRequest pageRequest = PageRequest.of(startIndex, pageSize, Sort.by("modifiedDate").descending());
         List<Comment> patientHealthComments = switch (filter.toLowerCase()) {
-            case "specific" -> healthService.getPatientHealthCommentsAuthoredBySpecificDoctor(doctorId, patientId, startIndex, pageSize);
-            case "others" -> healthService.getPatientHealthCommentsAuthoredByOtherDoctors(doctorId, patientId, startIndex, pageSize);
+            case "specific" -> healthService.getPatientHealthCommentsAuthoredBySpecificDoctor(doctorId, patientId, pageRequest);
+            case "others" -> healthService.getPatientHealthCommentsAuthoredByOtherDoctors(doctorId, patientId, pageRequest);
             default -> throw new IllegalArgumentException("Invalid filter value. Use 'specific' or 'others'.");
         };
 

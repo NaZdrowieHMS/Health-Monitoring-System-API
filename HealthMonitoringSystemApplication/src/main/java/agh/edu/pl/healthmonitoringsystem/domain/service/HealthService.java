@@ -2,12 +2,16 @@ package agh.edu.pl.healthmonitoringsystem.domain.service;
 
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
+import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
+import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultOverview;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.HealthRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.HealthCommentEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.UserEntity;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,13 +29,15 @@ import static agh.edu.pl.healthmonitoringsystem.domain.component.UpdateUtil.upda
 public class HealthService {
 
     private final HealthRepository healthRepository;
+    private final UserRepository userRepository;
     private final RequestValidator validator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public HealthService(HealthRepository healthRepository, RequestValidator validator,
+    public HealthService(HealthRepository healthRepository, UserRepository userRepository, RequestValidator validator,
                          ModelMapper modelMapper) {
         this.healthRepository = healthRepository;
+        this.userRepository = userRepository;
         this.validator = validator;
         this.modelMapper = modelMapper;
     }
@@ -83,10 +89,50 @@ public class HealthService {
                 .collect(Collectors.toList());
     }
 
-    public List<Comment> getPatientHealthCommentsAuthoredBySpecificDoctor(Long doctorId, Long patientId, Integer page, Integer size) {
+    public List<Comment> getAllHealthComments(Long userId, Long patientId, String filter, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
+
+        if(patientId == null) {
+            return getAllHealthCommentsForUser(userId, pageRequest);
+        }
+
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
+
+        validator.validateAccessToPatientData(user, patientId);
+
+        return fetchHealthCommentsByRole(userId, user.getRole(), patientId, filter, pageRequest);
+    }
+
+    private List<Comment> fetchHealthCommentsByRole(Long userId, Role role, Long patientId, String filter, PageRequest pageRequest) {
+        if (role.equals(Role.DOCTOR)) {
+            if (filter == null) return fetchAllHealthCommentsForPatient(patientId, pageRequest);
+            return switch (filter.toLowerCase()) {
+                case "specific" -> getPatientHealthCommentsAuthoredBySpecificDoctor(userId, patientId, pageRequest);
+                case "others" -> getPatientHealthCommentsAuthoredByOtherDoctors(userId, patientId, pageRequest);
+                default -> throw new IllegalArgumentException("Invalid filter value. Use 'specific' or 'others'.");
+            };
+        }
+
+        return fetchAllHealthCommentsForPatient(patientId, pageRequest);
+    }
+
+    private List<Comment> fetchAllHealthCommentsForPatient(Long patientId, PageRequest pageRequest) {
+        return healthRepository.getHealthCommentsWithAuthorByPatientId(patientId, pageRequest).getContent().stream()
+                .map(modelMapper::mapProjectionToComment)
+                .collect(Collectors.toList());
+    }
+
+    private List<Comment> getAllHealthCommentsForUser(Long userId, PageRequest pageRequest) {
+        validator.validateUser(userId);
+        return healthRepository.getAllHealthCommentsWithAuthor(pageRequest).stream()
+                .map(modelMapper::mapProjectionToComment)
+                .collect(Collectors.toList());
+    }
+
+    public List<Comment> getPatientHealthCommentsAuthoredBySpecificDoctor(Long doctorId, Long patientId, PageRequest pageRequest) {
         validator.validatePatient(patientId);
         validator.validateDoctor(doctorId);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
         List<CommentWithAuthorProjection> healthComments = healthRepository.getPatientHealthCommentsAuthoredBySpecificDoctor(doctorId, patientId, pageRequest).getContent();
 
         return healthComments.stream()
@@ -94,10 +140,9 @@ public class HealthService {
                 .collect(Collectors.toList());
     }
 
-    public List<Comment> getPatientHealthCommentsAuthoredByOtherDoctors(Long doctorId, Long patientId, Integer page, Integer size) {
+    public List<Comment> getPatientHealthCommentsAuthoredByOtherDoctors(Long doctorId, Long patientId, PageRequest pageRequest) {
         validator.validatePatient(patientId);
         validator.validateDoctor(doctorId);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
         List<CommentWithAuthorProjection> healthComments = healthRepository.getPatientHealthCommentsAuthoredByOtherDoctors(doctorId, patientId, pageRequest).getContent();
 
         return healthComments.stream()
