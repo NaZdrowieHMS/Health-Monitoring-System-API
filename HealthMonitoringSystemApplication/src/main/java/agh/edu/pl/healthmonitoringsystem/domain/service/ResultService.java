@@ -42,16 +42,33 @@ public class ResultService {
         this.modelMapper = modelMapper;
     }
 
-    public List<ResultOverview> getAllResultsByPatientId(Long userId, Long patientId, Integer page, Integer size) throws IllegalAccessException {
-        validator.validatePatient(patientId);
+    public List<ResultOverview> getAllResults(Long userId, Long patientId, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
-        if (user.getRole().equals(Role.DOCTOR)) {
+        if (patientId == null) {
+            return getAllResultsForUser(userId, pageRequest);
+        }
+
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " does not exist"));
+
+        validator.validateAccessToPatientData(user, patientId);
+
+        return fetchResultsByRole(userId, user.getRole(), patientId, pageRequest);
+    }
+
+    private List<ResultOverview> getAllResultsForUser(Long userId, PageRequest pageRequest) {
+        validator.validateUser(userId);
+        return resultRepository.findAll(pageRequest).stream()
+                .map(modelMapper::mapResultEntityToResultOverview)
+                .collect(Collectors.toList());
+    }
+
+    private List<ResultOverview> fetchResultsByRole(Long userId, Role role, Long patientId, PageRequest pageRequest) {
+        if (role.equals(Role.DOCTOR)) {
             return resultRepository.getResultsByPatientIdWithAiSelectedAndViewed(userId, patientId, pageRequest).stream().toList();
         }
 
-        if(!Objects.equals(patientId, userId)) throw new IllegalAccessException("Patient " + userId + " is not allowed to see patient " + patientId + " results");
         return resultRepository.getResultEntitiesByPatientId(patientId, pageRequest).stream()
                 .map(modelMapper::mapResultEntityToResultOverview)
                 .collect(Collectors.toList());

@@ -11,18 +11,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.PAGE_SIZE_PARAM;
+import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.START_INDEX_PARAM;
 
 
 @RestController
@@ -33,6 +32,31 @@ public class HealthController {
 
     public HealthController(HealthService healthService) {
         this.healthService = healthService;
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "Get list of health comment with author data, option to filter by patientId and authored",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation",
+                            content = @Content(schema = @Schema(type = "array", implementation = Comment.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Not found",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"Health"}
+    )
+    public ResponseEntity<List<Comment>> getAllHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                              @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                              @Parameter(description = "User ID") @RequestHeader(name = "userId") Long userId,
+                                                              @Parameter(description = "Filter by Patient ID") @RequestParam(required = false) Long patientId,
+                                                              @Parameter(description = "Filter type: 'specific' (authored by the doctor) or 'others' (authored by other doctors) !!! Currently only works with patientId combined. Otherwise returns all health comments") @RequestParam(name = "filter", required = false) String filter) {
+
+        List<Comment> patientHealthComments = healthService.getAllHealthComments(userId, patientId, filter, startIndex, pageSize);
+        return ResponseEntity.ok(patientHealthComments);
     }
 
     @PostMapping

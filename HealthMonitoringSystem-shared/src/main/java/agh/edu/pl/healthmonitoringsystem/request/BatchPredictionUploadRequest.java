@@ -11,7 +11,6 @@ import java.util.List;
 
 @Data
 @Builder
-@Getter
 public class BatchPredictionUploadRequest {
 
     @NotEmpty(message = "Predictions are required")

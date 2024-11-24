@@ -12,18 +12,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.PAGE_SIZE_PARAM;
+import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.START_INDEX_PARAM;
 
 @RestController
 @RequestMapping("/api/referrals")
@@ -34,6 +33,30 @@ public class ReferralController {
 
     public ReferralController(ReferralService referralService) {
         this.referralService = referralService;
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "Get list of referrals, option to filter by patientId",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation",
+                            content = @Content(schema = @Schema(type = "array", implementation = Referral.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Not found",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+            },
+            tags = {"Referral"}
+    )
+    public ResponseEntity<List<Referral>> getAllReferrals(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+                                                                             @Parameter(description = "Number of referrals per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+                                                                             @Parameter(description = "User ID") @RequestHeader(name = "userId") Long userId,
+                                                                             @Parameter(description = "Filter by patient ID") @RequestParam(required = false) Long patientId) throws IllegalAccessException {
+
+        List<Referral> patientReferrals = referralService.getAllReferrals(userId, patientId, startIndex, pageSize);
+        return ResponseEntity.ok(patientReferrals);
     }
 
     @GetMapping("/{referralId}")
