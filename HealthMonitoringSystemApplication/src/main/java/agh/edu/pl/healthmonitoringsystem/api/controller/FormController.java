@@ -105,7 +105,7 @@ public class FormController {
 
     @GetMapping("/{formId}/analysis")
     @Operation(
-            summary = "Get the ai analysis for a specific form by form ID.",
+            summary = "Get last ai analysis for a specific form by form ID.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful operation",
                             content = @Content(schema = @Schema(implementation = AiFormAnalysis.class))),
@@ -116,9 +116,10 @@ public class FormController {
             },
             tags = {"Health Form"}
     )
-    public ResponseEntity<AiFormAnalysis> getFormAiAnalysisByFormId(@Parameter(description = "Form ID") @PathVariable("formId") Long formId) {
+    public ResponseEntity<AiFormAnalysis> getFormLastAiAnalysisByFormId(@Parameter(description = "Form ID") @PathVariable("formId") Long formId,
+                                                                    @Parameter(description = "User ID") @RequestHeader(name = "userId") Long userId) {
 
-        AiFormAnalysis doctor = formAnalysisService.getFormAiAnalysisById(formId);
+        AiFormAnalysis doctor = formAnalysisService.getFormLastAiAnalysisById(userId, formId);
         return ResponseEntity.ok(doctor);
     }
 

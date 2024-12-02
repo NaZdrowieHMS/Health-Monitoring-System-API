@@ -57,10 +57,6 @@ public class RequestValidator extends EntityValidator {
         }
     }
 
-    public void validate(Long userId) {
-        validateUser(userId);
-    }
-
     public void validate(Long doctorId, Long patientId) {
         validatePatient(patientId);
         validateDoctor(doctorId);

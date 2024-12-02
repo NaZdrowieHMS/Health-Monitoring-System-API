@@ -5,6 +5,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.AiFormAnalysisRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiFormAnalysisEntity;
 import agh.edu.pl.healthmonitoringsystem.request.AiFormAnalysisRequest;
 import agh.edu.pl.healthmonitoringsystem.response.AiFormAnalysis;
@@ -39,6 +40,7 @@ public class FormAnalysisService {
         AiFormAnalysisEntity aiAnalysisEntity = AiFormAnalysisEntity.builder()
                 .formId(aiFormAnalysisRequest.getFormId())
                 .patientId(aiFormAnalysisRequest.getPatientId())
+                .doctorId(aiFormAnalysisRequest.getDoctorId())
                 .diagnoses(diagnosesJson)
                 .recommendations(recommendationsJson)
                 .createdDate(LocalDateTime.now())
@@ -49,9 +51,11 @@ public class FormAnalysisService {
         return modelMapper.mapAiAnalysisEntityToAiFormAnalysis(aiAnalysisEntitySaved);
     }
 
-    public AiFormAnalysis getFormAiAnalysisById(Long formId) {
-        AiFormAnalysisEntity aiAnalysisEntity = formAnalysisRepository.findByFormId(formId)
-                .orElseThrow(() -> new EntityNotFoundException("Ai analysis for form with " + formId + " not found"));
+    public AiFormAnalysis getFormLastAiAnalysisById(Long doctorId, Long formId) {
+        validator.validateDoctor(doctorId);
+
+        AiFormAnalysisEntity aiAnalysisEntity = formAnalysisRepository.findTopByFormIdAndDoctorId(formId, doctorId)
+                .orElseThrow(() -> new EntityNotFoundException("Ai analysis for form " + formId + " not found"));
 
         return modelMapper.mapAiAnalysisEntityToAiFormAnalysis(aiAnalysisEntity);
     }

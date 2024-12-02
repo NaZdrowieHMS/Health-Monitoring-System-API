@@ -16,6 +16,9 @@ public class AiFormAnalysisRequest {
     @NotNull(message = "Patient Id is required")
     private Long patientId;
 
+    @NotNull(message = "Doctor Id is required")
+    private Long doctorId;
+
     @NotNull(message = "Form Id is required")
     private Long formId;
 
@@ -29,9 +32,10 @@ public class AiFormAnalysisRequest {
 
     @JsonCreator
     public AiFormAnalysisRequest(@JsonProperty("patientId") Long patientId,
-                         @JsonProperty("formId") Long formId,
-                         @JsonProperty("diagnoses") List<String> diagnoses,
-                         @JsonProperty("recommendations") List<String> recommendations) {
+                                 @JsonProperty("doctorId") Long doctorId,
+                                 @JsonProperty("formId") Long formId,
+                                 @JsonProperty("diagnoses") List<String> diagnoses,
+                                 @JsonProperty("recommendations") List<String> recommendations) {
         this.patientId = patientId;
         this.formId = formId;
         this.diagnoses = diagnoses;

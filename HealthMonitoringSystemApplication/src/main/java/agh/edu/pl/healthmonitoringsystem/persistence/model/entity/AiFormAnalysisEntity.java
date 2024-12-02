@@ -19,6 +19,7 @@ public class AiFormAnalysisEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long patientId;
+    private Long doctorId;
     private Long formId;
     private LocalDateTime createdDate;
     private String diagnoses;
@@ -27,10 +28,11 @@ public class AiFormAnalysisEntity {
     public AiFormAnalysisEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
-    public AiFormAnalysisEntity(Long id, Long patientId, Long formId, String diagnoses, String recommendations,
+    public AiFormAnalysisEntity(Long id, Long patientId, Long doctorId, Long formId, String diagnoses, String recommendations,
                                 LocalDateTime createdDate) {
         this.id = id;
         this.patientId = patientId;
+        this.doctorId = doctorId;
         this.formId = formId;
         this.diagnoses = diagnoses;
         this.recommendations = recommendations;
@@ -40,11 +42,12 @@ public class AiFormAnalysisEntity {
     public static final class Builder {
         public AiFormAnalysisEntity build(){
             checkNotNull(patientId, () -> new RequestValidationException("Patient Id cannot be null"));
+            checkNotNull(doctorId, () -> new RequestValidationException("Doctor Id cannot be null"));
             checkNotNull(formId, () -> new RequestValidationException("Form Id cannot be null"));
             checkNotNull(diagnoses, () -> new RequestValidationException("Diagnoses cannot be null"));
             checkNotNull(recommendations, () -> new RequestValidationException("Recommendations cannot be null"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
-            return new AiFormAnalysisEntity(id, patientId, formId, diagnoses, recommendations, createdDate);
+            return new AiFormAnalysisEntity(id, patientId, doctorId, formId, diagnoses, recommendations, createdDate);
         }
     }
 }
