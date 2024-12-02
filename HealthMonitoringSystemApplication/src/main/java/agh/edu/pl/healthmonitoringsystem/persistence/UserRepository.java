@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Repository
@@ -37,14 +36,16 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = """
             SELECT p FROM UserEntity p
             WHERE p.id IN (SELECT dp.patientId FROM DoctorPatientEntity dp WHERE dp.doctorId = :doctorId)
+            AND p.role = :role
             ORDER BY p.createdDate DESC
             """)
-    Page<UserEntity> findPatientsByDoctorId(@Param("doctorId") Long doctorId, Pageable pageable);
+    Page<UserEntity> findPatientsByDoctorId(@Param("doctorId") Long doctorId, @Param("role") Role role, Pageable pageable);
 
     @Query(value = """
             SELECT p FROM UserEntity p
             WHERE p.id NOT IN (SELECT dp.patientId FROM DoctorPatientEntity dp WHERE dp.doctorId = :doctorId)
+            AND p.role = :role
             ORDER BY p.createdDate DESC
             """)
-    Page<UserEntity> findUnassignedPatientsByDoctorId(@Param("doctorId") Long doctorId, Pageable pageable);
+    Page<UserEntity> findUnassignedPatientsByDoctorId(@Param("doctorId") Long doctorId, @Param("role") Role role, Pageable pageable);
 }
