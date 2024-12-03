@@ -37,6 +37,7 @@ public class AiFormAnalysisRequest {
                                  @JsonProperty("diagnoses") List<String> diagnoses,
                                  @JsonProperty("recommendations") List<String> recommendations) {
         this.patientId = patientId;
+        this.doctorId = doctorId;
         this.formId = formId;
         this.diagnoses = diagnoses;
         this.recommendations = recommendations;

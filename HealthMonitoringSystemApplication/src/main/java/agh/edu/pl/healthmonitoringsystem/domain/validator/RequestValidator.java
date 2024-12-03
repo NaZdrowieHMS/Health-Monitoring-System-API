@@ -65,6 +65,7 @@ public class RequestValidator extends EntityValidator {
     public void validate(AiFormAnalysisRequest request) {
         validateForm(request.getFormId());
         validatePatient(request.getPatientId());
+        validateDoctor(request.getDoctorId());
     }
 
     public void validate(ResultCommentRequest request) {
