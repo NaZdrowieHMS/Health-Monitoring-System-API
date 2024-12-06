@@ -4,9 +4,7 @@ import agh.edu.pl.healthmonitoringsystem.domain.exception.response.ErrorResponse
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.DoctorPatientRelationRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.*;
 import agh.edu.pl.healthmonitoringsystem.domain.service.DoctorPatientService;
-import agh.edu.pl.healthmonitoringsystem.domain.service.HealthService;
 import agh.edu.pl.healthmonitoringsystem.domain.service.PatientService;
-import agh.edu.pl.healthmonitoringsystem.domain.service.ResultService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,8 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,12 +38,10 @@ import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.START_INDEX
 public class DoctorSpecificController {
     private final DoctorPatientService doctorPatientService;
     private final PatientService patientService;
-    private final HealthService healthService;
 
-    public DoctorSpecificController(DoctorPatientService doctorPatientService, PatientService patientService, HealthService healthService) {
+    public DoctorSpecificController(DoctorPatientService doctorPatientService, PatientService patientService) {
         this.doctorPatientService = doctorPatientService;
         this.patientService = patientService;
-        this.healthService = healthService;
     }
 
     @GetMapping(path = "/{doctorId}/patients")
@@ -138,37 +132,5 @@ public class DoctorSpecificController {
 
         doctorPatientService.deleteRelation(doctorId, patientId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @GetMapping(path = "/{doctorId}/patient/{patientId}/health")
-    @Operation(
-            summary = "DEPRECATED",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = Comment.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Doctor"}
-    )
-
-    public ResponseEntity<List<Comment>> getPatientHealthComments(
-            @Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-            @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-            @Parameter(description = "Doctor ID") @PathVariable Long doctorId,
-            @Parameter(description = "Patient ID") @PathVariable Long patientId,
-            @Parameter(description = "Filter type: 'specific' (authored by the doctor) or 'others' (authored by other doctors)")
-            @RequestParam(name = "filter") String filter) {
-
-        PageRequest pageRequest = PageRequest.of(startIndex, pageSize, Sort.by("modifiedDate").descending());
-        List<Comment> patientHealthComments = switch (filter.toLowerCase()) {
-            case "specific" -> healthService.getPatientHealthCommentsAuthoredBySpecificDoctor(doctorId, patientId, pageRequest);
-            case "others" -> healthService.getPatientHealthCommentsAuthoredByOtherDoctors(doctorId, patientId, pageRequest);
-            default -> throw new IllegalArgumentException("Invalid filter value. Use 'specific' or 'others'.");
-        };
-
-        return ResponseEntity.ok(patientHealthComments);
     }
 }

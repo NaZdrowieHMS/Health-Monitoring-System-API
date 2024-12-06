@@ -7,11 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.List;
 
 @Converter
 @Component
-public class JsonConverter implements AttributeConverter<ResultAiAnalysis, String> {
+public class ResultAiAnalysisConverter implements AttributeConverter<ResultAiAnalysis, String> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

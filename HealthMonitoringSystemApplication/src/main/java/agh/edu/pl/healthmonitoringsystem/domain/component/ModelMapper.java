@@ -1,14 +1,12 @@
 package agh.edu.pl.healthmonitoringsystem.domain.component;
 
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.*;
-import agh.edu.pl.healthmonitoringsystem.enums.PredictionRequestStatus;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.*;
 import agh.edu.pl.healthmonitoringsystem.response.Prediction;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWithAuthorProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
 import agh.edu.pl.healthmonitoringsystem.response.DetailedResult;
-import agh.edu.pl.healthmonitoringsystem.model.FormAiAnalysis;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.response.FormEntry;
 import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
@@ -22,10 +20,12 @@ import static agh.edu.pl.healthmonitoringsystem.enums.ResultDataType.fromString;
 
 @Component
 public class ModelMapper {
-    private final JsonConverter jsonConverter;
+    private final ResultAiAnalysisConverter resultAiAnalysisConverter;
+    private final FormAiAnalysisConverter formAiAnalysisConverter;
 
-    public ModelMapper(JsonConverter jsonConverter) {
-        this.jsonConverter = jsonConverter;
+    public ModelMapper(ResultAiAnalysisConverter resultAiAnalysisConverter, FormAiAnalysisConverter formAiAnalysisConverter) {
+        this.resultAiAnalysisConverter = resultAiAnalysisConverter;
+        this.formAiAnalysisConverter = formAiAnalysisConverter;
     }
 
     public Patient mapUserEntityToPatient(UserEntity patient) {
@@ -97,8 +97,8 @@ public class ModelMapper {
                 predictionEntity.getDoctorId(),
                 predictionEntity.getCreatedDate(),
                 predictionEntity.getModifiedDate(),
-                jsonConverter.convertToEntityAttribute(predictionEntity.getResultAiAnalysis()),
-                null);
+                resultAiAnalysisConverter.convertToEntityAttribute(predictionEntity.getResultAiAnalysis()),
+                formAiAnalysisConverter.convertToEntityAttribute(predictionEntity.getFormAiAnalysis()));
     }
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {

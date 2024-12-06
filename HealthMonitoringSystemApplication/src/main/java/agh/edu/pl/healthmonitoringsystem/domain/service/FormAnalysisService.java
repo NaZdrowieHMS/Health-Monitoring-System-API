@@ -1,17 +1,11 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
-import agh.edu.pl.healthmonitoringsystem.domain.component.JsonConverter;
+import agh.edu.pl.healthmonitoringsystem.domain.component.ResultAiAnalysisConverter;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
-import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.AiFormAnalysisRepository;
-import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.AiFormAnalysisEntity;
-import agh.edu.pl.healthmonitoringsystem.request.AiFormAnalysisRequest;
-import agh.edu.pl.healthmonitoringsystem.model.FormAiAnalysis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class FormAnalysisService {
@@ -19,15 +13,15 @@ public class FormAnalysisService {
     private final AiFormAnalysisRepository formAnalysisRepository;
     private final RequestValidator validator;
     private final ModelMapper modelMapper;
-    private final JsonConverter jsonConverter;
+    private final ResultAiAnalysisConverter resultAiAnalysisConverter;
 
     @Autowired
     public FormAnalysisService(AiFormAnalysisRepository formAnalysisRepository, RequestValidator validator,
-                               ModelMapper modelMapper, JsonConverter jsonConverter) {
+                               ModelMapper modelMapper, ResultAiAnalysisConverter resultAiAnalysisConverter) {
         this.formAnalysisRepository = formAnalysisRepository;
         this.validator = validator;
         this.modelMapper = modelMapper;
-        this.jsonConverter = jsonConverter;
+        this.resultAiAnalysisConverter = resultAiAnalysisConverter;
     }
 
 //    public FormAiAnalysis saveFormAiAnalysis(AiFormAnalysisRequest aiFormAnalysisRequest) {

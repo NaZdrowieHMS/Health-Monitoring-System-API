@@ -1,6 +1,6 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
-import agh.edu.pl.healthmonitoringsystem.domain.component.JsonConverter;
+import agh.edu.pl.healthmonitoringsystem.domain.component.ResultAiAnalysisConverter;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
@@ -24,14 +24,14 @@ public class PredictionRequestService {
 
     private final PredictionSummaryRepository predictionRepository;
     private final ModelMapper modelMapper;
-    private final JsonConverter jsonConverter;
+    private final ResultAiAnalysisConverter resultAiAnalysisConverter;
     private final RequestValidator validator;
 
     @Autowired
-    public PredictionRequestService(PredictionSummaryRepository predictionRepository, ModelMapper modelMapper, JsonConverter jsonConverter, RequestValidator validator) {
+    public PredictionRequestService(PredictionSummaryRepository predictionRepository, ModelMapper modelMapper, ResultAiAnalysisConverter resultAiAnalysisConverter, RequestValidator validator) {
         this.predictionRepository = predictionRepository;
         this.modelMapper = modelMapper;
-        this.jsonConverter = jsonConverter;
+        this.resultAiAnalysisConverter = resultAiAnalysisConverter;
         this.validator = validator;
     }
 
@@ -63,7 +63,7 @@ public class PredictionRequestService {
 
         ResultAiAnalysis analysis = new ResultAiAnalysis(predictionSummaryRequest.resultIds(), null, null);
 
-        entity.setResultAiAnalysis(jsonConverter.convertToDatabaseColumn(analysis));
+        entity.setResultAiAnalysis(resultAiAnalysisConverter.convertToDatabaseColumn(analysis));
 
         predictionRepository.save(entity);
 
@@ -74,12 +74,12 @@ public class PredictionRequestService {
         PredictionSummaryEntity predictionSummaryEntity = predictionRepository.findById(updateRequest.getRequestId())
                 .orElseThrow(() -> new EntityNotFoundException("Prediction summary request with id " + updateRequest.getRequestId() + " does not exist"));
 
-        ResultAiAnalysis analysis = jsonConverter.convertToEntityAttribute(predictionSummaryEntity.getResultAiAnalysis());
+        ResultAiAnalysis analysis = resultAiAnalysisConverter.convertToEntityAttribute(predictionSummaryEntity.getResultAiAnalysis());
 
         ResultAiAnalysis updatedAnalysis = new ResultAiAnalysis(analysis.resultIds(), updateRequest.getPrediction(), updateRequest.getConfidence());
 
         updateField(Optional.ofNullable(updateRequest.getStatus()), predictionSummaryEntity::setStatus);
-        predictionSummaryEntity.setResultAiAnalysis(jsonConverter.convertToDatabaseColumn(updatedAnalysis));
+        predictionSummaryEntity.setResultAiAnalysis(resultAiAnalysisConverter.convertToDatabaseColumn(updatedAnalysis));
         predictionSummaryEntity.setModifiedDate(LocalDateTime.now());
 
         predictionRepository.save(predictionSummaryEntity);
