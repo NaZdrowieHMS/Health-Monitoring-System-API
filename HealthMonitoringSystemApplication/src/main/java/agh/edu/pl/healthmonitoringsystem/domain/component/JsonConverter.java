@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystem.domain.component;
 
+import agh.edu.pl.healthmonitoringsystem.model.ResultAiAnalysis;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,23 +11,24 @@ import java.util.List;
 
 @Converter
 @Component
-public class JsonConverter implements AttributeConverter<List<String>, String> {
+public class JsonConverter implements AttributeConverter<ResultAiAnalysis, String> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(List<String> attribute) {
+    public String convertToDatabaseColumn(ResultAiAnalysis resultAiAnalysis) {
         try {
-            return objectMapper.writeValueAsString(attribute);
+            return objectMapper.writeValueAsString(resultAiAnalysis);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error converting list to JSON", e);
         }
     }
 
     @Override
-    public List<String> convertToEntityAttribute(String dbData) {
+    public ResultAiAnalysis convertToEntityAttribute(String dbData) {
+        if(dbData == null) return null;
         try {
-            return objectMapper.readValue(dbData, List.class);
+            return objectMapper.readValue(dbData, ResultAiAnalysis.class);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error converting JSON to list", e);
         }

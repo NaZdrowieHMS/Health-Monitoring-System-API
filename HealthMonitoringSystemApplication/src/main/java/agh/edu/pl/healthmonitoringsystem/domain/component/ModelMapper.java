@@ -8,7 +8,7 @@ import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.CommentWit
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.PatientReferralWithCommentProjection;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.projection.ResultWithAiSelectedAndViewedProjection;
 import agh.edu.pl.healthmonitoringsystem.response.DetailedResult;
-import agh.edu.pl.healthmonitoringsystem.response.AiFormAnalysis;
+import agh.edu.pl.healthmonitoringsystem.model.FormAiAnalysis;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.response.FormEntry;
 import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
@@ -88,15 +88,17 @@ public class ModelMapper {
         return new FormEntry(formEntryEntity.getHealthParam(), formEntryEntity.getValue());
     }
 
-    public PredictionSummary mapPredictionSummaryEntityToPredictionSummary(AiPredictionSummaryEntity predictionEntity, List<AiPredictionSummaryEntryEntity> entities) {
-        if (predictionEntity == null || entities == null) { return null; }
-        List<Long> resultIds = entities.stream()
-                .map(AiPredictionSummaryEntryEntity::getResultId)
-                .toList();
+    public PredictionSummary mapPredictionSummaryEntityToPredictionSummary(PredictionSummaryEntity predictionEntity) {
+        if (predictionEntity == null) { return null; }
 
-        return new PredictionSummary(predictionEntity.getId(), PredictionRequestStatus.fromString(predictionEntity.getStatus()),
-                predictionEntity.getPatientId(), predictionEntity.getDoctorId(), resultIds, predictionEntity.getPrediction(),
-                predictionEntity.getConfidence(), predictionEntity.getCreatedDate(), predictionEntity.getModifiedDate());
+        return new PredictionSummary(predictionEntity.getId(),
+                predictionEntity.getStatus(),
+                predictionEntity.getPatientId(),
+                predictionEntity.getDoctorId(),
+                predictionEntity.getCreatedDate(),
+                predictionEntity.getModifiedDate(),
+                jsonConverter.convertToEntityAttribute(predictionEntity.getResultAiAnalysis()),
+                null);
     }
 
     public Referral mapProjectionToReferral(PatientReferralWithCommentProjection referral) {
@@ -137,14 +139,14 @@ public class ModelMapper {
         return new Relation(relation.getPatientId(), relation.getDoctorId());
     }
 
-    public AiFormAnalysis mapAiAnalysisEntityToAiFormAnalysis(AiFormAnalysisEntity aiAnalysis) {
-        if (aiAnalysis == null) { return null; }
-        List<String> diagnoses = jsonConverter.convertToEntityAttribute(aiAnalysis.getDiagnoses());
-        List<String> recommendations = jsonConverter.convertToEntityAttribute(aiAnalysis.getRecommendations());
-
-        return new AiFormAnalysis(aiAnalysis.getId(), aiAnalysis.getPatientId(), aiAnalysis.getFormId(),
-                diagnoses, recommendations, aiAnalysis.getCreatedDate());
-    }
+//    public FormAiAnalysis mapAiAnalysisEntityToAiFormAnalysis(AiFormAnalysisEntity aiAnalysis) {
+//        if (aiAnalysis == null) { return null; }
+//        List<String> diagnoses = jsonConverter.convertToEntityAttribute(aiAnalysis.getDiagnoses());
+//        List<String> recommendations = jsonConverter.convertToEntityAttribute(aiAnalysis.getRecommendations());
+//
+//        return new FormAiAnalysis(aiAnalysis.getId(), aiAnalysis.getPatientId(), aiAnalysis.getFormId(),
+//                diagnoses, recommendations, aiAnalysis.getCreatedDate());
+//    }
 
     public Prediction mapPredictionEntityToPrediction(AiPredictionEntity aiPrediction) {
         if (aiPrediction == null) { return null; }

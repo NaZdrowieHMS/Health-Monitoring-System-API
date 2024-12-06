@@ -1,7 +1,7 @@
 package agh.edu.pl.healthmonitoringsystem.client;
 
 import agh.edu.pl.healthmonitoringsystem.request.AiFormAnalysisRequest;
-import agh.edu.pl.healthmonitoringsystem.response.AiFormAnalysis;
+import agh.edu.pl.healthmonitoringsystem.model.FormAiAnalysis;
 import agh.edu.pl.healthmonitoringsystem.response.Form;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -15,5 +15,5 @@ public interface FormApi {
     Call<Form> getFormById(@Path("formId") Long formId);
 
     @POST("/api/forms/analysis")
-    Call<AiFormAnalysis> saveFormAiAnalysis(@Body AiFormAnalysisRequest aiFormAnalysisRequest);
+    Call<FormAiAnalysis> saveFormAiAnalysis(@Body AiFormAnalysisRequest aiFormAnalysisRequest);
 }

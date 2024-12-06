@@ -34,6 +34,11 @@ public class PredictionRequestController {
         this.predictionRequestService = predictionRequestService;
     }
 
+    @GetMapping
+    public ResponseEntity<PredictionSummary> test() {
+        return ResponseEntity.status(HttpStatus.CREATED).body(predictionRequestService.getTest());
+    }
+
     @PostMapping
     @Operation(
             summary = "Create a new prediction request.",
