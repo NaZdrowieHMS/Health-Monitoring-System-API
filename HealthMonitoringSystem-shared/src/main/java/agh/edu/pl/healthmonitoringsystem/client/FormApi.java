@@ -21,7 +21,4 @@ public interface FormApi {
     );
     @GET("/api/forms/{formId}")
     Call<Form> getFormById(@Path("formId") Long formId);
-
-    @POST("/api/forms/analysis")
-    Call<FormAiAnalysis> saveFormAiAnalysis(@Body AiFormAnalysisRequest aiFormAnalysisRequest);
 }
