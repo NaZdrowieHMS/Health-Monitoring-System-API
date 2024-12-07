@@ -7,16 +7,21 @@ import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundExceptio
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.model.ResultAiAnalysis;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionSummaryRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PredictionSummaryEntity;
 import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryRequest;
 import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryUpdateRequest;
-import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static agh.edu.pl.healthmonitoringsystem.domain.component.UpdateUtil.updateField;
 import static agh.edu.pl.healthmonitoringsystem.enums.PredictionRequestStatus.IN_PROGRESS;
@@ -38,13 +43,6 @@ public class PredictionRequestService {
         this.formAiAnalysisConverter = formAiAnalysisConverter;
         this.validator = validator;
     }
-
-    public PredictionSummary getTest() {
-        PredictionSummaryEntity entity = predictionRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("AI prediction Summary reqest with id " + 1 + " not found"));
-
-        return modelMapper.mapPredictionSummaryEntityToPredictionSummary(entity);
-    }
-
 
     public PredictionSummary getPredictionSummaryRequestById(Long requestId) {
         PredictionSummaryEntity entity = predictionRepository.findById(requestId)
@@ -90,17 +88,19 @@ public class PredictionRequestService {
         predictionRepository.save(predictionSummaryEntity);
     }
 
-//    public List<PredictionSummary> getPatientPredictions(Long patientId, Integer page, Integer size) {
-//        validator.validatePatient(patientId);
-//
-//        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
-//        List<AiPredictionSummaryEntity> predictionEntities = predictionRepository.findByPatientId(patientId, pageable);
-//
-//        return predictionEntities.stream()
-//                .map(predictionEntity -> {
-//                    List<AiPredictionSummaryEntryEntity> entries = predictionEntryRepository.findByRequestId(predictionEntity.getId());
-//                    return modelMapper.mapPredictionSummaryEntityToPredictionSummary(predictionEntity, entries);
-//                })
-//                .toList();
-//    }
+    public List<PredictionSummary> getPatientPredictions(Long doctorId, Long patientId, Integer page, Integer size) {
+        validator.validateDoctor(doctorId);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
+
+        if(patientId == null) {
+            return predictionRepository.findByDoctorId(doctorId, pageable).stream()
+                    .map(modelMapper::mapPredictionSummaryEntityToPredictionSummary)
+                    .collect(Collectors.toList());
+        }
+
+        return predictionRepository.findByDoctorIdAndPatientId(doctorId, patientId, pageable).stream()
+                .map(modelMapper::mapPredictionSummaryEntityToPredictionSummary)
+                .collect(Collectors.toList());
+    }
 }
