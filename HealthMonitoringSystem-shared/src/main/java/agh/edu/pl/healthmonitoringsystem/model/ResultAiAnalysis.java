@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public record ResultAiAnalysis (
-    List<Long> resultIds,
+    List<ResultAiData> results,
     String prediction,
     Double confidence
 

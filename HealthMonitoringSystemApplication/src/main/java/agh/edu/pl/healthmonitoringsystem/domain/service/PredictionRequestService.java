@@ -6,9 +6,11 @@ import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.model.ResultAiAnalysis;
+import agh.edu.pl.healthmonitoringsystem.model.ResultAiData;
 import agh.edu.pl.healthmonitoringsystem.persistence.PredictionSummaryRepository;
-import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
+import agh.edu.pl.healthmonitoringsystem.persistence.ResultRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PredictionSummaryEntity;
+import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.ResultEntity;
 import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryRequest;
 import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,13 +38,16 @@ public class PredictionRequestService {
     private final FormAiAnalysisConverter formAiAnalysisConverter;
     private final RequestValidator validator;
 
+    private final ResultRepository resultRepository;
+
     @Autowired
-    public PredictionRequestService(PredictionSummaryRepository predictionRepository, ModelMapper modelMapper, ResultAiAnalysisConverter resultAiAnalysisConverter, FormAiAnalysisConverter formAiAnalysisConverter, RequestValidator validator) {
+    public PredictionRequestService(PredictionSummaryRepository predictionRepository, ModelMapper modelMapper, ResultAiAnalysisConverter resultAiAnalysisConverter, FormAiAnalysisConverter formAiAnalysisConverter, RequestValidator validator, ResultRepository resultRepository) {
         this.predictionRepository = predictionRepository;
         this.modelMapper = modelMapper;
         this.resultAiAnalysisConverter = resultAiAnalysisConverter;
         this.formAiAnalysisConverter = formAiAnalysisConverter;
         this.validator = validator;
+        this.resultRepository = resultRepository;
     }
 
     public PredictionSummary getPredictionSummaryRequestById(Long requestId) {
@@ -63,7 +69,14 @@ public class PredictionRequestService {
                 .modifiedDate(now)
                 .build();
 
-        ResultAiAnalysis analysis = new ResultAiAnalysis(predictionSummaryRequest.resultIds(), null, null);
+        List<ResultAiData> results = new LinkedList<>();
+        for(Long resultId: predictionSummaryRequest.resultIds()) {
+            ResultEntity result = resultRepository.getReferenceById(resultId);
+
+            results.add(new ResultAiData(resultId, result.getTestType(), result.getCreatedDate()));
+        }
+
+        ResultAiAnalysis analysis = new ResultAiAnalysis(results, null, null);
 
         entity.setResultAiAnalysis(resultAiAnalysisConverter.convertToDatabaseColumn(analysis));
 
@@ -78,7 +91,7 @@ public class PredictionRequestService {
 
         ResultAiAnalysis analysis = resultAiAnalysisConverter.convertToEntityAttribute(predictionSummaryEntity.getResultAiAnalysis());
 
-        ResultAiAnalysis updatedAnalysis = new ResultAiAnalysis(analysis.resultIds(), updateRequest.getPrediction(), updateRequest.getConfidence());
+        ResultAiAnalysis updatedAnalysis = new ResultAiAnalysis(analysis.results(), updateRequest.getPrediction(), updateRequest.getConfidence());
 
         updateField(Optional.ofNullable(updateRequest.getStatus()), predictionSummaryEntity::setStatus);
         predictionSummaryEntity.setResultAiAnalysis(resultAiAnalysisConverter.convertToDatabaseColumn(updatedAnalysis));

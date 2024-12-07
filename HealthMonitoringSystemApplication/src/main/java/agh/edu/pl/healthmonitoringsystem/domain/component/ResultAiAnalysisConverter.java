@@ -1,18 +1,24 @@
 package agh.edu.pl.healthmonitoringsystem.domain.component;
 
 import agh.edu.pl.healthmonitoringsystem.model.ResultAiAnalysis;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Converter
 @Component
 public class ResultAiAnalysisConverter implements AttributeConverter<ResultAiAnalysis, String> {
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = FormAiAnalysisConverter.createObjectMapper();
 
     @Override
     public String convertToDatabaseColumn(ResultAiAnalysis resultAiAnalysis) {
