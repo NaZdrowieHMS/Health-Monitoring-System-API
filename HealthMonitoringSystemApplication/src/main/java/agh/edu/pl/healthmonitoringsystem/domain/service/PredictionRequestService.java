@@ -1,5 +1,6 @@
 package agh.edu.pl.healthmonitoringsystem.domain.service;
 
+import agh.edu.pl.healthmonitoringsystem.domain.component.FormAiAnalysisConverter;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ResultAiAnalysisConverter;
 import agh.edu.pl.healthmonitoringsystem.domain.component.ModelMapper;
 import agh.edu.pl.healthmonitoringsystem.domain.exception.EntityNotFoundException;
@@ -9,6 +10,7 @@ import agh.edu.pl.healthmonitoringsystem.persistence.PredictionSummaryRepository
 import agh.edu.pl.healthmonitoringsystem.persistence.model.entity.PredictionSummaryEntity;
 import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryRequest;
 import agh.edu.pl.healthmonitoringsystem.request.PredictionSummaryUpdateRequest;
+import agh.edu.pl.healthmonitoringsystem.response.Form;
 import agh.edu.pl.healthmonitoringsystem.response.PredictionSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,15 @@ public class PredictionRequestService {
     private final PredictionSummaryRepository predictionRepository;
     private final ModelMapper modelMapper;
     private final ResultAiAnalysisConverter resultAiAnalysisConverter;
+    private final FormAiAnalysisConverter formAiAnalysisConverter;
     private final RequestValidator validator;
 
     @Autowired
-    public PredictionRequestService(PredictionSummaryRepository predictionRepository, ModelMapper modelMapper, ResultAiAnalysisConverter resultAiAnalysisConverter, RequestValidator validator) {
+    public PredictionRequestService(PredictionSummaryRepository predictionRepository, ModelMapper modelMapper, ResultAiAnalysisConverter resultAiAnalysisConverter, FormAiAnalysisConverter formAiAnalysisConverter, RequestValidator validator) {
         this.predictionRepository = predictionRepository;
         this.modelMapper = modelMapper;
         this.resultAiAnalysisConverter = resultAiAnalysisConverter;
+        this.formAiAnalysisConverter = formAiAnalysisConverter;
         this.validator = validator;
     }
 
@@ -80,6 +84,7 @@ public class PredictionRequestService {
 
         updateField(Optional.ofNullable(updateRequest.getStatus()), predictionSummaryEntity::setStatus);
         predictionSummaryEntity.setResultAiAnalysis(resultAiAnalysisConverter.convertToDatabaseColumn(updatedAnalysis));
+        predictionSummaryEntity.setFormAiAnalysis(formAiAnalysisConverter.convertToDatabaseColumn(updateRequest.getFormAiAnalysis()));
         predictionSummaryEntity.setModifiedDate(LocalDateTime.now());
 
         predictionRepository.save(predictionSummaryEntity);

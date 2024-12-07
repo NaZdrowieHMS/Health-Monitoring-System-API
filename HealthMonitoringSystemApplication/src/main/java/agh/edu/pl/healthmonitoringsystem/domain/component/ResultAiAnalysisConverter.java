@@ -16,6 +16,7 @@ public class ResultAiAnalysisConverter implements AttributeConverter<ResultAiAna
 
     @Override
     public String convertToDatabaseColumn(ResultAiAnalysis resultAiAnalysis) {
+        if(resultAiAnalysis == null) return null;
         try {
             return objectMapper.writeValueAsString(resultAiAnalysis);
         } catch (IOException e) {

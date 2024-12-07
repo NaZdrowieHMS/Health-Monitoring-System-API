@@ -38,6 +38,7 @@ public class FormAiAnalysisConverter implements AttributeConverter<FormAiAnalysi
 
     @Override
     public String convertToDatabaseColumn(FormAiAnalysis formAiAnalysis) {
+        if(formAiAnalysis == null) return null;
         try {
             return objectMapper.writeValueAsString(formAiAnalysis);
         } catch (IOException e) {

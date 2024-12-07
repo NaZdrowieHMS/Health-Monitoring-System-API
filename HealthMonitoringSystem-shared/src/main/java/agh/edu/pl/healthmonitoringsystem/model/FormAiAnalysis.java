@@ -7,5 +7,5 @@ public record FormAiAnalysis(
         Long formId,
         List<String> diagnoses,
         List<String> recommendations,
-        LocalDateTime createdDate
+        LocalDateTime formCreatedDate
 ) {}
