@@ -6,7 +6,6 @@ import agh.edu.pl.healthmonitoringsystem.domain.model.Role;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.request.CommentUpdateRequest;
 import agh.edu.pl.healthmonitoringsystem.domain.model.response.Comment;
-import agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultOverview;
 import agh.edu.pl.healthmonitoringsystem.domain.validator.RequestValidator;
 import agh.edu.pl.healthmonitoringsystem.persistence.HealthRepository;
 import agh.edu.pl.healthmonitoringsystem.persistence.UserRepository;
@@ -77,16 +76,6 @@ public class HealthService {
         HealthCommentEntity entity = healthRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException("Health comment with id " + commentId + " does not exist"));
         healthRepository.delete(entity);
-    }
-
-    public List<Comment> getHealthCommentsByPatientId(Long patientId, Integer page, Integer size) {
-        validator.validatePatient(patientId);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
-        List<CommentWithAuthorProjection> healthCommentsWithDoctorData = healthRepository.getHealthCommentsWithAuthorByPatientId(patientId, pageRequest).getContent();
-
-        return healthCommentsWithDoctorData.stream()
-                .map(modelMapper::mapProjectionToComment)
-                .collect(Collectors.toList());
     }
 
     public List<Comment> getAllHealthComments(Long userId, Long patientId, String filter, Integer page, Integer size) {

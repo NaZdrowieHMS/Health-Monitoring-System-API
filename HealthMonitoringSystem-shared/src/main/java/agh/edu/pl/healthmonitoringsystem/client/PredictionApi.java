@@ -17,7 +17,6 @@ import retrofit2.http.Path;
 import java.util.List;
 
 public interface PredictionApi {
-
     @POST("/api/predictions/request")
     Call<PredictionSummary> createPredictionRequest(@Body PredictionSummaryRequest predictionSummaryRequest);
 
