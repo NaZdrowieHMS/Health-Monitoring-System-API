@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class HealthStepDefinitions {
+public class HealthCommentSteps {
 
     @Autowired
     private FunctionalTestExecutor executor;
@@ -63,5 +63,18 @@ public class HealthStepDefinitions {
         UserEntity user = new UserEntity(id, role, name, surname, email, pesel, pwz, now, now);
         userRepository.save(user);
         return user;
+    }
+
+    @Given("The patient with ID {long} has existing health comments added by multiple doctors")
+    public void thePatientWithIdhasExistingHealthComments(Long patientId) {
+        patient = createUser(patientId, Role.PATIENT, "Anna", "Nowak", "anowak@email.com", "03991723919", null);
+    }
+
+    @When("The doctor requests for the patient's health comments")
+    public void theDoctorRequestsForThePatientsHealthComments() {
+    }
+
+    @Then("The hms api should return all health comments associated with patient ID {int}")
+    public void theHmsApiShouldReturnAllHealthCommentsAssociatedWithPatientID(int arg0) {
     }
 }
