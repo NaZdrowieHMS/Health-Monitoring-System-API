@@ -49,96 +49,27 @@ public class PatientSpecificController {
         this.predictionRequestService = predictionRequestService;
     }
 
-    @GetMapping(path = "/{patientId}/health")
-    @Operation(
-            summary = "DEPRECATED",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = Comment.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Patient"}
-    )
-    public ResponseEntity<List<Comment>> getPatientHealthComments(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                                  @Parameter(description = "Number of health comments per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                                  @Parameter(description = "Patient ID") @PathVariable Long patientId) {
-
-        List<Comment> patientHealthComments = healthService.getHealthCommentsByPatientId(patientId, startIndex, pageSize);
-        return ResponseEntity.ok(patientHealthComments);
-    }
-
-    @GetMapping(path = "/{patientId}/referrals")
-    @Operation(
-            summary = "DEPRECATED",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = Referral.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Patient"}
-    )
-    public ResponseEntity<List<Referral>> getPatientReferrals(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                              @Parameter(description = "Number of referrals per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                              @Parameter(description = "Patient ID") @PathVariable Long patientId) {
-
-        List<Referral> patientReferrals = referralService.getPatientReferralsByPatientId(patientId, startIndex, pageSize);
-        return ResponseEntity.ok(patientReferrals);
-    }
-
-    @GetMapping(path = "/{patientId}/forms")
-    @Operation(
-            summary = "DEPRECATED",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = Form.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Patient"}
-    )
-    public ResponseEntity<List<Form>> getPatientHealthForms(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                            @Parameter(description = "Number of forms per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                            @Parameter(description = "Patient ID") @PathVariable Long patientId) {
-
-        List<Form> patientHealthForms = formService.getPatientHealthForms(patientId, startIndex, pageSize);
-        return ResponseEntity.ok(patientHealthForms);
-    }
-
-    @GetMapping(path = "/{patientId}/predictions")
-    @Operation(
-            summary = "Get list of predictions for a specific patient",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation",
-                            content = @Content(schema = @Schema(type = "array", implementation = PredictionSummary.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Not found",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Server error",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
-            },
-            tags = {"Patient"}
-    )
-    public ResponseEntity<List<PredictionSummary>> getPatientPredictions(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
-                                                                         @Parameter(description = "Number of predictions per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
-                                                                         @Parameter(description = "Patient ID") @PathVariable Long patientId) {
-
-        List<PredictionSummary> patientPredictions = predictionRequestService.getPatientPredictions(patientId, startIndex, pageSize);
-        return ResponseEntity.ok(patientPredictions);
-    }
+//    @GetMapping(path = "/{patientId}/predictions")
+//    @Operation(
+//            summary = "Get list of predictions for a specific patient",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "Successful operation",
+//                            content = @Content(schema = @Schema(type = "array", implementation = PredictionSummary.class))),
+//                    @ApiResponse(responseCode = "400", description = "Invalid request",
+//                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+//                    @ApiResponse(responseCode = "404", description = "Not found",
+//                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))),
+//                    @ApiResponse(responseCode = "500", description = "Server error",
+//                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =  @Schema(implementation = ErrorResponse.class))),
+//            },
+//            tags = {"Patient"}
+//    )
+//    public ResponseEntity<List<PredictionSummary>> getPatientPredictions(@Parameter(description = "Start index") @RequestParam(name = START_INDEX_PARAM, required = false, defaultValue = "0") @Min(0) Integer startIndex,
+//                                                                         @Parameter(description = "Number of predictions per page") @RequestParam(name = PAGE_SIZE_PARAM, required = false, defaultValue = "50") @Max(500) Integer pageSize,
+//                                                                         @Parameter(description = "Patient ID") @PathVariable Long patientId) {
+//
+//        List<PredictionSummary> patientPredictions = predictionRequestService.getPatientPredictions(patientId, startIndex, pageSize);
+//        return ResponseEntity.ok(patientPredictions);
+//    }
 }
 
