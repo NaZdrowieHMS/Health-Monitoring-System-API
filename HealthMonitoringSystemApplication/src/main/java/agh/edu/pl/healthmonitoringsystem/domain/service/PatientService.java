@@ -68,7 +68,7 @@ public class PatientService {
         validator.validateDoctor(doctorId);
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<UserEntity> patients = userRepository.findPatientsByDoctorId(doctorId, pageRequest).getContent();
+        List<UserEntity> patients = userRepository.findPatientsByDoctorId(doctorId, Role.PATIENT, pageRequest).getContent();
 
         return patients.stream()
                 .map(modelMapper::mapUserEntityToPatient)
@@ -79,7 +79,7 @@ public class PatientService {
         validator.validateDoctor(doctorId);
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<UserEntity> patients = userRepository.findUnassignedPatientsByDoctorId(doctorId, pageRequest).getContent();
+        List<UserEntity> patients = userRepository.findUnassignedPatientsByDoctorId(doctorId, Role.PATIENT, pageRequest).getContent();
 
         return patients.stream()
                 .map(modelMapper::mapUserEntityToPatient)

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 @CrossOrigin
 @Slf4j
 public class ReadinessController {
@@ -26,6 +26,21 @@ public class ReadinessController {
 
     public ReadinessController(ReadinessCheck readinessCheck) {
         this.readinessCheck = readinessCheck;
+    }
+
+    @GetMapping("/health")
+    @Operation(
+            summary = "Check if ai health monitoring system is ready.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Healthy",
+                            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema =  @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "500", description = "Not healthy",
+                            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema =  @Schema(implementation = String.class))),
+            },
+            tags = {"Health Check"}
+    )
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Healthy");
     }
 
     @GetMapping(value = "/readiness")

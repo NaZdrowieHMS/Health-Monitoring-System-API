@@ -6,7 +6,7 @@
 
     <groupId>agh.edu.pl.healthmonitoringsystem</groupId>
     <artifactId>healthmonitoringsystem-shared</artifactId>
-    <version>1.10-SNAPSHOT</version>
+    <version>1.11-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

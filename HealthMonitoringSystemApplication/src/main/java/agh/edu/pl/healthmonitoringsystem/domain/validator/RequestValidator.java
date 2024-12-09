@@ -57,10 +57,6 @@ public class RequestValidator extends EntityValidator {
         }
     }
 
-    public void validate(Long userId) {
-        validateUser(userId);
-    }
-
     public void validate(Long doctorId, Long patientId) {
         validatePatient(patientId);
         validateDoctor(doctorId);
@@ -69,6 +65,7 @@ public class RequestValidator extends EntityValidator {
     public void validate(AiFormAnalysisRequest request) {
         validateForm(request.getFormId());
         validatePatient(request.getPatientId());
+        validateDoctor(request.getDoctorId());
     }
 
     public void validate(ResultCommentRequest request) {
