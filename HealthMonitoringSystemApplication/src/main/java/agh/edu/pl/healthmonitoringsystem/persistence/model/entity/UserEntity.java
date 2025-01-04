@@ -28,12 +28,13 @@ public class UserEntity {
     private String pwz;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    private String password;
 
     public UserEntity() {}
 
     @lombok.Builder(builderClassName = "Builder")
     public UserEntity(Long id, Role role, String name, String surname, String email, String pesel, String pwz,
-                        LocalDateTime createdDate, LocalDateTime modifiedDate) {
+                        LocalDateTime createdDate, LocalDateTime modifiedDate, String password) {
         this.id = id;
         this.role = role;
         this.name = name;
@@ -43,6 +44,7 @@ public class UserEntity {
         this.pwz = pwz;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
+        this.password = password;
     }
 
     public static final class Builder {
@@ -55,7 +57,8 @@ public class UserEntity {
             checkLength(pesel, 11, () -> new RequestValidationException("PESEL must be 11 characters"));
             checkNotNull(createdDate, () -> new RequestValidationException("Creation date cannot be null"));
             checkNotNull(modifiedDate, () -> new RequestValidationException("Modification date cannot be null"));
-            return new UserEntity(id, role, name, surname, email, pesel, pwz, createdDate, modifiedDate);
+            checkNotNull(password, () -> new RequestValidationException("Password cannot be null"));
+            return new UserEntity(id, role, name, surname, email, pesel, pwz, createdDate, modifiedDate, password);
         }
     }
 }
