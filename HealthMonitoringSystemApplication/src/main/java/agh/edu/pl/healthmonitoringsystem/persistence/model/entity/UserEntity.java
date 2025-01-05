@@ -23,6 +23,7 @@ public class UserEntity {
     private Role role;
     private String name;
     private String surname;
+    @Column(unique = true, nullable = false)
     private String email;
     private String pesel;
     private String pwz;
