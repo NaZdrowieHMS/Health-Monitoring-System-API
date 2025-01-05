@@ -60,7 +60,7 @@ public class HealthCommentSteps {
 
     private UserEntity createUser(Long id, Role role, String name, String surname, String email, String pesel, String pwz) {
         LocalDateTime now = LocalDateTime.now();
-        UserEntity user = new UserEntity(id, role, name, surname, email, pesel, pwz, now, now);
+        UserEntity user = new UserEntity(id, role, name, surname, email, pesel, pwz, now, now, "aaa");
         userRepository.save(user);
         return user;
     }
