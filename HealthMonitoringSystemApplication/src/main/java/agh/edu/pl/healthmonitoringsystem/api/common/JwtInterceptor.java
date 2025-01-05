@@ -57,7 +57,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 throw new IllegalArgumentException("Invalid token");
             }
 
-            if (!request.getHeader("userId").isEmpty()) {
+            if (request.getHeader("userId") != null) {
                 if (!Long.valueOf(request.getHeader("userId")).equals(id)) throw new IllegalArgumentException("Invalid token");
             }
         } catch (SignatureException | IllegalArgumentException e) {
