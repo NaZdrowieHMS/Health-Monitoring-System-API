@@ -47,6 +47,7 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
         FROM ResultEntity r
         LEFT JOIN ResultAiSelectedEntity ras ON r.id = ras.resultId
         LEFT JOIN ResultViewedEntity rv ON rv.resultId = r.id AND rv.doctorId = :userId
+        JOIN DoctorPatientEntity dp ON dp.patientId = r.patientId AND dp.doctorId = :userId
         WHERE rv.id IS NULL
         ORDER BY r.createdDate DESC
         """)
