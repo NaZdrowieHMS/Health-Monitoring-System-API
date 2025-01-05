@@ -17,8 +17,9 @@ public interface FormApi {
             @Query("startIndex") Integer startIndex,
             @Query("pageSize") Integer pageSize,
             @Header("userId") Long userId,
-            @Query("patientId") Long patientId
+            @Query("patientId") Long patientId,
+            @Header("Authorization") String authentication
     );
     @GET("/api/forms/{formId}")
-    Call<Form> getFormById(@Path("formId") Long formId);
+    Call<Form> getFormById(@Path("formId") Long formId, @Header("Authorization") String authentication);
 }
