@@ -41,13 +41,14 @@ public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
     Optional<ResultWithAiSelectedAndViewedProjection> getResultByIdWithAiSelectedAndViewed(@Param("resultId") Long resultId);
 
     @Query("""
-            SELECT new agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultOverview(
-            r.id, r.patientId, r.testType, r.createdDate,
-            CASE WHEN ras.id IS NOT NULL THEN true ELSE false END)
-            FROM ResultEntity r
-            LEFT JOIN ResultAiSelectedEntity ras ON r.id = ras.resultId
-            JOIN ResultViewedEntity rv ON rv.resultId = r.id
-            WHERE rv.doctorId = :userId
-            ORDER BY r.createdDate DESC""")
+        SELECT new agh.edu.pl.healthmonitoringsystem.domain.model.response.ResultOverview(
+        r.id, r.patientId, r.testType, r.createdDate,
+        CASE WHEN ras.id IS NOT NULL THEN true ELSE false END)
+        FROM ResultEntity r
+        LEFT JOIN ResultAiSelectedEntity ras ON r.id = ras.resultId
+        LEFT JOIN ResultViewedEntity rv ON rv.resultId = r.id AND rv.doctorId = :userId
+        WHERE rv.id IS NULL
+        ORDER BY r.createdDate DESC
+        """)
     Page<ResultOverview> getUnviewedResults(@Param("userId") Long userId, Pageable pageable);
 }
