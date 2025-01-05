@@ -8,10 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static agh.edu.pl.healthmonitoringsystem.api.common.Constants.SECRET_KEY;
+
 public class JwtUtil {
-
-    private static final String SECRET_KEY = "TosiaJestSuperKotkiemFajnieSieBawiIJeKocieChrupki123";
-
     public static String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.role().name());
