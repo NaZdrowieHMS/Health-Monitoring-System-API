@@ -56,6 +56,10 @@ public class JwtInterceptor implements HandlerInterceptor {
             if (!userEntity.get().getPassword().equals(password) || !userEntity.get().getRole().equals(role) || ! userEntity.get().getEmail().equals(email)) {
                 throw new IllegalArgumentException("Invalid token");
             }
+
+            if (!request.getHeader("userId").isEmpty()) {
+                if (!Long.valueOf(request.getHeader("userId")).equals(id)) throw new IllegalArgumentException("Invalid token");
+            }
         } catch (SignatureException | IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Invalid or expired token");
