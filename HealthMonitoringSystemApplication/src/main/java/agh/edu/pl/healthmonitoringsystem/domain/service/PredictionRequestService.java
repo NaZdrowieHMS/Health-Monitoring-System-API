@@ -58,6 +58,7 @@ public class PredictionRequestService {
     }
 
     public PredictionSummary createPredictionRequest(PredictionSummaryRequest predictionSummaryRequest) {
+        System.out.println(predictionSummaryRequest.doctorId());
         validator.validate(predictionSummaryRequest);
 
         LocalDateTime now = LocalDateTime.now();

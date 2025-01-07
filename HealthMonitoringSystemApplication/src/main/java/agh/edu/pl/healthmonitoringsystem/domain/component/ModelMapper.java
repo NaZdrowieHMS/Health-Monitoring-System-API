@@ -40,6 +40,12 @@ public class ModelMapper {
                 doctor.getEmail(), doctor.getPesel(), doctor.getPwz());
     }
 
+    public User mapUserEntityToUser(UserEntity user) {
+        if (user == null) { return null; }
+        return new User(user.getRole(), user.getId(), user.getName(), user.getSurname(),
+                user.getEmail(), user.getPesel(), user.getPassword(), user.getPwz());
+    }
+
     public ResultOverview mapResultEntityToResultOverview(ResultEntity result) {
         if (result == null) { return null; }
         return new ResultOverview(
